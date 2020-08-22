@@ -1,0 +1,26 @@
+main: com.grassminevn.levels.Levels
+version: ${project.version}
+name: Levels
+author: xHexed
+description: ${project.description}
+softdepend: [PlaceholderAPI]
+api-version: "1.13"
+commands:
+  levels:
+    description: levels main command
+    aliases: [l, level]
+  stats:
+    description: See stats
+    aliases: [s, stat]
+  top:
+    description: See top stats
+    aliases: [leveltop, ltop]
+  boosters:
+    description: See boosters
+    aliases: [b, booster, boost]
+  profile:
+    description: See profile
+  admin:
+    description: See admin
+  shop:
+    description: See shop

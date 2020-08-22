@@ -1,0 +1,78 @@
+#                                         #
+#                levels                #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+levels:
+  '1':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 650
+  '2':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 1200
+  '3':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 1500
+  '4':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 1800
+  '5':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 2300
+  '6':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 2600
+  '7':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 2800
+  '8':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 3600
+  '9':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 4500
+  '10':
+    commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
+    lose-commands:
+      - levels message {levels_player} &7[&blevels&7] &eYou lost a level you
+        are now {levels_level}
+    xp: 5600
