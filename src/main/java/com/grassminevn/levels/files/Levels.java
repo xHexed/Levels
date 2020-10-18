@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class Levels {
+
     public FileConfiguration get;
     private final File file;
+
     private final com.grassminevn.levels.Levels plugin;
 
     public Levels(final com.grassminevn.levels.Levels plugin) {

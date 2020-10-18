@@ -1,0 +1,63 @@
+settings:
+  name: '&f&lAll Profiles'
+  size: 54
+  perpage: 36
+  player:
+    NAME: '&6{player}'
+    LORES:
+      - '&eXP: &7> &6{xp}'
+      - '&eLevel: &7> &6{level}'
+      - '&eXP Required: &7> &6{xp_required}'
+      - '&eXP Progress: &7> &6{xp_progress}%'
+      - '&6{xp_progress_style}'
+      - '&eGroup &7> &6{group}'
+    MATERIAL: PLAYER_HEAD
+    AMOUNT: 1
+45:
+  NAME: '&bGo Back'
+  LORES: []
+  MATERIAL: STICK
+  AMOUNT: 1
+  OPTIONS:
+    - BACK
+53:
+  NAME: '&bNext Page'
+  LORES: []
+  MATERIAL: STICK
+  AMOUNT: 1
+  OPTIONS:
+    - NEXT
+2:
+  NAME: '&f&lSort &7&l- &b&lXP'
+  LORES: []
+  MATERIAL: EXPERIENCE_BOTTLE
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_XP
+3:
+  NAME: '&f&lSort &7&l- &b&lLevel'
+  LORES: []
+  MATERIAL: DRAGON_EGG
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_LEVEL
+8:
+  NAME: '&f&lSort &7&l- &b&lReverse order'
+  LORES: []
+  MATERIAL: BOOK
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_REVERSE
+49:
+  NAME: '&6Your stats'
+  LORES:
+    - '&eXP: &7> &6{xp}'
+    - '&eLevel: &7> &6{level}'
+    - '&eXP Required: &7> &6{xp_required}'
+    - '&eXP Progress: &7> &6{xp_progress}%'
+    - '&6{xp_progress_style}'
+    - '&eGroup &7> &6{group}'
+  MATERIAL: PLAYER_HEAD
+  AMOUNT: 1
+  OPTIONS:
+    - PLAYER_HEAD

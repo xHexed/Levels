@@ -34,6 +34,11 @@
             <version>2.9.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>simple</artifactId>
+            <version>0.30</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -58,6 +63,28 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.ejml</pattern>
+                                    <shadedPattern>com.grassminevn.levels.ejml</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

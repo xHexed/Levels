@@ -1,16 +1,13 @@
 #                                         #
-#                levels                #
+#                PvPLevels                #
 #                   by                    #
 #                MathiasMC                #
 #  Any ideas for the plugin or need help? #
 #           contact me on spigot          #
 #                                         #
 
-# Debug/information messages in console
-debug:
-  database: false
-  save: false
-  purge: false
+# Check for updates on startup?
+update-check: true
 
 # Database settings
 mysql:
@@ -21,237 +18,66 @@ mysql:
   username: username
   password: password
 
-load-players:
-  # Load all players into cache on startup?
-  all: true
+  # Automatically remove inactive players from the database (remove section to disable)
+  purge:
 
-  # Load all online players if not in cache?
-  reload: true
+    # How often to check the activity of players? Seconds.
+    interval: 7200
 
-unload-players:
-  # unload the player from cache on quit?
-  quit: false
+    # Check on server startup?
+    check-on-startup: true
 
+    # How many days a player must be offline to remove him from the database.
+    inactive-days: 30
+
+    # Additional commands that will be executed along with the purge. It may
+    # be useful for deleting player data from a databases of other plugins.
+    commands: []
+
+# Save every x amount of minutes
 save:
   use: true
-
-  # How often to save? Seconds.
   interval: 60
 
-levelup:
-  # Clear xp on levelup?
-  xp-clear: true
-
-  # List of players that will not get xp
-  all-excluded:
+top:
+  name: '&cNone'
+  value: '&cNone'
+  excluded:
     - uuid
 
-# You can disable events here.
-events:
-  Kills: true
-  Deaths:
-    use: true
-    only-players: true
-
-# This section is used then you use /levels generate <levels> as console
-generate:
-  # Disable command for accidentally typing the command
-  disable: false
-
-  # Commands to add per level
-  commands:
-    - levels message {levels_player} &7[&blevels&7] &eYou are now level {levels_level_to}
-
-  xp:
-    # always add that amount
-    static: 120
-
-    # + random between min and max
-    min: 50
-    max: 400
-
-  random:
-    use: true
-    commands:
-      - give {levels_player} diamond
-      - give {levels_player} emerald
-      - give {levels_player} gold
-      - give {levels_player} iron
-      - give {levels_player} coal
-
-    # random add to a level between min and max
-    min: 1
-    max: 35
-
-placeholders:
-  # Add levels placeholders to PlaceholderAPI?
-  PlaceholderAPI: true
-
-  # Can be obtained using placeholders levels_prefix
-  prefix:
-    default:
-      permission: levels.prefix.default
-      list:
-        '0': '&e[&7Default&e] &f[&a{levels_level}&f] &e[&7{levels_group}&e]'
-      none: '&e[&6Default&e] &f[&a{levels_level}&f] &e[&7{levels_group}&e]'
-    vip:
-      permission: levels.group.vip
-      list:
-        '0': '&e[&7VIP&e] &f[&a{levels_level}&f] &e[&7{levels_group}&e]'
-      none: '&e[&6VIP&e] &f[&a{levels_level}&f] &e[&7{levels_group}&e]'
-
-  global-booster:
-    none: '&cNone'
-    name: '&cNone'
-    time: '&cNone'
-    time-left: '&cNone'
-    time-prefix: '&cNone'
-    time-left-prefix: '&cNone'
-
-  personal-booster:
-    none: '&cNone'
-    time: '&cNone'
-    time-left: '&cNone'
-    time-prefix: '&cNone'
-    time-left-prefix: '&cNone'
-
-  # Can be obtained using placeholders levels_date and levels_time
-  time:
-    format: HH.mm.ss
-    zone: Europe/Copenhagen
-  date:
-    format: dd.MM.yyyy
-    zone: Europe/Copenhagen
-
-# This is the max level you can get this must not be higher than the levels in levels.yml
-# it takes the first one you have permission to
-level-max:
-  default:
-    permission: levels.max.level.default
-    max: 10
-
-# This is used by /pvptop, top 10 placeholders
-pvptop:
-  xp:
-    name: '&cNone'
-    value: '&cNone'
-    excluded:
-      - uuid
-  level:
-    name: '&cNone'
-    value: '&cNone'
-    excluded:
-      - uuid
-
-# Disable xp from spawners?
-spawners:
-  xp:
-    - zombie
-    - skeleton
-
-# Placeholder levels_xp_progress_style
 xp-progress-style:
   xp:
-    symbol: \u2586
+    symbol: \u007c
     color: '&2'
   none:
-    symbol: \u2588
+    symbol: \u007c
     color: '&c'
   amount: 10
 
-# Can be obtained using placeholders levels_group and levels_group_to
-groups:
-  list:
-    default:
-      permission: levels.group.default
-      list:
-        '0': Noob
-        '1': Bad
-        '2': Better
-        '3': Good
-        '4': Pro
-        '5': Super
-      none: None
-  none: None
+xp-progress-style-2:
+  xp:
+    symbol: \u007c
+    color: '&2'
+  none:
+    symbol: \u007c
+    color: '&c'
+  amount: 20
 
-# Stop players from farming xp from killing the same player
-kill-session:
-  use: false
+multiplier:
+  format: HH' hours 'mm' minutes 'ss' seconds'
+  zone: Europe/Copenhagen
 
-  # Amount of times a player must kill another player to get in the kill session
-  amount: 4
+time:
+  format: HH.mm.ss
+  zone: Europe/Copenhagen
 
-  # Amount of time (in seconds) a player is in the kill session
-  time: 150
+date:
+  format: dd.MM.yyyy
+  zone: Europe/Copenhagen
 
-  commands:
-    get:
-      - levels message {levels_player} &7[&blevels&7] &eYou have been put in
-        a kill session for killing {levels_killed} {levels_amount} times
-    abuse:
-      - kick {levels_player} You cannot kill the same player so many times
-    remove:
-      - levels message {levels_player} &7[&blevels&7] &eYou have been removed
-        from the kill session
+# Start level of new players
+start-level: 0
 
-# entityName:
-#   permissionGroup:
-#     name: customEntityName
-#     min: 2
-#     max: 4
-#     permission: levels.mypermission
-#     worlds:
-#       - world
-#     commands: []
-#
-# if level is not found commands is the default
-#
-#     level-commands:
-#       1:
-#       - cmd1
-#       2:
-#       - cmd2
-#     xp-lose:
-#       min: 5
-#       max: 20
-#       commands:
-#         level: []
-#         lose: []
-#
-xp:
-  player:
-    default:
-      name: '{levels_player}'
-      min: 3
-      max: 8
-      permission: levels.xp.player.default
-      worlds:
-        - world
-      commands:
-        - levels message {levels_player} &7[&blevels&7] &c{levels_type}
-          &e+&6{levels_xp_get} &eXP &6{levels_xp_needed} &eto level &c{levels_level_to}
-          {levels_booster_global_prefix} {levels_booster_personal_prefix}
-kills:
-  # Worlds where you can get kills
-  worlds:
-    - world
-
-  default:
-    delay: 0
-    permission: levels.kill.commands
-    worlds:
-      - world
-    commands:
-      - levels message {levels_player} &7[&blevels&7] &e+1 kill
-deaths:
-  # Worlds where you can get deaths
-  worlds:
-    - world
-
-  default:
-    delay: 0
-    permission: levels.death.commands
-    worlds:
-      - world
-    commands:
-      - levels message {levels_player} &7[&blevels&7] &e+1 death
+# List of players that will not get kills/deaths/xp
+excluded:
+  - uuid

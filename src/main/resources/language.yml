@@ -1,677 +1,387 @@
-player:
-  levels:
-    command:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      unknown:
-        - '&7[&blevels&7] &cUnknown sub command &f{levels_command}'
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7&l> &blevels created by &eMathiasMC'
-        - '&7&l> &bVersion: &e{levels_version}'
-        - '&7&l> &f/levels help for list of commands'
-        - '&7&l> &2Any ideas for the plugin or need help?'
-        - '&7&l> &2Contact me on spigot'
-        - '&c&m---------------------------------------------'
-    help:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7&l> &f/levels item set <slot> <true, false override> <player> <item> <amount> <name\nlore\nlore2>'
-        - '&7&l> &f/levels item add <player> <item> <amount> <name\nlore\nlore2>'
-        - '&7&l> &f/levels set/add/remove xp/level <player> <amount>'
-        - '&7&l> &f/levels boosters give <player> <global-personal> <booster 0.0> <time>'
-        - '&7&l> &f/levels coins set/add/remove <player> <amount>'
-        - '&7&l> &f/levels gui open <fileName> <player>'
-        - '&7&l> &f/levels player get <xpType> <player>'
-        - '&7&l> &f/levels player lose <xpType> <player>'
-        - '&7&l> &f/levels actionbar <player> <text>'
-        - '&7&l> &f/boosters'
-        - '&7&l> &f/profile'
-        - '&7&l> &f/admin'
-        - '&7&l> &f/shop'
-        - '&7&l> &f/top xp/level'
-        - '&7&l> &f/stats <player>'
-        - '&7&l> &f/levels message <player> <text>'
-        - '&7&l> &f/levels broadcast <null/permission> <text>'
-        - '&7&l> &f/levels reload'
-        - '&7&l> &f/levels save'
-        - '&7&l> &f/levels zone set <typeName> <zoneName>'
-        - '&7&l> &f/levels wand'
-        - '&c&m---------------------------------------------'
-    reload:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      reloaded:
-        - '&7[&blevels&7] &aReloaded all configs!'
-    broadcast:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels broadcast <null/permission> <text>'
+#                                         #
+#                levels                #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+command:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  unknown:
+    - 'levels message {player} &7[&blevels&7] &cUnknown sub command &f{command}'
+  message:
+    - |-
+      levels message {player} &c&m---------------------------------------------
+      &7&l> &blevels created by &eMathiasMC
+      &7&l> &bVersion: &e{version}
+      &7&l> &f/levels help for list of commands
+      &7&l> &2Any ideas for the plugin or need help?
+      &7&l> &2Contact me on spigot
+      &c&m---------------------------------------------
+help:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  message:
+    - 'levels message {player} &c&m---------------------------------------------'
+    - 'levels message {player} &7&l> &f/levels save'
+    - 'levels message {player} &7&l> &f/levels reload'
+    - 'levels message {player} &7&l> &f/levels broadcast <null/permission> <text>'
+    - 'levels message {player} &7&l> &f/levels message <player> <text>'
+    - 'levels message {player} &7&l> &f/levels actionbar <player> <seconds> <text>'
+    - 'levels message {player} &7&l> &f/levels group set/reset <player> <groupName (set)>'
+    - 'levels message {player} &7&l> &f/levels reset <kills, deaths, level, killstreak, stats> <resetGroup (stats)>'
+    - 'levels message {player} &7&l> &f/levels xp/level <player> <+-amount>'
+    - 'levels message {player} &7&l> &f/levels admin'
+    - 'levels message {player} &7&l> &f/levels profiles'
+    - 'levels message {player} &7&l> &f/levels stats <player>'
+    - 'levels message {player} &7&l> &f/levels top <kills, deaths, xp, level, killstreak, killstreak_top>'
+    - 'levels message {player} &7&l> &f/levels multiplier <player> <1.8> <seconds>'
+    - 'levels message {player} &c&m---------------------------------------------'
+reload:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  all:
+    - 'levels message {player} &7[&blevels&7] &eReloaded all configs'
+  validator:
+    - 'levels message {player} &7[&blevels&7] &eReloaded all configs &7(&cvalidator not passed, check console for infomation&7)'
+admin:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+profiles:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+save:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  message:
+    - 'levels message {player} &7[&blevels&7] &aSaved cached data to the database!'
+pvpadmin:
+  deleted:
+    - 'levels message {player} &7[&blevels&7] &eDeleted player: {target}'
+  online:
+    - 'kick {target} &cYour profile was deleted.'
+message:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels message <player> <text>'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+broadcast:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels broadcast <null/permission> <text>'
+actionbar:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels actionbar <player> <seconds> <text>'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  number:
+    - 'levels message {player} &7[&blevels&7] &cNot a number!'
+group:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels group set/reset'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  valid:
+    - 'levels message {player} &7[&blevels&7] &cNot a valid group name/not found in levels.yml! [a-zA-Z]'
+  reset:
+    usage:
+      - 'levels message {player} &7[&blevels&7] &cUsage: /levels group reset <player>'
     message:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels message <player> <text>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-    save:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      saved:
-        - '&7[&blevels&7] &aSaved cached data to the database!'
-    set:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels set kills/deaths/xp/level <player>
-        <set>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      xp:
-        - '&7[&blevels&7] &eChanged {levels_player} xp to {levels_set}!'
-      level:
-        - '&7[&blevels&7] &eChanged {levels_player} level to {levels_set}!'
-      xp-add-cannot:
-        - '&7[&blevels&7] &cCannot add xp higher than max level!'
-      xp-remove-cannot:
-        - '&7[&blevels&7] &cCannot remove more xp already at the lowest level and
-        xp!'
-      xp-set-cannot:
-        - '&7[&blevels&7] &cCannot set xp higher than max level!'
-      level-cannot:
-        - '&7[&blevels&7] &cCannot find that level!'
-    add:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels add kills/deaths/xp/level <player>
-        <add>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      xp:
-        - '&7[&blevels&7] &eAdded {levels_add} xp to {levels_player}!'
-      level:
-        - '&7[&blevels&7] &eAdded {levels_add} level to {levels_player}!'
-    remove:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels remove kills/deaths/xp/level <player>
-        <remove>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      xp:
-        - '&7[&blevels&7] &eRemoved {levels_remove} xp from {levels_player}!'
-      level:
-        - '&7[&blevels&7] &eRemoved {levels_remove} level from {levels_player}!'
-    boosters:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels boosters give'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      give:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels boosters give <player> <global-personal>
-          <booster 0.0> <time>'
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        number:
-          - '&7[&blevels&7] &cNot a number!'
-        booster:
-          - '&7[&blevels&7] &cNot a valid booster!'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-        message:
-          - '&7[&blevels&7] &eYou have given {levels_player_target} &ea global
-          booster &6{levels_booster_global_type} &efor &6{levels_booster_global_time}'
-        target:
-          - '&7[&blevels&7] &eYou have got a global booster &6{levels_booster_global_type}
-          &efor &6{levels_booster_global_time}'
-      personal:
-        give:
-          number:
-            - '&7[&blevels&7] &cNot a number!'
-          booster:
-            - '&7[&blevels&7] &cNot a valid booster!'
-          message:
-            - '&7[&blevels&7] &eYou have given {levels_player_target} &ea personal
-            booster &6{levels_booster_personal_type} &efor &6{levels_booster_personal_time}'
-          target:
-            - '&7[&blevels&7] &eYou have got a personal booster &6{levels_booster_personal_type}
-            &efor &6{levels_booster_personal_time}'
-    gui:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels gui open'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      open:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels gui open <fileName> <player>'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-        found:
-          - '&7[&blevels&7] &cThe file {levels_gui_file} is not found'
-    player:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels player get, lose'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      get:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels player get <xpType> <player>'
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        config:
-          - '&7[&blevels&7] &cCannot find {levels_xp_type} in the xp section'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-      lose:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels player lose <xpType> <player>'
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        config:
-          - '&7[&blevels&7] &cCannot find {levels_xp_type} in the xp section'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-    actionbar:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels actionbar <player> <text>'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-    coins:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      set:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        set:
-          - '&7[&blevels&7] &e{levels_player} coins is now set to {levels_coins_amount}'
-      add:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        added:
-          - '&7[&blevels&7] &eAdded {levels_coins_amount} coins to {levels_player}'
-      remove:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        removed:
-          - '&7[&blevels&7] &eRemoved {levels_coins_amount} coins from {levels_player}'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels coins set/add/remove <player> <amount>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      '0':
-        - '&7[&blevels&7] &cThe amount must be over 0!'
-    item:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      add:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels item add <player> <item> <amount>
-              <name\nlore\nlore2>'
-        added:
-          - '&7[&blevels&7] &eAdded item to {levels_player}'
-      set:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels item set <slot> <true, false override>
-              <player> <item> <amount> <name\nlore\nlore2>'
-        set:
-          - '&7[&blevels&7] &eAdded item to {levels_player} slot {levels_slot}'
-        boolean:
-          - '&7[&blevels&7] &cYou can only use true or false!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels item add/set'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      '0':
-        - '&7[&blevels&7] &cThe amount must be over 0!'
-      found:
-        - '&7[&blevels&7] &cThat item cannot be found!'
-    wand:
-      add:
-        - '&7[&blevels&7] &aAdded &blevels Wand'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      set:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        '1':
-          - '&7[&blevels&7] &aPos 1 set to &f{levels_x} {levels_y} {levels_z}'
-        '2':
-          - '&7[&blevels&7] &aPos 2 set to &f{levels_x} {levels_y} {levels_z}'
-        clear:
-          - '&7[&blevels&7] &aCleared all pos'
-        same:
-          - '&7[&blevels&7] &cYou cannot select the same point!'
-    zone:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels zone set'
-      set:
-        permission:
-          - '&7[&blevels&7] &cYou dont have access to use this command!'
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels zone set <typeName> <zoneName>'
-        type:
-          - '&7[&blevels&7] &cThe type is not found in config.yml!'
-        name:
-          - '&7[&blevels&7] &cCannot add zone with the same name!'
-        select:
-          - '&7[&blevels&7] &cYou need to select 2 points with /levels wand'
-        set:
-          - '&7[&blevels&7] &aCreated zone &6{levels_zone} &afor &6{levels_type}'
-  pvpstats:
+      - 'levels message {player} &7[&blevels&7] &e{target} group is reset back to the default group!'
+  set:
     usage:
-      - '&7[&blevels&7] &cUsage: /pvpstats <player>'
-    you:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7[&b&lPvPStats&7]'
-        - '&7&l> &eName: &6{levels_player}'
-        - '&7&l> &eXP: &6{levels_xp}'
-        - '&7&l> &eLevel: &6{levels_level}'
-        - '&7&l> &eCoins: &6{levels_coins}'
-        - '&7&l> &eRequired XP: &6{levels_xp_required}'
-        - '&7&l> &eProgress: {levels_xp_progress_style} &6{levels_xp_progress}%'
-        - '&7&l> &eGroup: &6{levels_group}/{levels_group_to}'
-        - '&c&m---------------------------------------------'
+      - 'levels message {player} &7[&blevels&7] &cUsage: /levels group set <player> <groupName>'
+    message:
+      - 'levels message {player} &7[&blevels&7] &e{target} group is now set to {group}'
+reset:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels reset <killstreak, stats> <player>'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  found:
+    - 'levels message {player} &7[&blevels&7] &cNot found!'
+  kills:
+    reset:
+      - 'levels message {player} &7[&blevels&7] &e{target} kills is now reset.'
     target:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7[&b&lPvPStats&7]'
-        - '&7&l> &eName: &6{levels_player}'
-        - '&7&l> &eXP: &6{levels_xp}'
-        - '&7&l> &eLevel: &6{levels_level}'
-        - '&7&l> &eCoins: &6{levels_coins}'
-        - '&7&l> &eRequired XP: &6{levels_xp_required}'
-        - '&7&l> &eProgress: {levels_xp_progress_style} &6{levels_xp_progress}%'
-        - '&7&l> &eGroup: &6{levels_group}/{levels_group_to}'
-        - '&c&m---------------------------------------------'
-  pvptop:
-    xp:
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7[&b&lTop XP&7]'
-        - '&7[&a1&7] &e%levels_top_1_xp_name% &6 > &b%levels_top_1_xp%'
-        - '&7[&a2&7] &e%levels_top_2_xp_name% &6 > &b%levels_top_2_xp%'
-        - '&7[&a3&7] &e%levels_top_3_xp_name% &6 > &b%levels_top_3_xp%'
-        - '&7[&a4&7] &e%levels_top_4_xp_name% &6 > &b%levels_top_4_xp%'
-        - '&7[&a5&7] &e%levels_top_5_xp_name% &6 > &b%levels_top_5_xp%'
-        - '&c&m---------------------------------------------'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-    level:
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7[&b&lTop Level&7]'
-        - '&7[&a1&7] &e%levels_top_1_level_name% &6 > &b%levels_top_1_level%'
-        - '&7[&a2&7] &e%levels_top_2_level_name% &6 > &b%levels_top_2_level%'
-        - '&7[&a3&7] &e%levels_top_3_level_name% &6 > &b%levels_top_3_level%'
-        - '&7[&a4&7] &e%levels_top_4_level_name% &6 > &b%levels_top_4_level%'
-        - '&7[&a5&7] &e%levels_top_5_level_name% &6 > &b%levels_top_5_level%'
-        - '&c&m---------------------------------------------'
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvptop kills/deaths/xp/level/killstreak/killstreak_top'
-    permission:
-      - '&7[&blevels&7] &cYou dont have access to use this command!'
-  pvpboosters:
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvpboosters <player>'
-    online:
-      - '&7[&blevels&7] &cThe player is not online!'
-    permission:
-      - '&7[&blevels&7] &cYou dont have access to use this command!'
+      - 'levels message {target} &7[&blevels&7] &eYour kills has been reset.'
+  deaths:
+    reset:
+      - 'levels message {player} &7[&blevels&7] &e{target} deaths is now reset.'
     target:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-    commands:
-      - levels gui open boosters.yml {levels_player}
-  pvpprofile:
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvpprofile <player>'
-    online:
-      - '&7[&blevels&7] &cThe player is not online!'
-    permission:
-      - '&7[&blevels&7] &cYou dont have access to use this command!'
+      - 'levels message {target} &7[&blevels&7] &eYour deaths has been reset.'
+  xp:
+    reset:
+      - 'levels message {player} &7[&blevels&7] &e{target} xp is now reset.'
     target:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-    commands:
-      - levels gui open profile.yml {levels_player}
-  pvpadmin:
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvpadmin <player>'
-    online:
-      - '&7[&blevels&7] &cThe player is not online!'
-    permission:
-      - '&7[&blevels&7] &cYou dont have access to use this command!'
+      - 'levels message {target} &7[&blevels&7] &eYour xp has been reset.'
+  level:
+    reset:
+      - 'levels message {player} &7[&blevels&7] &e{target} level is now reset.'
     target:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-    commands:
-      - levels gui open admin.yml {levels_player}
-    deleted-commands:
-      - 'levels message {levels_player} &7[&blevels&7] &eDeleted player: {levels_target}'
-      - levels gui open admin.yml {levels_player}
-    you:
-      - '&7[&blevels&7] &cYou cannot delete your own profile!'
-  pvpshop:
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvpshop <player>'
-    online:
-      - '&7[&blevels&7] &cThe player is not online!'
-    permission:
-      - '&7[&blevels&7] &cYou dont have access to use this command!'
+      - 'levels message {target} &7[&blevels&7] &eYour level has been reset.'
+  killstreak:
+    reset:
+      - 'levels message {player} &7[&blevels&7] &e{target} killstreak is now reset.'
     target:
-      permission:
-        - '&7[&blevels&7] &cYou dont have access to use this command!'
-    commands:
-      - levels gui open shop.yml {levels_player}
+      - 'levels message {target} &7[&blevels&7] &eYour killstreak has been reset.'
+  stats:
+    usage:
+      - 'levels message {player} &7[&blevels&7] &cUsage: /levels reset stats <player> <resetGroup>'
+    reset:
+      - 'levels message {player} &7[&blevels&7] &e{target} stats is now reset.'
+    target:
+      - 'levels message {target} &7[&blevels&7] &eYour stats has been reset.'
+xp:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels xp <player> <+-amount>'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  number:
+    - 'levels message {player} &7[&blevels&7] &cNot a number!'
+  set:
+    - 'levels message {player} &7[&blevels&7] &e{target} {xp} xp'
+  target:
+    - 'levels message {target} &7[&blevels&7] &e{xp} xp'
+level:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels level <player> <+-amount>'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  number:
+    - 'levels message {player} &7[&blevels&7] &cNot a number!'
+  found:
+    - 'levels message {player} &7[&blevels&7] &cNot found in levels.yml or out of bounds.'
+  set:
+    - 'levels message {player} &7[&blevels&7] &e{target} level is set to {level}'
+  target:
+    - 'levels message {target} &7[&blevels&7] &eYour level is set to {level}'
+multiplier:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels <player> <1.8> <seconds>'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  double:
+    - 'levels message {player} &7[&blevels&7] &cNot a double!'
+  number:
+    - 'levels message {player} &7[&blevels&7] &cNot a number!'
+  got:
+    - 'levels message {player} &7[&blevels&7] &eYou have started an &6{multiplier} &emultiplier for &6{target} &b{time}'
+  target:
+    - 'levels message {target} &7[&blevels&7] &eStarted an &6{multiplier} &emultiplier for &b{time}'
+  lost:
+    - 'levels message {player} &7[&blevels&7] &cYour multiplier &6{multiplier} multiplier &chas run out'
+  join:
+    - 'levels message {player} &7[&blevels&7] &eStarted your multiplier again.'
+stats:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  online:
+    - 'levels message {player} &7[&blevels&7] &cThe player is not online!'
+  message:
+    - '&c&m---------------------------------------------'
+    - '&7[&b&lPvPStats&7]'
+    - '&eOwn stats:'
+    - '&eXP: &7> &6{xp}'
+    - '&eLevel: &7> &6{level}'
+    - '&eXP Required: &7> &6{xp_required}'
+    - '&eXP Progress: &7> &6{xp_progress}%'
+    - '&6{xp_progress_style}'
+    - '&eGroup &7> &6{level_group}'
+    - '&c&m---------------------------------------------'
+  target:
+    - '&c&m---------------------------------------------'
+    - '&7[&b&lPvPStats&7]'
+    - '&eName: {player}'
+    - '&eXP: &7> &6{xp}'
+    - '&eLevel: &7> &6{level}'
+    - '&eXP Required: &7> &6{xp_required}'
+    - '&eXP Progress: &7> &6{xp_progress}%'
+    - '&6{xp_progress_style}'
+    - '&eGroup &7> &6{level_group}'
+    - '&c&m---------------------------------------------'
+top:
+  permission:
+    - 'levels message {player} &7[&blevels&7] &cYou dont have access to use this command!'
+  usage:
+    - 'levels message {player} &7[&blevels&7] &cUsage: /levels top <kills, deaths, xp, level, killstreak, killstreak_top>'
+  xp:
+    - '&c&m---------------------------------------------'
+    - '&7[&b&lTop XP&7]'
+    - '&7[&a1&7] &e%levels_top_1_xp_name% &6 > &b%levels_top_1_xp%'
+    - '&7[&a2&7] &e%levels_top_2_xp_name% &6 > &b%levels_top_2_xp%'
+    - '&7[&a3&7] &e%levels_top_3_xp_name% &6 > &b%levels_top_3_xp%'
+    - '&7[&a4&7] &e%levels_top_4_xp_name% &6 > &b%levels_top_4_xp%'
+    - '&7[&a5&7] &e%levels_top_5_xp_name% &6 > &b%levels_top_5_xp%'
+    - '&7[&a6&7] &e%levels_top_6_xp_name% &6 > &b%levels_top_6_xp%'
+    - '&7[&a7&7] &e%levels_top_7_xp_name% &6 > &b%levels_top_7_xp%'
+    - '&7[&a8&7] &e%levels_top_8_xp_name% &6 > &b%levels_top_8_xp%'
+    - '&7[&a9&7] &e%levels_top_9_xp_name% &6 > &b%levels_top_9_xp%'
+    - '&7[&a10&7] &e%levels_top_10_xp_name% &6 > &b%levels_top_10_xp%'
+    - '&c&m---------------------------------------------'
+  level:
+    - '&c&m---------------------------------------------'
+    - '&7[&b&lTop Level&7]'
+    - '&7[&a1&7] &e%levels_top_1_level_name% &6 > &b%levels_top_1_level%'
+    - '&7[&a2&7] &e%levels_top_2_level_name% &6 > &b%levels_top_2_level%'
+    - '&7[&a3&7] &e%levels_top_3_level_name% &6 > &b%levels_top_3_level%'
+    - '&7[&a4&7] &e%levels_top_4_level_name% &6 > &b%levels_top_4_level%'
+    - '&7[&a5&7] &e%levels_top_5_level_name% &6 > &b%levels_top_5_level%'
+    - '&7[&a6&7] &e%levels_top_6_level_name% &6 > &b%levels_top_6_level%'
+    - '&7[&a7&7] &e%levels_top_7_level_name% &6 > &b%levels_top_7_level%'
+    - '&7[&a8&7] &e%levels_top_8_level_name% &6 > &b%levels_top_8_level%'
+    - '&7[&a9&7] &e%levels_top_9_level_name% &6 > &b%levels_top_9_level%'
+    - '&7[&a10&7] &e%levels_top_10_level_name% &6 > &b%levels_top_10_level%'
+    - '&c&m---------------------------------------------'
+  rating:
+    - '&c&m---------------------------------------------'
+    - '&7[&b&lTop Rating&7]'
+    - '&7[&a1&7] &e%levels_top_1_rating_name% &6 > &b%levels_top_1_rating%'
+    - '&7[&a2&7] &e%levels_top_2_rating_name% &6 > &b%levels_top_2_rating%'
+    - '&7[&a3&7] &e%levels_top_3_rating_name% &6 > &b%levels_top_3_rating%'
+    - '&7[&a4&7] &e%levels_top_4_rating_name% &6 > &b%levels_top_4_rating%'
+    - '&7[&a5&7] &e%levels_top_5_rating_name% &6 > &b%levels_top_5_rating%'
+    - '&7[&a6&7] &e%levels_top_6_rating_name% &6 > &b%levels_top_6_rating%'
+    - '&7[&a7&7] &e%levels_top_7_rating_name% &6 > &b%levels_top_7_rating%'
+    - '&7[&a8&7] &e%levels_top_8_rating_name% &6 > &b%levels_top_8_rating%'
+    - '&7[&a9&7] &e%levels_top_9_rating_name% &6 > &b%levels_top_9_rating%'
+    - '&7[&a10&7] &e%levels_top_10_rating_name% &6 > &b%levels_top_10_rating%'
+    - '&c&m---------------------------------------------'
 console:
-  levels:
-    command:
-      unknown:
-        - '&7[&blevels&7] &cUnknown sub command &f{levels_command}'
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7&l> &blevels created by &eMathiasMC'
-        - '&7&l> &bVersion: &e{levels_version}'
-        - '&7&l> &f/levels help for list of commands'
-        - '&7&l> &2Any ideas for the plugin or need help?'
-        - '&7&l> &2Contact me on spigot'
-        - '&c&m---------------------------------------------'
-    help:
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7&l> &f/levels item set <slot> <true, false override> <player> <item> <amount> <name\nlore\nlore2>'
-        - '&7&l> &f/levels item add <player> <item> <amount> <name\nlore\nlore2>'
-        - '&7&l> &f/levels set/add/remove xp/level <player> <amount>'
-        - '&7&l> &f/levels boosters give <player> <global-personal> <booster 0.0> <time>'
-        - '&7&l> &f/levels coins set/add/remove <player> <amount>'
-        - '&7&l> &f/levels gui open <fileName> <player>'
-        - '&7&l> &f/levels player get <xpType> <player>'
-        - '&7&l> &f/levels player lose <xpType> <player>'
-        - '&7&l> &f/levels actionbar <player> <text>'
-        - '&7&l> &f/pvpboosters'
-        - '&7&l> &f/pvpprofile'
-        - '&7&l> &f/pvpadmin'
-        - '&7&l> &f/pvpshop'
-        - '&7&l> &f/pvptop xp/level <player>'
-        - '&7&l> &f/pvpstats <player>'
-        - '&7&l> &f/levels generate <levels>'
-        - '&7&l> &f/levels message <player> <text>'
-        - '&7&l> &f/levels broadcast <null/permission> <text>'
-        - '&7&l> &f/levels reload'
-        - '&7&l> &f/levels save'
-        - '&7&l> &f/levels zone set <typeName> <zoneName>'
-        - '&7&l> &f/levels wand'
-        - '&c&m---------------------------------------------'
-    reload:
-      reloaded:
-        - '&7[&blevels&7] &aReloaded all configs!'
-    broadcast:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels broadcast <null/permission> <text>'
+  command:
+    unknown:
+      - '&7[&blevels&7] &cUnknown sub command &f{command}'
     message:
+      - |-
+
+        &c&m---------------------------------------------
+        &7&l> &blevels created by &eMathiasMC
+        &7&l> &bVersion: &e{version}
+        &7&l> &f/levels help for list of commands
+        &7&l> &2Any ideas for the plugin or need help?
+        &7&l> &2Contact me on spigot
+        &c&m---------------------------------------------
+  help:
+    message:
+      - '&c&m---------------------------------------------'
+      - '&7&l> &f/levels save'
+      - '&7&l> &f/levels reload'
+      - '&7&l> &f/levels broadcast <null/permission> <text>'
+      - '&7&l> &f/levels message <player> <text>'
+      - '&7&l> &f/levels actionbar <player> <seconds> <text>'
+      - '&7&l> &f/levels group set/reset <player> <groupName (set)>'
+      - '&7&l> &f/levels reset <level, stats> <resetGroup (stats)>'
+      - '&7&l> &f/levels xp/level <player> <+-amount>'
+      - '&7&l> &f/levels admin'
+      - '&7&l> &f/levels profiles'
+      - '&7&l> &f/levels stats <player>'
+      - '&7&l> &f/levels top <xp, level>'
+      - '&7&l> &f/levels multiplier <player> <1.8> <seconds>'
+      - '&c&m---------------------------------------------'
+  reload:
+    all:
+      - '&7[&blevels&7] &eReloaded all configs'
+    validator:
+      - '&7[&blevels&7] &eReloaded all configs &7(&cvalidator not passed&7)'
+  only-player:
+    - '&7[&blevels&7] &cYou can only use this command as a player!'
+  save:
+    message:
+      - '&7[&blevels&7] &aSaved cached data to the database!'
+  message:
+    usage:
+      - '&7[&blevels&7] &cUsage: /levels message <player> <text>'
+    online:
+      - '&7[&blevels&7] &cThe player is not online!'
+  broadcast:
+    usage:
+      - '&7[&blevels&7] &cUsage: /levels broadcast <null/permission> <text>'
+  actionbar:
+    usage:
+      - '&7[&blevels&7] &cUsage: /levels actionbar <player> <seconds> <text>'
+    online:
+      - '&7[&blevels&7] &cThe player is not online!'
+    number:
+      - '&7[&blevels&7] &cNot a number!'
+  group:
+    usage:
+      - '&7[&blevels&7] &cUsage: /levels group set/reset'
+    online:
+      - '&7[&blevels&7] &cThe player is not online!'
+    valid:
+      - '&7[&blevels&7] &cNot a valid group name/not found in levels.yml! [a-zA-Z]'
+    reset:
       usage:
-        - '&7[&blevels&7] &cUsage: /levels message <player> <text>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-    save:
-      saved:
-        - '&7[&blevels&7] &aSaved cached data to the database!'
+        - '&7[&blevels&7] &cUsage: /levels group reset <player>'
+      message:
+        - '&7[&blevels&7] &e{target} group is reset back to the default group!'
     set:
       usage:
-        - '&7[&blevels&7] &cUsage: /levels set kills/deaths/xp/level <player>
-        <set>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      xp:
-        - '&7[&blevels&7] &eYour xp is now changed to {levels_set}!'
-      level:
-        - '&7[&blevels&7] &eYour level is now changed to {levels_set}!'
-      xp-add-cannot:
-        - '&7[&blevels&7] &cCannot add xp higher than max level!'
-      xp-remove-cannot:
-        - '&7[&blevels&7] &cCannot remove more xp already at the lowest level and
-        xp!'
-      xp-set-cannot:
-        - '&7[&blevels&7] &cCannot set xp higher than max level!'
-      level-cannot:
-        - '&7[&blevels&7] &cCannot find that level!'
-    add:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels add kills/deaths/xp/level <player>
-        <add>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      xp:
-        - '&7[&blevels&7] &eAdded {levels_add} xp!'
-      level:
-        - '&7[&blevels&7] &eAdded {levels_add} level!'
-    remove:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels remove kills/deaths/xp/level <player>
-        <remove>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      xp:
-        - '&7[&blevels&7] &eRemoved {levels_remove} xp!'
-      level:
-        - '&7[&blevels&7] &eRemoved {levels_remove} level!'
-    generate:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels generate <levels>'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      disable:
-        - '&7[&blevels&7] &cThe generator is disabled'
+        - '&7[&blevels&7] &cUsage: /levels group set <player> <groupName>'
       message:
-        - '&7[&blevels&7] &eGenerated {levels_levels} levels!'
-    boosters:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels boosters give'
-      give:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels boosters give <player> <global-personal>
-          <booster 0.0> <time>'
-        number:
-          - '&7[&blevels&7] &cNot a number!'
-        booster:
-          - '&7[&blevels&7] &cNot a valid booster!'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-        target:
-          - '&7[&blevels&7] &eYou have got a global booster &6{levels_booster_global_type}
-          &efor &6{levels_booster_global_time}'
-      personal:
-        give:
-          number:
-            - '&7[&blevels&7] &cNot a number!'
-          booster:
-            - '&7[&blevels&7] &cNot a valid booster!'
-          target:
-            - '&7[&blevels&7] &eYou have got a personal booster &6{levels_booster_personal_type}
-            &efor &6{levels_booster_personal_time}'
-    gui:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels gui open'
-      open:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels gui open <fileName> <player>'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-        found:
-          - '&7[&blevels&7] &cThe file {levels_gui_file} is not found'
-    player:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels player get, lose'
-      get:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels player get <xpType> <player>'
-        config:
-          - '&7[&blevels&7] &cCannot find {levels_xp_type} in the xp section'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-      lose:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels player lose <xpType> <player>'
-        config:
-          - '&7[&blevels&7] &cCannot find {levels_xp_type} in the xp section'
-        online:
-          - '&7[&blevels&7] &cThe player is not online!'
-    actionbar:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels actionbar <player> <text>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-    coins:
-      set:
-        - '&7[&blevels&7] &eYour coins is now set to {levels_coins_amount}'
-      added:
-        - '&7[&blevels&7] &eAdded {levels_coins_amount} coins!'
-      removed:
-        - '&7[&blevels&7] &eRemoved {levels_coins_amount} coins!'
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels coins set/add/remove <player> <amount>'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      '0':
-        - '&7[&blevels&7] &cThe amount must be over 0!'
-    item:
-      usage:
-        - '&7[&blevels&7] &cUsage: /levels item add/set'
-      add:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels item add <player> <item> <amount>
-              <name\nlore\nlore2>'
-        added:
-          - '&7[&blevels&7] &eYou have got an item!'
-      set:
-        usage:
-          - '&7[&blevels&7] &cUsage: /levels item set <slot> <true, false override>
-              <player> <item> <amount> <name\nlore\nlore2>'
-        set:
-          - '&7[&blevels&7] &eYou have got an item in your slot {levels_slot}'
-        boolean:
-          - '&7[&blevels&7] &cYou can only use true or false!'
-      online:
-        - '&7[&blevels&7] &cThe player is not online!'
-      number:
-        - '&7[&blevels&7] &cNot a number!'
-      '0':
-        - '&7[&blevels&7] &cThe amount must be over 0!'
-      found:
-        - '&7[&blevels&7] &cThat item cannot be found!'
-    wand:
-      - '&7[&blevels&7] &cOnly the player can use this command'
-    zone:
-      - '&7[&blevels&7] &cOnly the player can use this command'
-  pvpstats:
+        - '&7[&blevels&7] &e{target} group is now set to {group}'
+  reset:
     usage:
-      - '&7[&blevels&7] &cUsage: /pvpstats <player>'
+      - '&7[&blevels&7] &cUsage: /levels reset <killstreak, stats> <player>'
     online:
       - '&7[&blevels&7] &cThe player is not online!'
-    message:
-      - '&c&m---------------------------------------------'
-      - '&7[&b&lPvPStats&7]'
-      - '&7&l> &eName: &6{levels_player}'
-      - '&7&l> &eXP: &6{levels_xp}'
-      - '&7&l> &eLevel: &6{levels_level}'
-      - '&7&l> &eCoins: &6{levels_coins}'
-      - '&7&l> &eRequired XP: &6{levels_xp_required}'
-      - '&7&l> &eProgress: {levels_xp_progress_style} &6{levels_xp_progress}%'
-      - '&7&l> &eGroup: &6{levels_group}/{levels_group_to}'
-      - '&c&m---------------------------------------------'
-  pvptop:
+    found:
+      - '&7[&blevels&7] &cNot found!'
     xp:
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7[&b&lTop XP&7]'
-        - '&7[&a1&7] &e%levels_top_1_xp_name% &6 > &b%levels_top_1_xp%'
-        - '&7[&a2&7] &e%levels_top_2_xp_name% &6 > &b%levels_top_2_xp%'
-        - '&7[&a3&7] &e%levels_top_3_xp_name% &6 > &b%levels_top_3_xp%'
-        - '&7[&a4&7] &e%levels_top_4_xp_name% &6 > &b%levels_top_4_xp%'
-        - '&7[&a5&7] &e%levels_top_5_xp_name% &6 > &b%levels_top_5_xp%'
-        - '&c&m---------------------------------------------'
+      reset:
+        - '&7[&blevels&7] &e{target} xp is now reset.'
     level:
-      message:
-        - '&c&m---------------------------------------------'
-        - '&7[&b&lTop Level&7]'
-        - '&7[&a1&7] &e%levels_top_1_level_name% &6 > &b%levels_top_1_level%'
-        - '&7[&a2&7] &e%levels_top_2_level_name% &6 > &b%levels_top_2_level%'
-        - '&7[&a3&7] &e%levels_top_3_level_name% &6 > &b%levels_top_3_level%'
-        - '&7[&a4&7] &e%levels_top_4_level_name% &6 > &b%levels_top_4_level%'
-        - '&7[&a5&7] &e%levels_top_5_level_name% &6 > &b%levels_top_5_level%'
-        - '&c&m---------------------------------------------'
+      reset:
+        - '&7[&blevels&7] &e{target} level is now reset.'
+    stats:
+      usage:
+        - '&7[&blevels&7] &cUsage: /levels reset stats <player> <resetGroup>'
+      reset:
+        - '&7[&blevels&7] &e{target} stats is now reset.'
+  xp:
     usage:
-      - '&7[&blevels&7] &cUsage: /pvptop kills/deaths/xp/level/killstreak/killstreak_top <player>'
+      - '&7[&blevels&7] &cUsage: /levels xp <player> <+-amount>'
     online:
       - '&7[&blevels&7] &cThe player is not online!'
-  pvpboosters:
+    number:
+      - '&7[&blevels&7] &cNot a number!'
+    set:
+      - '&7[&blevels&7] &e{target} {xp} xp'
+  level:
     usage:
-      - '&7[&blevels&7] &cUsage: /pvpboosters <player>'
+      - '&7[&blevels&7] &cUsage: /levels level <player> <+-amount>'
     online:
       - '&7[&blevels&7] &cThe player is not online!'
-    commands:
-      - levels gui open boosters.yml {levels_player}
-  pvpprofile:
+    number:
+      - '&7[&blevels&7] &cNot a number!'
+    found:
+      - '&7[&blevels&7] &cNot found in levels.yml or out of bounds.'
+    set:
+      - '&7[&blevels&7] &e{target} level is set to {level}'
+  multiplier:
     usage:
-      - '&7[&blevels&7] &cUsage: /pvpprofile <player>'
+      - '&7[&blevels&7] &cUsage: /levels <player> <1.8> <seconds>'
     online:
       - '&7[&blevels&7] &cThe player is not online!'
-    commands:
-      - levels gui open profile.yml {levels_player}
-  pvpadmin:
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvpadmin <player>'
-    online:
-      - '&7[&blevels&7] &cThe player is not online!'
-    commands:
-      - levels gui open admin.yml {levels_player}
-  pvpshop:
-    usage:
-      - '&7[&blevels&7] &cUsage: /pvpshop <player>'
-    online:
-      - '&7[&blevels&7] &cThe player is not online!'
-    commands:
-      - levels gui open shop.yml {levels_player}
+    double:
+      - '&7[&blevels&7] &cNot a double!'
+    number:
+      - '&7[&blevels&7] &cNot a number!'
+    got:
+      - '&7[&blevels&7] &eStarted an &6{multiplier} &emultiplier for &6{target} &b{time}'

@@ -1,10 +1,16 @@
 package com.grassminevn.levels.placeholders;
 
 import com.grassminevn.levels.Levels;
+import com.grassminevn.levels.data.PlayerConnect;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.UUID;
+
 public class PlaceholderAPI extends PlaceholderExpansion {
+
     private final Levels plugin;
 
     public PlaceholderAPI(final Levels plugin){
@@ -28,7 +34,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier(){
-        return "levels";
+        return "pvplevels";
     }
 
     @Override
@@ -41,68 +47,193 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         if(player == null){
             return "";
         }
+        final UUID uuid = player.getUniqueId();
+        final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         if(identifier.equals("xp")){
-            return String.valueOf(plugin.get(player.getUniqueId().toString()).xp());
+            return String.valueOf(playerConnect.getXp());
         }
         if(identifier.equals("level")){
-            return String.valueOf(plugin.get(player.getUniqueId().toString()).level());
+            return String.valueOf(playerConnect.getLevel());
         }
-        if (identifier.equals("coins")) {
-            return String.valueOf(plugin.get(player.getUniqueId().toString()).coins());
+        if(identifier.equals("level_next")){
+            return String.valueOf(playerConnect.getLevel() + 1);
+        }
+        if (identifier.equals("xp_need")) {
+            return String.valueOf(plugin.statsManager.xp_need(playerConnect));
         }
         if(identifier.equals("xp_required")){
-            return String.valueOf(plugin.statsManager.xp_required(player.getUniqueId().toString(), false));
+            return String.valueOf(plugin.statsManager.xp_required(playerConnect, false));
         }
         if(identifier.equals("xp_required_next")){
-            return String.valueOf(plugin.statsManager.xp_required(player.getUniqueId().toString(), true));
+            return String.valueOf(plugin.statsManager.xp_required(playerConnect, true));
         }
         if(identifier.equals("xp_progress")){
-            return String.valueOf(plugin.statsManager.xp_progress(player.getUniqueId().toString()));
+            return String.valueOf(plugin.statsManager.xp_progress(playerConnect));
         }
         if(identifier.equals("xp_progress_style")){
-            return String.valueOf(plugin.statsManager.xp_progress_style(player.getUniqueId().toString()));
+            return String.valueOf(plugin.statsManager.xp_progress_style(playerConnect, "xp-progress-style"));
         }
-        if(identifier.equals("group")){
-            return String.valueOf(plugin.statsManager.group(player));
+        if(identifier.equals("xp_progress_style_2")){
+            return String.valueOf(plugin.statsManager.xp_progress_style(playerConnect, "xp-progress-style-2"));
         }
-        if(identifier.equals("group_to")){
-            return String.valueOf(plugin.statsManager.group_to(player));
+        if(identifier.equals("time")){
+            return String.valueOf(plugin.statsManager.time("time", playerConnect.getTime().getTime()));
         }
-        if(identifier.equals("prefix")){
-            return String.valueOf(plugin.statsManager.prefix(player));
+        if(identifier.equals("date")){
+            return String.valueOf(plugin.statsManager.time("date", playerConnect.getTime().getTime()));
         }
-        if(identifier.equals("global_booster")){
-            return plugin.boostersManager.getGlobalPlaceholder();
+        if(identifier.equals("group")) {
+            return playerConnect.getGroup();
         }
-        if(identifier.equals("global_booster_name")){
-            return plugin.boostersManager.getGlobalNamePlaceholder();
+        if(identifier.equals("level_group")) {
+            return plugin.statsManager.group(playerConnect);
         }
-        if(identifier.equals("global_booster_time")){
-            return plugin.boostersManager.getGlobalTimePlaceholder();
+        if(identifier.equals("level_prefix")) {
+            return plugin.statsManager.prefix(playerConnect);
         }
-        if(identifier.equals("global_booster_time_left")){
-            return plugin.boostersManager.getGlobalTimeLeftPlaceholder();
+        if(identifier.equals("level_suffix")) {
+            return plugin.statsManager.suffix(playerConnect);
         }
-        if(identifier.equals("global_booster_time_prefix")){
-            return plugin.boostersManager.getGlobalTimePrefixPlaceholder();
+        if(identifier.equals("multiplier")) {
+            if (playerConnect.getMultiplier() != 0D) {
+                return String.valueOf(playerConnect.getMultiplier());
+            } else {
+                return String.valueOf(1);
+            }
         }
-        if(identifier.equals("global_booster_time_left_prefix")){
-            return plugin.boostersManager.getGlobalTimeLeftPrefixPlaceholder();
+        if(identifier.equals("multiplier_time")) {
+            if (playerConnect.getMultiplier_time() != 0D) {
+                return plugin.statsManager.time("multiplier", (new GregorianCalendar(0, Calendar.JANUARY,0,0,0, playerConnect.getMultiplier_time()).getTime().getTime()));
+            } else {
+                return String.valueOf(0);
+            }
         }
-        if(identifier.equals("personal_booster")){
-            return plugin.boostersManager.getPersonalPlaceholder(player.getUniqueId().toString());
+        if(identifier.equals("multiplier_time_left")) {
+            if (playerConnect.getMultiplier_time() != 0D) {
+                return plugin.statsManager.time("multiplier", (new GregorianCalendar(0, Calendar.JANUARY,0,0,0, playerConnect.getMultiplier_time_left()).getTime().getTime()));
+            } else {
+                return String.valueOf(0);
+            }
         }
-        if(identifier.equals("personal_booster_time")){
-            return plugin.boostersManager.getPersonalTimePlaceholder(player.getUniqueId().toString());
+        if(identifier.equals("top_1_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 0, true, true);
         }
-        if(identifier.equals("personal_booster_time_left")){
-            return plugin.boostersManager.getPersonalTimeLeftPlaceholder(player.getUniqueId().toString());
+        if(identifier.equals("top_1_kills")){
+            return plugin.statsManager.getTopValue("kills", 0, false, true);
         }
-        if(identifier.equals("personal_booster_time_prefix")){
-            return plugin.boostersManager.getPersonalTimePrefixPlaceholder(player.getUniqueId().toString());
+        if(identifier.equals("top_2_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 1, true, true);
         }
-        if(identifier.equals("personal_booster_time_left_prefix")){
-            return plugin.boostersManager.getPersonalTimeLeftPrefixPlaceholder(player.getUniqueId().toString());
+        if(identifier.equals("top_2_kills")){
+            return plugin.statsManager.getTopValue("kills", 1, false, true);
+        }
+        if(identifier.equals("top_3_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 2, true, true);
+        }
+        if(identifier.equals("top_3_kills")){
+            return plugin.statsManager.getTopValue("kills", 2, false, true);
+        }
+        if(identifier.equals("top_4_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 3, true, true);
+        }
+        if(identifier.equals("top_4_kills")){
+            return plugin.statsManager.getTopValue("kills", 3, false, true);
+        }
+        if(identifier.equals("top_5_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 4, true, true);
+        }
+        if(identifier.equals("top_5_kills")){
+            return plugin.statsManager.getTopValue("kills", 4, false, true);
+        }
+        if(identifier.equals("top_6_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 5, true, true);
+        }
+        if(identifier.equals("top_6_kills")){
+            return plugin.statsManager.getTopValue("kills", 5, false, true);
+        }
+        if(identifier.equals("top_7_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 6, true, true);
+        }
+        if(identifier.equals("top_7_kills")){
+            return plugin.statsManager.getTopValue("kills", 6, false, true);
+        }
+        if(identifier.equals("top_8_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 7, true, true);
+        }
+        if(identifier.equals("top_8_kills")){
+            return plugin.statsManager.getTopValue("kills", 7, false, true);
+        }
+        if(identifier.equals("top_9_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 8, true, true);
+        }
+        if(identifier.equals("top_9_kills")){
+            return plugin.statsManager.getTopValue("kills", 8, false, true);
+        }
+        if(identifier.equals("top_10_kills_name")){
+            return plugin.statsManager.getTopValue("kills", 9, true, true);
+        }
+        if(identifier.equals("top_10_kills")){
+            return plugin.statsManager.getTopValue("kills", 9, false, true);
+        }
+        if(identifier.equals("top_1_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 0, true, true);
+        }
+        if(identifier.equals("top_1_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 0, false, true);
+        }
+        if(identifier.equals("top_2_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 1, true, true);
+        }
+        if(identifier.equals("top_2_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 1, false, true);
+        }
+        if(identifier.equals("top_3_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 2, true, true);
+        }
+        if(identifier.equals("top_3_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 2, false, true);
+        }
+        if(identifier.equals("top_4_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 3, true, true);
+        }
+        if(identifier.equals("top_4_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 3, false, true);
+        }
+        if(identifier.equals("top_5_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 4, true, true);
+        }
+        if(identifier.equals("top_5_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 4, false, true);
+        }
+        if(identifier.equals("top_6_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 5, true, true);
+        }
+        if(identifier.equals("top_6_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 5, false, true);
+        }
+        if(identifier.equals("top_7_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 6, true, true);
+        }
+        if(identifier.equals("top_7_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 6, false, true);
+        }
+        if(identifier.equals("top_8_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 7, true, true);
+        }
+        if(identifier.equals("top_8_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 7, false, true);
+        }
+        if(identifier.equals("top_9_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 8, true, true);
+        }
+        if(identifier.equals("top_9_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 8, false, true);
+        }
+        if(identifier.equals("top_10_deaths_name")){
+            return plugin.statsManager.getTopValue("deaths", 9, true, true);
+        }
+        if(identifier.equals("top_10_deaths")){
+            return plugin.statsManager.getTopValue("deaths", 9, false, true);
         }
         if(identifier.equals("top_1_xp_name")){
             return plugin.statsManager.getTopValue("xp", 0, true, true);
@@ -223,6 +354,66 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         }
         if(identifier.equals("top_10_level")){
             return plugin.statsManager.getTopValue("level", 9, false, true);
+        }
+        if(identifier.equals("top_1_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 0, true, true);
+        }
+        if(identifier.equals("top_1_rating")){
+            return plugin.statsManager.getTopValue("rating", 0, false, true);
+        }
+        if(identifier.equals("top_2_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 1, true, true);
+        }
+        if(identifier.equals("top_2_rating")){
+            return plugin.statsManager.getTopValue("rating", 1, false, true);
+        }
+        if(identifier.equals("top_3_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 2, true, true);
+        }
+        if(identifier.equals("top_3_rating")){
+            return plugin.statsManager.getTopValue("rating", 2, false, true);
+        }
+        if(identifier.equals("top_4_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 3, true, true);
+        }
+        if(identifier.equals("top_4_rating")){
+            return plugin.statsManager.getTopValue("rating", 3, false, true);
+        }
+        if(identifier.equals("top_5_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 4, true, true);
+        }
+        if(identifier.equals("top_5_rating")){
+            return plugin.statsManager.getTopValue("rating", 4, false, true);
+        }
+        if(identifier.equals("top_6_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 5, true, true);
+        }
+        if(identifier.equals("top_6_rating")){
+            return plugin.statsManager.getTopValue("rating", 5, false, true);
+        }
+        if(identifier.equals("top_7_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 6, true, true);
+        }
+        if(identifier.equals("top_7_rating")){
+            return plugin.statsManager.getTopValue("rating", 6, false, true);
+        }
+        if(identifier.equals("top_8_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 7, true, true);
+        }
+        if(identifier.equals("top_8_rating")){
+            return plugin.statsManager.getTopValue("rating", 7, false, true);
+        }
+        if(identifier.equals("top_9_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 8, true, true);
+        }
+        if(identifier.equals("top_9_rating")){
+            return plugin.statsManager.getTopValue("rating", 8, false, true);
+        }
+        if(identifier.equals("top_10_rating_name")){
+            return plugin.statsManager.getTopValue("rating", 9, true, true);
+        }
+        if(identifier.equals("top_10_rating")){
+            return plugin.statsManager.getTopValue("rating", 9, false, true);
         }
         return null;
     }

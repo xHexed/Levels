@@ -1,33 +1,28 @@
 package com.grassminevn.levels.data;
 
 import com.grassminevn.levels.Levels;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class Database {
     private final Levels plugin;
     private Connection connection;
-    private final boolean debug_database;
 
     public Database(final Levels plugin) {
         this.plugin = plugin;
-        debug_database = plugin.config.get.getBoolean("debug.database");
         (new BukkitRunnable() {
             @Override
             public void run() {
                 try {
                     if (connection != null && !connection.isClosed()) {
                         connection.createStatement().execute("SELECT 1");
-                        if (debug_database) { plugin.textUtils.debug("[Database] connection is still valid"); }
                     }
                 } catch (final SQLException e) {
                     connection = get();
-                    if (debug_database) { plugin.textUtils.debug("[Database] connection is not valid creating new"); }
                 }
             }
         }).runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
@@ -36,12 +31,12 @@ public class Database {
     private Connection get() {
         try {
             if (plugin.config.get.getBoolean("mysql.use")) {
+                plugin.textUtils.info("Database ( Connected ) ( MySQL )");
                 Class.forName("com.mysql.jdbc.Driver");
-                if (debug_database) { plugin.textUtils.debug("[Database] Getting connection (MySQL)"); }
                 return DriverManager.getConnection("jdbc:mysql://" + plugin.config.get.getString("mysql.host") + ":" + plugin.config.get.getString("mysql.port") + "/" + plugin.config.get.getString("mysql.database"), plugin.config.get.getString("mysql.username"), plugin.config.get.getString("mysql.password"));
             } else {
+                plugin.textUtils.info("Database ( Connected ) ( SQLite )");
                 Class.forName("org.sqlite.JDBC");
-                if (debug_database) { plugin.textUtils.debug("[Database] Getting connection (SQLite)"); }
                 return DriverManager.getConnection("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
             }
         } catch (final ClassNotFoundException | SQLException e) {
@@ -53,7 +48,6 @@ public class Database {
     public void close() throws SQLException {
         if (connection != null) {
             connection.close();
-            if (debug_database) { plugin.textUtils.debug("[Database] Closing connection"); }
         }
     }
 
@@ -63,8 +57,7 @@ public class Database {
             if (connection == null || connection.isClosed()) {
                 return false;
             }
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels` (`uuid` varchar(255) PRIMARY KEY, `name` varchar(255), `xp` bigint(255), `level` bigint(255), `coins` bigint(255));");
-            if (debug_database) { plugin.textUtils.debug("[Database] Creating table if not exists"); }
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint(255), `level` bigint(255), `rating` double, `multiplier` text(255), `lastseen` DATETIME);");
         }
         return true;
     }
@@ -73,11 +66,12 @@ public class Database {
         try {
             return check();
         } catch (final SQLException e) {
+            plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
             return false;
         }
     }
 
-    public void insert(final String uuid, final String name) {
+    public void insert(final UUID uuid) {
         if (set()) {
             final BukkitRunnable r = new BukkitRunnable() {
                 @Override
@@ -87,14 +81,15 @@ public class Database {
                     try {
                         resultSet = connection.createStatement().executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
                         if (!resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("INSERT INTO levels (uuid, name, xp, level, coins) VALUES(?, ?, ?, ?, ?);");
-                            preparedStatement.setString(1, uuid);
-                            preparedStatement.setString(2, name);
+                            preparedStatement = connection.prepareStatement("INSERT INTO levels (uuid, group, xp, level, rating, multiplier, lastseen) VALUES(?, ?, ?, ?, ?, ?, ?);");
+                            preparedStatement.setString(1, uuid.toString());
+                            preparedStatement.setString(2, "default");
                             preparedStatement.setLong(3, 0L);
-                            preparedStatement.setLong(4, 0L);
-                            preparedStatement.setLong(5, 0L);
+                            preparedStatement.setLong(4, plugin.config.get.getLong("start-level"));
+                            preparedStatement.setDouble(5, 0);
+                            preparedStatement.setString(6, "0.0 0 0");
+                            preparedStatement.setTimestamp(7, new Timestamp(new Date().getTime()));
                             preparedStatement.executeUpdate();
-                            if (debug_database) { plugin.textUtils.debug("[Database] Inserting default values for UUID: " + uuid); }
                         }
                     } catch (final SQLException exception) {
                         plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
@@ -118,7 +113,7 @@ public class Database {
         }
     }
 
-    public void delete(final String uuid) {
+    public void delete(final UUID uuid) {
         if (set()) {
             final BukkitRunnable r = new BukkitRunnable() {
                 public void run() {
@@ -128,10 +123,9 @@ public class Database {
                         resultSet = connection.createStatement().executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
                         if (resultSet.next()) {
                             preparedStatement = connection.prepareStatement("DELETE FROM levels WHERE uuid = ?");
-                            preparedStatement.setString(1, uuid);
+                            preparedStatement.setString(1, uuid.toString());
                             preparedStatement.executeUpdate();
-                            plugin.unload(uuid);
-                            if (debug_database) { plugin.textUtils.debug("[Database] Deleting player: " + uuid); }
+                            plugin.unloadPlayerConnect(uuid);
                         }
                     } catch (final SQLException exception) {
                         plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
@@ -154,58 +148,62 @@ public class Database {
             r.runTaskAsynchronously(plugin);
         }
     }
-    
-    public void setVaules(final String uuid, final String name, final Long xp, final Long level, final Long coins) {
-        if (!set()) return;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            resultSet = connection.createStatement().executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
-            if (resultSet.next()) {
-                preparedStatement = connection.prepareStatement("UPDATE levels SET name = ?, xp = ?, level = ?, coins = ? WHERE uuid = ?");
-                preparedStatement.setString(1, name);
-                preparedStatement.setLong(2, xp);
-                preparedStatement.setLong(3, level);
-                preparedStatement.setLong(4, coins);
-                preparedStatement.setString(5, uuid);
-                preparedStatement.executeUpdate();
-                if (debug_database) { plugin.textUtils.debug("[Database] Updating values for UUID: " + uuid); }
+
+    public void setValuesSync(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final String multiplier, final Timestamp timestamp) {
+        if (set()) {
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            try {
+                resultSet = connection.createStatement().executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
+                if (resultSet.next()) {
+                    preparedStatement = connection.prepareStatement("UPDATE levels SET group = ?, xp = ?, level = ?, rating = ?, multiplier = ?, lastseen = ? WHERE uuid = ?");
+                    preparedStatement.setString(1, group);
+                    preparedStatement.setLong(2, xp);
+                    preparedStatement.setLong(3, level);
+                    preparedStatement.setDouble(4, rating);
+                    preparedStatement.setString(5, multiplier);
+                    preparedStatement.setTimestamp(6, timestamp);
+                    preparedStatement.setString(7, uuid.toString());
+                    preparedStatement.executeUpdate();
+                }
+            } catch (final SQLException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            } finally {
+                if (resultSet != null)
+                    try {
+                        resultSet.close();
+                    } catch (final SQLException exception) {
+                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                    }
+                if (preparedStatement != null)
+                    try {
+                        preparedStatement.close();
+                    } catch (final SQLException exception) {
+                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                    }
             }
-        } catch (final SQLException exception) {
-            plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-        } finally {
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                } catch (final SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                }
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                } catch (final SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                }
         }
     }
 
-    public void setValuesAsync(final String uuid, final String name, final Long xp, final Long level, final Long coins) {
-        new BukkitRunnable() {
-            public void run() {
-                setVaules(uuid, name, xp, level, coins);
-            }
-        }.runTaskAsynchronously(plugin);
+    public void setValues(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final String multiplier, final Timestamp timestamp) {
+        if (set()) {
+            final BukkitRunnable r = new BukkitRunnable() {
+                public void run() {
+                    setValuesSync(uuid, group, xp, level, rating, multiplier, timestamp);
+                }
+            };
+            r.runTaskAsynchronously(plugin);
+        }
     }
 
-    public String[] getValues(final String uuid) {
+    public String[] getValues(final UUID uuid) {
         Statement statement = null;
         ResultSet resultSet = null;
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
             if (resultSet.next()) {
-                if (debug_database) { plugin.textUtils.debug("[Database] Getting values for UUID: " + uuid); }
-                return new String[]{ resultSet.getString("name"), String.valueOf(resultSet.getLong("xp")), String.valueOf(resultSet.getLong("level")), String.valueOf(resultSet.getLong("coins")) };
+                return new String[]{ resultSet.getString("group"), String.valueOf(resultSet.getLong("xp")), String.valueOf(resultSet.getLong("level")), String.valueOf(resultSet.getLong("rating")), resultSet.getString("multiplier"), String.valueOf(resultSet.getTimestamp("lastseen")) };
             }
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
@@ -223,59 +221,6 @@ public class Database {
                     plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
                 }
         }
-        return new String[] { "", String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(new Timestamp(new Date().getTime())) };
-    }
-
-    private ArrayList<String> getUUIDList() {
-        if (set()) {
-            final ArrayList<String> array = new ArrayList<>();
-            Statement statement = null;
-            ResultSet resultSet = null;
-            try {
-                statement = connection.createStatement();
-                resultSet = statement.executeQuery("SELECT * FROM levels");
-                while (resultSet.next()) {
-                    array.add(resultSet.getString("uuid"));
-                }
-            } catch (final SQLException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-            } finally {
-                if (resultSet != null)
-                    try {
-                        resultSet.close();
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    }
-                if (statement != null)
-                    try {
-                        statement.close();
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    }
-            }
-            if (debug_database) { plugin.textUtils.debug("[Database] Getting list of UUID in the table"); }
-            return array;
-        }
-        return new ArrayList<>();
-    }
-
-    public void loadOnline() {
-        if (!plugin.getServer().getOnlinePlayers().isEmpty() && set()) {
-            for (final Player player : plugin.getServer().getOnlinePlayers()) {
-                if (!plugin.list().contains(player.getUniqueId().toString()))
-                    plugin.load(player.getUniqueId().toString());
-            }
-        }
-        if (debug_database) { plugin.textUtils.debug("[Database] Loading all online players into cache"); }
-    }
-
-    public void loadAll() {
-        if (set()) {
-            for (final String list : getUUIDList()) {
-                if (!plugin.list().contains(list))
-                    plugin.load(list);
-            }
-        }
-        if (debug_database) { plugin.textUtils.debug("[Database] Loading all players into cache"); }
+        return new String[] { "default", String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(plugin.config.get.getLong("start-level")), String.valueOf(0L), String.valueOf(0L), "0.0 0 0", String.valueOf(new Timestamp(new Date().getTime())) };
     }
 }

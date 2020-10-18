@@ -1,0 +1,60 @@
+settings:
+  name: '&f&lAll Profiles &7(&cAdmin&7)'
+  size: 54
+  perpage: 36
+  player:
+    NAME: '&6{player}'
+    LORES:
+      - '&eXP: &7> &6{xp}'
+      - '&eLevel: &7> &6{level}'
+      - '&eXP Required: &7> &6{xp_required}'
+      - '&eXP Progress: &7> &6{xp_progress}%'
+      - '&6{xp_progress_style}'
+      - '&eGroup &7> &6{group}'
+      - '&eLast Seen: &7> &6{date} {time}'
+      - '&eID: [{uuid}]'
+      - '&eShift + RMB to delete &7(&ccannot undo this&7)'
+    MATERIAL: '397:0'
+    AMOUNT: 1
+45:
+  NAME: '&bGo Back'
+  LORES: []
+  MATERIAL: '280:0'
+  AMOUNT: 1
+  OPTIONS:
+    - BACK
+53:
+  NAME: '&bNext Page'
+  LORES: []
+  MATERIAL: '280:0'
+  AMOUNT: 1
+  OPTIONS:
+    - NEXT
+2:
+  NAME: '&f&lSort &7&l- &b&lXP'
+  LORES: []
+  MATERIAL: '384:0'
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_XP
+3:
+  NAME: '&f&lSort &7&l- &b&lLevel'
+  LORES: []
+  MATERIAL: '122:0'
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_LEVEL
+8:
+  NAME: '&f&lSort &7&l- &b&lLast Seen'
+  LORES: []
+  MATERIAL: '347:0'
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_LASTSEEN
+49:
+  NAME: '&f&lSort &7&l- &b&lReverse order'
+  LORES: []
+  MATERIAL: '340:0'
+  AMOUNT: 1
+  OPTIONS:
+    - SORT_REVERSE

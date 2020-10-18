@@ -15,7 +15,7 @@ public class TextUtils {
 
     public TextUtils(final Levels plugin) {
         this.plugin = plugin;
-        prefix      = plugin.getDescription().getName();
+        prefix = plugin.getDescription().getName();
     }
 
     public void info(final String text) {
@@ -28,10 +28,6 @@ public class TextUtils {
 
     public void error(final String text) {
         logger.severe("[" + prefix + "] " + text);
-    }
-
-    public void debug(final String text) {
-        logger.warning("[" + prefix + "] [DEBUG] " + text);
     }
 
     public void exception(final StackTraceElement[] stackTraceElement, final String text) {

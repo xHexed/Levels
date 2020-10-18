@@ -7,20 +7,77 @@ softdepend: [PlaceholderAPI]
 api-version: "1.13"
 commands:
   levels:
-    description: levels main command
-    aliases: [l, level]
-  stats:
-    description: See stats
-    aliases: [s, stat]
-  top:
-    description: See top stats
-    aliases: [leveltop, ltop]
-  boosters:
-    description: See boosters
-    aliases: [b, booster, boost]
-  profile:
-    description: See profile
-  admin:
-    description: See admin
-  shop:
-    description: See shop
+    description: "levels main command"
+    aliases: ["lvl"]
+permissions:
+  levels.*:
+    description: "Access to use all levels commands"
+    children:
+      levels.player.*: true
+      levels.admin.*: true
+  levels.player.*:
+    description: "Access to use all player commands"
+    children:
+      levels.player.help: true
+      levels.player.profiles: true
+      levels.player.stats: true
+      levels.player.top: true
+  levels.admin.*:
+    description: "Access to use all admin commands"
+    children:
+      levels.admin.reload: true
+      levels.admin.broadcast: true
+      levels.admin.message: true
+      levels.admin.actionbar: true
+      levels.admin.save: true
+      levels.admin.admin: true
+      levels.admin.group: true
+      levels.admin.reset: true
+      levels.admin.xp: true
+      levels.admin.level: true
+      levels.admin.multiplier: true
+  levels.player.help:
+    default: "op"
+    description: "Access to use help"
+  levels.player.profiles:
+    default: "op"
+    description: "Access to use profiles gui"
+  levels.player.stats:
+    default: "op"
+    description: "Access to see stats"
+  levels.player.top:
+    default: "op"
+    description: "Access to see top"
+  levels.admin.reload:
+    default: "op"
+    description: "Access to use reload"
+  levels.admin.broadcast:
+    default: "op"
+    description: "Access to use broadcast"
+  levels.admin.message:
+    default: "op"
+    description: "Access to use message"
+  levels.admin.actionbar:
+    default: "op"
+    description: "Access to use actionbar"
+  levels.admin.save:
+    default: "op"
+    description: "Access to use save"
+  levels.admin.admin:
+    default: "op"
+    description: "Access to use admin gui"
+  levels.admin.group:
+    default: "op"
+    description: "Access to use group"
+  levels.admin.reset:
+    default: "op"
+    description: "Access to use reset"
+  levels.admin.xp:
+    default: "op"
+    description: "Access to use xp"
+  levels.admin.level:
+    default: "op"
+    description: "Access to use level"
+  levels.admin.multiplier:
+    default: "op"
+    description: "Access to use multiplier"

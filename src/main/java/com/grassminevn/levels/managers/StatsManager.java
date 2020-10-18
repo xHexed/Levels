@@ -4,9 +4,9 @@ import com.google.common.base.Strings;
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
-import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class StatsManager {
@@ -17,107 +17,116 @@ public class StatsManager {
         this.plugin = plugin;
     }
 
-    public Long xp_required(final String uuid, final boolean next) {
-        final PlayerConnect playerConnect = plugin.get(uuid);
+    public Long xp_required(final PlayerConnect playerConnect, final boolean next) {
         final Long level;
         if (!next) {
-            level = playerConnect.level();
+            level = playerConnect.getLevel();
         } else {
-            level = playerConnect.level() + 1;
+            level = playerConnect.getLevel() + 1;
         }
-        if (plugin.levels.get.getConfigurationSection("levels").getKeys(false).size() > level) {
-            return plugin.levels.get.getLong("levels." + (level + 1) + ".xp");
+        final String group = playerConnect.getGroup();
+        if (plugin.levels.get.getConfigurationSection(group).getKeys(false).size() > level) {
+            return plugin.levels.get.getLong(group + "." + (level + 1) + ".xp");
         }
         return 0L;
     }
 
-    public String xp_progress(final String uuid) {
-        final PlayerConnect playerConnect = plugin.get(uuid);
-        Long currentXP = plugin.levels.get.getLong("levels." + playerConnect.level() + ".xp");
-        if (plugin.config.get.getBoolean("levelup.xp-clear")) {
-            currentXP = 0L;
+    public Long xp_need(final PlayerConnect playerConnect) {
+        return plugin.levels.get.getLong(playerConnect.getGroup() + "." + (playerConnect.getLevel() + 1) + ".xp") - playerConnect.getXp();
+    }
+
+    public int xp_progress(final PlayerConnect playerConnect) {
+        final long xp_cur = playerConnect.getXp();
+        final long xp_req_cur = plugin.levels.get.getLong(playerConnect.getGroup() + "." + playerConnect.getLevel() + ".xp");
+        final long xp_req_next = plugin.levels.get.getLong(playerConnect.getGroup() + "." + (playerConnect.getLevel() + 1) + ".xp");
+        final double set = (double) (xp_cur - xp_req_cur) / (xp_req_next - xp_req_cur);
+        if (xp_cur > xp_req_next) {
+            return 100;
         }
+        return (int) Math.round(set * 100);
+    }
+
+    public String xp_progress_style(final PlayerConnect playerConnect, final String path) {
+        final char xp = (char) Integer.parseInt(plugin.config.get.getString(path + ".xp.symbol").substring(2), 16);
+        final char none = (char) Integer.parseInt(plugin.config.get.getString(path + ".none.symbol").substring(2), 16);
+        final ChatColor xpColor = getChatColor(plugin.config.get.getString(path + ".xp.color"));
+        final ChatColor noneColor = getChatColor(plugin.config.get.getString(path + ".none.color"));
+        final int bars = plugin.config.get.getInt(path + ".amount");
+        final int progressBars = (bars * xp_progress(playerConnect) / 100);
         try {
-        return new DecimalFormat("#").format(Math.round(((Double.valueOf(playerConnect.xp()) - currentXP) / (plugin.levels.get.getLong("levels." + (playerConnect.level() + 1) + ".xp") - currentXP) * 100) * 10.0) / 10.0);
+            return Strings.repeat("" + xpColor + xp, progressBars) + Strings.repeat("" + noneColor + none, bars - progressBars);
         } catch (final RuntimeException exception) {
             return "";
         }
     }
 
-    public String xp_progress_style(final String uuid) {
-        final char xp = (char) Integer.parseInt(plugin.config.get.getString("xp-progress-style.xp.symbol").substring(2), 16);
-        final char none = (char) Integer.parseInt(plugin.config.get.getString("xp-progress-style.none.symbol").substring(2), 16);
-        final ChatColor xpColor = getChatColor(plugin.config.get.getString("xp-progress-style.xp.color"));
-        final ChatColor noneColor = getChatColor(plugin.config.get.getString("xp-progress-style.none.color"));
-        final int bars = plugin.config.get.getInt("xp-progress-style.amount");
-        final int progressBars = (int) (bars * Double.parseDouble(xp_progress(uuid)) / 100);
-        try {
-            return Strings.repeat(String.valueOf(xpColor) + xp, progressBars) + Strings.repeat(String.valueOf(noneColor) + none, bars - progressBars);
-        } catch (final RuntimeException exception) {
-            return "";
+    public String prefix(final PlayerConnect playerConnect) {
+        long level = playerConnect.getLevel();
+        if (!plugin.levels.get.contains(playerConnect.getGroup() + "." + level + ".group")) {
+            level = plugin.config.get.getLong("start-level");
         }
+        return ChatColor.translateAlternateColorCodes('&', plugin.internalReplace(playerConnect, plugin.levels.get.getString(playerConnect.getGroup() + "." + level + ".prefix")));
     }
 
-    public String group(final Player player) {
-        return getGroup(player, plugin.get(player.getUniqueId().toString()).level());
-    }
-
-    public String group_to(final Player player) {
-        return getGroup(player, plugin.get(player.getUniqueId().toString()).level() + 1L);
-    }
-
-    private String getGroup(final Player player, final Long level) {
-        final String group = plugin.systemManager.getGroup(player, plugin.config.get, "groups.list", false);
-        if (group != null) {
-            if (plugin.config.get.contains("groups.list." + group + ".list." + level)) {
-                return plugin.config.get.getString("groups.list." + group + ".list." + level);
-            } else {
-                return plugin.config.get.getString("groups.list." + group + ".none");
-            }
+    public String suffix(final PlayerConnect playerConnect) {
+        long level = playerConnect.getLevel();
+        if (!plugin.levels.get.contains(playerConnect.getGroup() + "." + level + ".group")) {
+            level = plugin.config.get.getLong("start-level");
         }
-        return plugin.config.get.getString("groups.none");
+        return ChatColor.translateAlternateColorCodes('&', plugin.internalReplace(playerConnect, plugin.levels.get.getString(playerConnect.getGroup() + "." + level + ".suffix")));
     }
 
-    public String prefix(final Player player) {
-        String prefix_name = "%levels_prefix%";
-        final String group = plugin.systemManager.getGroup(player, plugin.config.get, "placeholders.prefix", false);
-        if (group != null) {
-            final PlayerConnect playerConnect = plugin.get(player.getUniqueId().toString());
-            if (plugin.config.get.contains("placeholders.prefix." + group + ".list." + playerConnect.level())) {
-                prefix_name = ChatColor.translateAlternateColorCodes('&', plugin.PlaceholderReplace(player, plugin.config.get.getString("placeholders.prefix." + group + ".list." + playerConnect.level())));
-            } else {
-                prefix_name = ChatColor.translateAlternateColorCodes('&', plugin.PlaceholderReplace(player, plugin.config.get.getString("placeholders.prefix." + group + ".none")));
-            }
+    public String group(final PlayerConnect playerConnect) {
+        long level = playerConnect.getLevel();
+        if (!plugin.levels.get.contains(playerConnect.getGroup() + "." + level + ".group")) {
+            level = plugin.config.get.getLong("start-level");
         }
-        return prefix_name;
+        return ChatColor.translateAlternateColorCodes('&', plugin.internalReplace(playerConnect, plugin.levels.get.getString(playerConnect.getGroup() + "." + level + ".group")));
     }
 
     public String getTopValue(final String type, final int number, final boolean key, final boolean reverse) {
-        final List<String> map;
+        final LinkedHashMap<OfflinePlayer, Long> linkedHashMap = getTopMap(type, reverse);
         if (key) {
-            map = new ArrayList<String>(getTopMap(type, reverse).keySet());
+            final ArrayList<OfflinePlayer> map = new ArrayList<>(linkedHashMap.keySet());
             if (map.size() > number) {
-                return plugin.get(map.get(number)).name();
+                return map.get(number).getName();
             } else {
-                return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("pvptop." + type + ".name"));
+                return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("top.name"));
             }
-        }
-        map = new ArrayList<String>(getTopMap(type, reverse).values());
-        if (map.size() > number) {
-            return String.valueOf(map.get(number));
         } else {
-            return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("pvptop." + type + ".value"));
+            final ArrayList<Long> map = new ArrayList<>(linkedHashMap.values());
+            if (map.size() > number) {
+                return String.valueOf(map.get(number));
+            } else {
+                return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("top.value"));
+            }
         }
     }
 
-    public LinkedHashMap getTopMap(final String type, final boolean reverse) {
-        final Map<String, Long> unsorted = new HashMap<>();
-        for (final String uuid : plugin.list()) {
-            if (type.equalsIgnoreCase("xp") && !plugin.config.get.getStringList("pvptop.xp.excluded").contains(uuid)) { unsorted.put(uuid, plugin.get(uuid).xp()); }
-            if (type.equalsIgnoreCase("level") && !plugin.config.get.getStringList("pvptop.level.excluded").contains(uuid)) { unsorted.put(uuid, plugin.get(uuid).level()); }
-            if (type.equalsIgnoreCase("xprequired")) { unsorted.put(uuid, plugin.statsManager.xp_required(uuid, false)); }
+    public LinkedHashMap<OfflinePlayer, Long> getTopMap(final String type, final boolean reverse) {
+        final Map<OfflinePlayer, Long> unsorted = new HashMap<>();
+        final List<String> excluded = plugin.config.get.getStringList("top.excluded");
+        for (final OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
+            final UUID uuid = offlinePlayer.getUniqueId();
+            if (!excluded.contains(uuid.toString())) {
+                final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+                switch (type) {
+                    case "xp":
+                        unsorted.put(offlinePlayer, playerConnect.getXp());
+                        break;
+                    case "level":
+                        unsorted.put(offlinePlayer, playerConnect.getLevel());
+                        break;
+                    case "rating":
+                        unsorted.put(offlinePlayer, playerConnect.getRating().longValue());
+                        break;
+                    case "lastseen":
+                        unsorted.put(offlinePlayer, playerConnect.getTime().getTime());
+                        break;
+                }
+            }
         }
-        final LinkedHashMap<String, Long> sorted = new LinkedHashMap<>();
+        final LinkedHashMap<OfflinePlayer, Long> sorted = new LinkedHashMap<>();
         if (reverse) {
             unsorted.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
         } else {
@@ -143,6 +152,7 @@ public class StatsManager {
             case "&c" : return ChatColor.RED;
             case "&d" : return ChatColor.LIGHT_PURPLE;
             case "&e" : return ChatColor.YELLOW;
+            case "&f" : return ChatColor.WHITE;
             case "&k" : return ChatColor.MAGIC;
             case "&l" : return ChatColor.BOLD;
             case "&m" : return ChatColor.STRIKETHROUGH;
@@ -151,5 +161,11 @@ public class StatsManager {
             case "&r" : return ChatColor.RESET;
             default: return ChatColor.WHITE;
         }
+    }
+
+    public String time(final String path, final long time) {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(plugin.config.get.getString(path + ".format"));
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(plugin.config.get.getString(path + ".zone")));
+        return simpleDateFormat.format(new Date(time));
     }
 }

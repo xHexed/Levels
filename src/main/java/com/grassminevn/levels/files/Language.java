@@ -8,8 +8,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class Language {
+
     public FileConfiguration get;
     private final File file;
+
     private final Levels plugin;
 
     public Language(final Levels plugin) {

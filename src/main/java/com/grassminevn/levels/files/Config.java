@@ -18,12 +18,12 @@ public class Config {
             try {
                 file.createNewFile();
                 plugin.copy("config.yml", file);
-                plugin.textUtils.info("config.yml (A change was made)");
+                plugin.textUtils.info("config.yml ( A change was made )");
             } catch (final IOException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         } else {
-            plugin.textUtils.info("config.yml (Loaded)");
+            plugin.textUtils.info("config.yml ( Loaded )");
         }
         load();
     }
