@@ -92,7 +92,7 @@ public class XPManager {
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         final String group = playerConnect.getGroup();
         final String path = "xp." + group + "." + xpType;
-        if (plugin.config.get.contains(path) && player.hasPermission("pvplevels.group." + group) && world(player, plugin.config.get, path)) {
+        if (plugin.config.get.contains(path) && player.hasPermission("levels.group." + group) && world(player, plugin.config.get, path)) {
             final String translate = entityType.toUpperCase().replace(" ", "_");
             if (plugin.language.get.contains("translate.entity." + translate)) {
                 entityType = plugin.language.get.getString("translate.entity." + translate);

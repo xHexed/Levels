@@ -34,7 +34,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier(){
-        return "pvplevels";
+        return "levels";
     }
 
     @Override

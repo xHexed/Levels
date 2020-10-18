@@ -35,7 +35,7 @@ public class LevelsCommand implements CommandExecutor {
         } else {
             type = "console";
         }
-        if (sender.hasPermission("pvplevels")) {
+        if (sender.hasPermission("levels")) {
             if (args.length == 0) {
                 if (type.equalsIgnoreCase("player")) {
                     for (final String message : plugin.language.get.getStringList("command.message")) {
@@ -49,7 +49,7 @@ public class LevelsCommand implements CommandExecutor {
             } else {
                 if (args[0].equalsIgnoreCase("help")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.player.help")) {
+                    if (sender.hasPermission("levels.player.help")) {
                         if (type.equalsIgnoreCase("player")) {
                             for (final String message : plugin.language.get.getStringList("help.message")) {
                                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
@@ -68,7 +68,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("reload")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.reload")) {
+                    if (sender.hasPermission("levels.admin.reload")) {
                         plugin.config.load();
                         plugin.language.load();
                         plugin.levels.load();
@@ -105,7 +105,7 @@ public class LevelsCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("admin")) {
                     unknown = false;
                     if (type.equalsIgnoreCase("player")) {
-                        if (sender.hasPermission("pvplevels.admin.admin")) {
+                        if (sender.hasPermission("levels.admin.admin")) {
                             final Player player = (Player) sender;
                             new AdminGUI(plugin.getPlayerMenu(player)).open();
                         } else {
@@ -121,7 +121,7 @@ public class LevelsCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("profiles")) {
                     unknown = false;
                     if (type.equalsIgnoreCase("player")) {
-                        if (sender.hasPermission("pvplevels.player.profiles")) {
+                        if (sender.hasPermission("levels.player.profiles")) {
                             final Player player = (Player) sender;
                             new ProfilesGUI(plugin.getPlayerMenu(player)).open();
                         } else {
@@ -138,7 +138,7 @@ public class LevelsCommand implements CommandExecutor {
                     unknown = false;
                     if (type.equalsIgnoreCase("player")) {
                         final Player player = (Player) sender;
-                        if (sender.hasPermission("pvplevels.player.top")) {
+                        if (sender.hasPermission("levels.player.top")) {
                             if (args.length == 2) {
                                 if (args[1].equalsIgnoreCase("xp")) {
                                     for (final String message : plugin.language.get.getStringList("top.xp")) {
@@ -171,7 +171,7 @@ public class LevelsCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("stats")) {
                     unknown = false;
                     if (type.equalsIgnoreCase("player")) {
-                        if (sender.hasPermission("pvplevels.player.top")) {
+                        if (sender.hasPermission("levels.player.top")) {
                             final Player player = (Player) sender;
                             if (args.length == 1) {
                                 for (final String message : plugin.language.get.getStringList("stats.message")) {
@@ -201,7 +201,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("save")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.save")) {
+                    if (sender.hasPermission("levels.admin.save")) {
                         for (final UUID uuid : plugin.listPlayerConnect()) {
                             plugin.getPlayerConnect(uuid).save();
                         }
@@ -223,7 +223,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("broadcast")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.broadcast")) {
+                    if (sender.hasPermission("levels.admin.broadcast")) {
                         if (args.length > 2) {
                             final StringBuilder sb = new StringBuilder();
                             for (int i = 2; i < args.length; i++) {
@@ -257,7 +257,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("message")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.message")) {
+                    if (sender.hasPermission("levels.admin.message")) {
                         if (args.length <= 2) {
                             if (type.equalsIgnoreCase("player")) {
                                 for (final String message : plugin.language.get.getStringList("message.usage")) {
@@ -304,7 +304,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("actionbar")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.actionbar")) {
+                    if (sender.hasPermission("levels.admin.actionbar")) {
                         if (args.length > 3) {
                             final Player target = plugin.getServer().getPlayer(args[1]);
                             if (target != null) {
@@ -373,7 +373,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("group")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.group")) {
+                    if (sender.hasPermission("levels.admin.group")) {
                         if (args.length > 1) {
                             if (args[1].equalsIgnoreCase("set")) {
                                 if (args.length == 4) {
@@ -492,7 +492,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("reset")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.reset")) {
+                    if (sender.hasPermission("levels.admin.reset")) {
                         if (args.length > 2) {
                             final Player target = plugin.getServer().getPlayer(args[2]);
                             if (target != null) {
@@ -564,7 +564,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("xp")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.xp")) {
+                    if (sender.hasPermission("levels.admin.xp")) {
                         if (args.length == 3) {
                             final Player target = plugin.getServer().getPlayer(args[1]);
                             if (target != null) {
@@ -657,7 +657,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("level")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.level")) {
+                    if (sender.hasPermission("levels.admin.level")) {
                         if (args.length == 3) {
                             final Player target = plugin.getServer().getPlayer(args[1]);
                             if (target != null) {
@@ -739,7 +739,7 @@ public class LevelsCommand implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("multiplier")) {
                     unknown = false;
-                    if (sender.hasPermission("pvplevels.admin.multiplier")) {
+                    if (sender.hasPermission("levels.admin.multiplier")) {
                         if (args.length == 4) {
                             final Player target = plugin.getServer().getPlayer(args[1]);
                             if (target != null) {

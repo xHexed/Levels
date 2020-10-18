@@ -64,7 +64,7 @@ public class AdminGUI extends GUI {
             setPlayers();
             open();
         } else {
-            if (e.isShiftClick() && e.isRightClick() && player.hasPermission("pvplevels.admin.pvpadmin")) {
+            if (e.isShiftClick() && e.isRightClick() && player.hasPermission("levels.admin.pvpadmin")) {
                 if (e.getCurrentItem().getItemMeta().hasLore()) {
                     for (final String lore : e.getCurrentItem().getItemMeta().getLore()) {
                         final Matcher matcher = Pattern.compile("\\[([^]]+)]").matcher(lore);
@@ -81,7 +81,7 @@ public class AdminGUI extends GUI {
                                 plugin.database.delete(targetUUID);
                                 if (plugin.config.get.contains("mysql.purge.commands")) {
                                     for (final String command : plugin.config.get.getStringList("mysql.purge.commands")) {
-                                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{pvplevels_player}", offlinePlayer.getName()).replace("{levels_uuid}", targetUUID.toString()));
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{levels_player}", offlinePlayer.getName()).replace("{levels_uuid}", targetUUID.toString()));
                                     }
                                 }
                                 for (final String command : plugin.language.get.getStringList("pvpadmin.deleted")) {

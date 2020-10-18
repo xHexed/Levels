@@ -80,8 +80,8 @@ public class Levels extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
             getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
             getServer().getPluginManager().registerEvents(new InventoryClick(), this);
-            getCommand("pvplevels").setExecutor(new LevelsCommand(this));
-            getCommand("pvplevels").setTabCompleter(new LevelsTabComplete(this));
+            getCommand("levels").setExecutor(new LevelsCommand(this));
+            getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
             if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 new PlaceholderAPI(this).register();
                 textUtils.info("PlaceholderAPI (found)");
