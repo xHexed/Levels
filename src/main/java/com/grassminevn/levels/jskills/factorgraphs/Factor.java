@@ -76,7 +76,7 @@ public abstract class Factor<TValue> {
         return sendMessage(message, variable);
     }
 
-    protected abstract double sendMessage(Message<TValue> message, Variable<TValue> variable);
+    protected abstract double sendMessage(Message<? extends TValue> message, Variable<TValue> variable);
 
     public abstract Message<TValue> createVariableToMessageBinding(Variable<TValue> variable);
 

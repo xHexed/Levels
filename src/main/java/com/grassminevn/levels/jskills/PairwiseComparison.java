@@ -17,7 +17,7 @@ public enum PairwiseComparison{
     
     PairwiseComparison(final int multiplier) { this.multiplier = multiplier; }
 
-    private static final TreeMap<Integer, PairwiseComparison> revmap = new TreeMap<Integer, PairwiseComparison>();
+    private static final TreeMap<Integer, PairwiseComparison> revmap = new TreeMap<>();
     static { for (final PairwiseComparison pc : values())
             revmap.put(pc.multiplier, pc);
     }

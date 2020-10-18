@@ -22,12 +22,12 @@ import java.util.*;
 public class TwoPlayerTrueSkillCalculator extends SkillCalculator {
 
     public TwoPlayerTrueSkillCalculator() {
-        super(EnumSet.noneOf(SupportedOptions.class), Range.<ITeam>exactly(2),
-              Range.<IPlayer>exactly(1));
+        super(EnumSet.noneOf(SupportedOptions.class), Range.exactly(2),
+              Range.exactly(1));
     }
 
     @Override
-    public Map<IPlayer, Rating> calculateNewRatings(final GameInfo gameInfo, final Collection<ITeam> teams,
+    public Map<IPlayer, Rating> calculateNewRatings(final GameInfo gameInfo, final Collection<? extends ITeam> teams,
                                                     final int... teamRanks) {
         // Basic argument checking
         Guard.argumentNotNull(gameInfo, "gameInfo");
@@ -47,7 +47,7 @@ public class TwoPlayerTrueSkillCalculator extends SkillCalculator {
 
         final boolean wasDraw = (teamRanks[0] == teamRanks[1]);
 
-        final Map<IPlayer, Rating> results = new HashMap<IPlayer, Rating>();
+        final Map<IPlayer, Rating> results = new HashMap<>();
         results.put(winner, calculateNewRating(gameInfo, winnerPreviousRating, loserPreviousRating,
                                                wasDraw ? PairwiseComparison.DRAW
                                                        : PairwiseComparison.WIN));
@@ -122,11 +122,11 @@ public class TwoPlayerTrueSkillCalculator extends SkillCalculator {
     }
 
     @Override
-    public double calculateMatchQuality(final GameInfo gameInfo, final Collection<ITeam> teams) {
+    public double calculateMatchQuality(final GameInfo gameInfo, final Collection<? extends ITeam> teams) {
         Guard.argumentNotNull(gameInfo, "gameInfo");
         validateTeamCountAndPlayersCountPerTeam(teams);
 
-        final Iterator<ITeam> teamIt = teams.iterator();
+        final Iterator<? extends ITeam> teamIt = teams.iterator();
 
         final Rating player1Rating = teamIt.next().values().iterator().next();
         final Rating player2Rating = teamIt.next().values().iterator().next();

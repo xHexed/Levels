@@ -9,7 +9,7 @@ import java.util.*;
 
 public class PlayerConnect extends Player {
     private final UUID uuid;
-    private Rating playerRating;
+    private Rating rating;
     private String group;
     private Long xp;
     private Long level;
@@ -25,9 +25,8 @@ public class PlayerConnect extends Player {
         group = data[0];
         xp = Long.parseLong(data[1]);
         level = Long.parseLong(data[2]);
-        final double rating = Double.parseDouble(data[3]);
-        playerRating = new Rating(rating, rating / 3);
-        final String[] split = data[4].split(" ");
+        rating = new Rating(Double.parseDouble(data[3]), Double.parseDouble(data[4]));
+        final String[] split = data[5].split(" ");
         if (split.length == 3) {
             multiplier = Double.parseDouble(split[0]);
             multiplier_time = Integer.parseInt(split[1]);
@@ -38,7 +37,7 @@ public class PlayerConnect extends Player {
             multiplier_time_left = 0;
             save();
         }
-        time = Timestamp.valueOf(data[5]);
+        time = Timestamp.valueOf(data[6]);
     }
 
     public void setGroup(final String group) {
@@ -54,7 +53,7 @@ public class PlayerConnect extends Player {
     }
 
     public void setRating(final Rating rating) {
-        playerRating = rating;
+        this.rating = rating;
     }
 
     public void setMultiplier(final Double multiplier) {
@@ -85,12 +84,8 @@ public class PlayerConnect extends Player {
         return level;
     }
 
-    public Double getRating() {
-        return playerRating.getMean();
-    }
-
-    public Rating getPlayerRating() {
-        return playerRating;
+    public Rating getRating() {
+        return rating;
     }
 
     public Double getMultiplier() {
@@ -110,10 +105,10 @@ public class PlayerConnect extends Player {
     }
 
     public void save() {
-        Levels.call.database.setValues(uuid, group, xp, level, playerRating.getMean(), (multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
+        Levels.call.database.setValues(uuid, group, xp, level, rating.getMean(), rating.getStandardDeviation(),(multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
     }
 
     public void syncSave() {
-        Levels.call.database.setValuesSync(uuid, group, xp, level, playerRating.getMean(), (multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
+        Levels.call.database.setValuesSync(uuid, group, xp, level, rating.getMean(), rating.getStandardDeviation(), (multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
     }
 }

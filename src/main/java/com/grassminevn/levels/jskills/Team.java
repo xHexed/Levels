@@ -1,9 +1,6 @@
 package com.grassminevn.levels.jskills;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Helper class for working with a single team.
@@ -45,8 +42,6 @@ public class Team extends HashMap<IPlayer, Rating> implements ITeam {
      * @return A sequence of teams.
      */
     public static Collection<ITeam> concat(final ITeam... teams) {
-        final List<ITeam> teamslist = new ArrayList<ITeam>();
-        for (final ITeam team : teams) teamslist.add(team);
-        return teamslist;
+        return new ArrayList<>(Arrays.asList(teams));
     }
 }

@@ -11,7 +11,7 @@ public abstract class GaussianFactor extends Factor<GaussianDistribution> {
 
     /** Sends the factor-graph message with and returns the log-normalization constant **/
     @Override
-    protected double sendMessage(final Message<GaussianDistribution> message, final Variable<GaussianDistribution> variable) {
+    protected double sendMessage(final Message<? extends GaussianDistribution> message, final Variable<GaussianDistribution> variable) {
         final GaussianDistribution marginal = variable.getValue();
         final GaussianDistribution messageValue = message.getValue();
         final double logZ = GaussianDistribution.logProductNormalization(marginal, messageValue);

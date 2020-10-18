@@ -43,7 +43,7 @@ public class PlayerPerformancesToTeamPerformancesLayer extends
         return ScheduleSequence(schedules, "all player perf to team perf schedule");
     }
 
-    protected GaussianWeightedSumFactor createPlayerToTeamSumFactor(final List<KeyedVariable<IPlayer, GaussianDistribution>> teamMembers,
+    protected GaussianWeightedSumFactor createPlayerToTeamSumFactor(final List<? extends KeyedVariable<IPlayer, GaussianDistribution>> teamMembers,
                                                                     final Variable<GaussianDistribution> sumVariable) {
         final double[] weights = new double[teamMembers.size()];
         for (int i = 0; i < weights.length; i++) {
@@ -68,10 +68,10 @@ public class PlayerPerformancesToTeamPerformancesLayer extends
         return ScheduleSequence(schedules, "all of the team's sum iterations");
     }
 
-    private Variable<GaussianDistribution> CreateOutputVariable(final List<KeyedVariable<IPlayer, GaussianDistribution>> team) {
+    private Variable<GaussianDistribution> CreateOutputVariable(final List<? extends KeyedVariable<IPlayer, GaussianDistribution>> team) {
         final StringBuilder sb = new StringBuilder();
         for (final KeyedVariable<IPlayer, GaussianDistribution> teamMember : team) {
-            sb.append(teamMember.getKey().toString());
+            sb.append(teamMember.getKey());
             sb.append(", ");
         }
         sb.delete(sb.length()-2, sb.length());

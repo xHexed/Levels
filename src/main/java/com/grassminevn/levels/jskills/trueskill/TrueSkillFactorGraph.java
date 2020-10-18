@@ -28,14 +28,14 @@ public class TrueSkillFactorGraph extends FactorGraph<TrueSkillFactorGraph> {
     private GameInfo gameInfo;
 
     public TrueSkillFactorGraph(final GameInfo gameInfo, final Collection<ITeam> teams, final int[] teamRanks) {
-        this.priorLayer = new PlayerPriorValuesToSkillsLayer(this, teams);
-        setGameInfo(gameInfo);
+        priorLayer = new PlayerPriorValuesToSkillsLayer(this, teams);
+        this.gameInfo = gameInfo;
 
-        this.layers = new ArrayList<>();
-        this.layers.add(priorLayer);
-        this.layers.add(new PlayerSkillsToPerformancesLayer(this));
-        this.layers.add(new PlayerPerformancesToTeamPerformancesLayer(this));
-        this.layers.add(new IteratedTeamDifferencesInnerLayer(
+        layers = new ArrayList<>();
+        layers.add(priorLayer);
+        layers.add(new PlayerSkillsToPerformancesLayer(this));
+        layers.add(new PlayerPerformancesToTeamPerformancesLayer(this));
+        layers.add(new IteratedTeamDifferencesInnerLayer(
                 this,
                 new TeamPerformancesToTeamPerformanceDifferencesLayer(this),
                 new TeamDifferencesComparisonLayer(this, teamRanks)));

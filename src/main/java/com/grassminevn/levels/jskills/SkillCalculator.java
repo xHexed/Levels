@@ -22,7 +22,7 @@ public abstract class SkillCalculator {
                               final Range<IPlayer> playerPerTeamAllowed) {
         this.supportedOptions = supportedOptions;
         this.totalTeamsAllowed = totalTeamsAllowed;
-        this.playersPerTeamAllowed = playerPerTeamAllowed;
+        playersPerTeamAllowed = playerPerTeamAllowed;
     }
 
     public boolean isSupported(final SupportedOptions option) {
@@ -38,7 +38,7 @@ public abstract class SkillCalculator {
      * @return All the players and their new ratings.
      */
     public abstract Map<IPlayer, Rating> calculateNewRatings(GameInfo gameInfo,
-            Collection<ITeam> teams, int... teamRanks);
+                                                             Collection<? extends ITeam> teams, int... teamRanks);
 
     /**
      * Calculates the match quality as the likelihood of all teams drawing.
@@ -47,13 +47,13 @@ public abstract class SkillCalculator {
      * @param teams A mapping of team players and their ratings.
      * @return The quality of the match between the teams as a percentage (0% = bad, 100% = well matched).
      */
-    public abstract double calculateMatchQuality(GameInfo gameInfo, Collection<ITeam> teams);
+    public abstract double calculateMatchQuality(GameInfo gameInfo, Collection<? extends ITeam> teams);
 
-    protected void validateTeamCountAndPlayersCountPerTeam(final Collection<ITeam> teams) {
+    protected void validateTeamCountAndPlayersCountPerTeam(final Collection<? extends ITeam> teams) {
         validateTeamCountAndPlayersCountPerTeam(teams, totalTeamsAllowed, playersPerTeamAllowed);
     }
 
-    private static void validateTeamCountAndPlayersCountPerTeam(final Collection<ITeam> teams,
+    private static void validateTeamCountAndPlayersCountPerTeam(final Collection<? extends ITeam> teams,
                                                                 final Range<ITeam> totalTeams,
                                                                 final Range<IPlayer> playersPerTeam) {
         Guard.argumentNotNull(teams, "teams");

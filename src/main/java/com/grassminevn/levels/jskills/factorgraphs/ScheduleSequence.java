@@ -6,9 +6,9 @@ import java.util.Collection;
 
 public class ScheduleSequence<TValue>
         extends Schedule<TValue> {
-    private final Collection<Schedule<TValue>> schedules;
+    private final Collection<? extends Schedule<TValue>> schedules;
 
-    public ScheduleSequence(final String name, final Collection<Schedule<TValue>> schedules) {
+    public ScheduleSequence(final String name, final Collection<? extends Schedule<TValue>> schedules) {
         super(name);
         this.schedules = schedules;
     }

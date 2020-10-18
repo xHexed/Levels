@@ -218,8 +218,7 @@ public class GaussianDistribution {
         final double
                 expPart =
                 exp((-1.0 * pow(x - mean, 2.0)) / (2 * (standardDeviation * standardDeviation)));
-        final double result = multiplier * expPart;
-        return result;
+        return multiplier * expPart;
     }
 
     public static double cumulativeTo(final double x, final double mean, final double standardDeviation) {

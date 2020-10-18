@@ -25,9 +25,9 @@ public class GaussianLikelihoodFactor extends GaussianFactor {
     }
 
     private double UpdateHelper(final Message<GaussianDistribution> message1,
-                                final Message<GaussianDistribution> message2,
+                                final Message<? extends GaussianDistribution> message2,
                                 final Variable<GaussianDistribution> variable1,
-                                final Variable<GaussianDistribution> variable2) {
+                                final Variable<? extends GaussianDistribution> variable2) {
         final GaussianDistribution message1Value = new GaussianDistribution(message1.getValue());
         final GaussianDistribution message2Value = new GaussianDistribution(message2.getValue());
 

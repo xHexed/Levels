@@ -32,7 +32,7 @@ public class TeamDifferencesComparisonLayer extends
 
             final GaussianFactor factor =
                 isDraw
-                    ? (GaussianFactor) new GaussianWithinFactor(epsilon, teamDifference)
+                    ? new GaussianWithinFactor(epsilon, teamDifference)
                     : new GaussianGreaterThanFactor(epsilon, teamDifference);
 
             AddLayerFactor(factor);

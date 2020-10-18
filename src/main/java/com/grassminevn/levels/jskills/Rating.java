@@ -50,7 +50,7 @@ public class Rating {
         this.mean = mean;
         this.standardDeviation = standardDeviation;
         this.conservativeStandardDeviationMultiplier = conservativeStandardDeviationMultiplier;
-        this.conservativeRating =
+        conservativeRating =
                 mean - conservativeStandardDeviationMultiplier * standardDeviation;
     }
 
@@ -58,7 +58,7 @@ public class Rating {
      * @return The variance of the rating (standard deviation squared).
      */
     public double getVariance() {
-        return MathUtils.square(getStandardDeviation());
+        return MathUtils.square(standardDeviation);
     }
 
     public double getConservativeStandardDeviationMultiplier() {
@@ -103,7 +103,7 @@ public class Rating {
 
         return new Rating(partialPosteriorGaussion.getMean(),
                           partialPosteriorGaussion.getStandardDeviation(),
-                          prior.getConservativeStandardDeviationMultiplier());
+                prior.conservativeStandardDeviationMultiplier);
     }
 
     @Override
@@ -117,34 +117,30 @@ public class Rating {
 
         final Rating rating = (Rating) o;
 
-        if (Double.compare(rating.getConservativeStandardDeviationMultiplier(),
-                           getConservativeStandardDeviationMultiplier()) != 0) {
+        if (Double.compare(rating.conservativeStandardDeviationMultiplier,
+                conservativeStandardDeviationMultiplier) != 0) {
             return false;
         }
-        if (Double.compare(rating.getMean(), getMean()) != 0) {
+        if (Double.compare(rating.mean, mean) != 0) {
             return false;
         }
-        if (Double.compare(rating.getStandardDeviation(), getStandardDeviation()) != 0) {
+        if (Double.compare(rating.standardDeviation, standardDeviation) != 0) {
             return false;
         }
-        if (Double.compare(rating.getConservativeRating(), getConservativeRating()) != 0) {
-            return false;
-        }
-
-        return true;
+        return Double.compare(rating.conservativeRating, conservativeRating) == 0;
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        temp = Double.doubleToLongBits(getConservativeStandardDeviationMultiplier());
+        temp = Double.doubleToLongBits(conservativeStandardDeviationMultiplier);
         result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getMean());
+        temp = Double.doubleToLongBits(mean);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getStandardDeviation());
+        temp = Double.doubleToLongBits(standardDeviation);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getConservativeRating());
+        temp = Double.doubleToLongBits(conservativeRating);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
@@ -155,7 +151,7 @@ public class Rating {
         return String.format("Mean(μ)=%f, Std-Dev(σ)=%f", mean, standardDeviation);
     }
 
-    public static double calcMeanMean(final Collection<Rating> ratings) {
+    public static double calcMeanMean(final Collection<? extends Rating> ratings) {
         double ret = 0;
         for (final Rating rating : ratings) {
             ret += rating.mean;

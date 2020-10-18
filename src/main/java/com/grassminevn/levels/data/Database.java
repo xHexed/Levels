@@ -14,18 +14,6 @@ public class Database {
 
     public Database(final Levels plugin) {
         this.plugin = plugin;
-        (new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    if (connection != null && !connection.isClosed()) {
-                        connection.createStatement().execute("SELECT 1");
-                    }
-                } catch (final SQLException e) {
-                    connection = get();
-                }
-            }
-        }).runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
     }
 
     private Connection get() {
@@ -57,7 +45,7 @@ public class Database {
             if (connection == null || connection.isClosed()) {
                 return false;
             }
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint(255), `level` bigint(255), `rating` double, `multiplier` text(255), `lastseen` DATETIME);");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint(255), `level` bigint(255), `rating` double, `deviation` double, `multiplier` text(255), `lastseen` DATETIME);");
         }
         return true;
     }
@@ -73,43 +61,7 @@ public class Database {
 
     public void insert(final UUID uuid) {
         if (set()) {
-            final BukkitRunnable r = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    PreparedStatement preparedStatement = null;
-                    ResultSet resultSet = null;
-                    try {
-                        resultSet = connection.createStatement().executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
-                        if (!resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("INSERT INTO levels (uuid, group, xp, level, rating, multiplier, lastseen) VALUES(?, ?, ?, ?, ?, ?, ?);");
-                            preparedStatement.setString(1, uuid.toString());
-                            preparedStatement.setString(2, "default");
-                            preparedStatement.setLong(3, 0L);
-                            preparedStatement.setLong(4, plugin.config.get.getLong("start-level"));
-                            preparedStatement.setDouble(5, 0);
-                            preparedStatement.setString(6, "0.0 0 0");
-                            preparedStatement.setTimestamp(7, new Timestamp(new Date().getTime()));
-                            preparedStatement.executeUpdate();
-                        }
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (final SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (final SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                    }
-                }
-            };
-            r.runTaskAsynchronously(plugin);
+            setValuesSync(uuid, "default", 0L, plugin.config.get.getLong("start-level"), 0D, 0D, "0.0 0 0", new Timestamp(new Date().getTime()));
         }
     }
 
@@ -149,21 +101,22 @@ public class Database {
         }
     }
 
-    public void setValuesSync(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final String multiplier, final Timestamp timestamp) {
+    public void setValuesSync(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final String multiplier, final Timestamp timestamp) {
         if (set()) {
             PreparedStatement preparedStatement = null;
             ResultSet resultSet = null;
             try {
                 resultSet = connection.createStatement().executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
                 if (resultSet.next()) {
-                    preparedStatement = connection.prepareStatement("UPDATE levels SET group = ?, xp = ?, level = ?, rating = ?, multiplier = ?, lastseen = ? WHERE uuid = ?");
+                    preparedStatement = connection.prepareStatement("UPDATE levels SET group = ?, xp = ?, level = ?, rating = ?, deviation =  ?, multiplier = ?, lastseen = ? WHERE uuid = ?");
                     preparedStatement.setString(1, group);
                     preparedStatement.setLong(2, xp);
                     preparedStatement.setLong(3, level);
                     preparedStatement.setDouble(4, rating);
-                    preparedStatement.setString(5, multiplier);
-                    preparedStatement.setTimestamp(6, timestamp);
-                    preparedStatement.setString(7, uuid.toString());
+                    preparedStatement.setDouble(5, deviation);
+                    preparedStatement.setString(6, multiplier);
+                    preparedStatement.setTimestamp(7, timestamp);
+                    preparedStatement.setString(8, uuid.toString());
                     preparedStatement.executeUpdate();
                 }
             } catch (final SQLException exception) {
@@ -185,11 +138,11 @@ public class Database {
         }
     }
 
-    public void setValues(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final String multiplier, final Timestamp timestamp) {
+    public void setValues(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final String multiplier, final Timestamp timestamp) {
         if (set()) {
             final BukkitRunnable r = new BukkitRunnable() {
                 public void run() {
-                    setValuesSync(uuid, group, xp, level, rating, multiplier, timestamp);
+                    setValuesSync(uuid, group, xp, level, rating, deviation, multiplier, timestamp);
                 }
             };
             r.runTaskAsynchronously(plugin);
@@ -203,7 +156,7 @@ public class Database {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM levels WHERE uuid= '" + uuid + "';");
             if (resultSet.next()) {
-                return new String[]{ resultSet.getString("group"), String.valueOf(resultSet.getLong("xp")), String.valueOf(resultSet.getLong("level")), String.valueOf(resultSet.getLong("rating")), resultSet.getString("multiplier"), String.valueOf(resultSet.getTimestamp("lastseen")) };
+                return new String[]{ resultSet.getString("group"), String.valueOf(resultSet.getLong("xp")), String.valueOf(resultSet.getLong("level")), String.valueOf(resultSet.getLong("rating")), String.valueOf(resultSet.getLong("deviation")), resultSet.getString("multiplier"), String.valueOf(resultSet.getTimestamp("lastseen")) };
             }
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
@@ -221,6 +174,6 @@ public class Database {
                     plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
                 }
         }
-        return new String[] { "default", String.valueOf(0L), String.valueOf(0L), String.valueOf(0L), String.valueOf(plugin.config.get.getLong("start-level")), String.valueOf(0L), String.valueOf(0L), "0.0 0 0", String.valueOf(new Timestamp(new Date().getTime())) };
+        return new String[] { "default", String.valueOf(0L), String.valueOf(plugin.config.get.getLong("start-level")), String.valueOf(25D), String.valueOf(25D / 3), "0.0 0 0", String.valueOf(new Timestamp(new Date().getTime())) };
     }
 }

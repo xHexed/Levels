@@ -11,5 +11,5 @@ public interface SupportPartialUpdate {
      *
      * @return number between 0 and 1
      */
-    public double getPartialUpdatePercentage();
+    double getPartialUpdatePercentage();
 }

@@ -12,5 +12,5 @@ public interface SupportPartialPlay {
      *
      * @return number between 0 and 1.
      */
-    public double getPartialPlayPercentage();
+    double getPartialPlayPercentage();
 }

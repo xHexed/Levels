@@ -22,7 +22,7 @@ public class RankSorter {
      * @param <T>       Type of the items to sort.
      * @return the items sorted according to their ranks
      */
-    public static <T> List<T> sort(final Collection<T> items, final int[] itemRanks) {
+    public static <T> List<T> sort(final Collection<? extends T> items, final int[] itemRanks) {
         Guard.argumentNotNull(items, "items");
         Guard.argumentNotNull(itemRanks, "itemRanks");
 

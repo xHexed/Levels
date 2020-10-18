@@ -43,15 +43,15 @@ public final class Range<T> {
     // (T) won't compile.  
 
     public static <T> Range<T> inclusive(final int min, final int max) {
-        return new Range<T>(min, max);
+        return new Range<>(min, max);
     }
 
     public static <T> Range<T> exactly(final int value) {
-        return new Range<T>(value, value);
+        return new Range<>(value, value);
     }
 
     public static <T> Range<T> atLeast(final int minimumValue) {
-        return new Range<T>(minimumValue, Integer.MAX_VALUE);
+        return new Range<>(minimumValue, Integer.MAX_VALUE);
     }
 
     @Override
@@ -61,19 +61,19 @@ public final class Range<T> {
 
         final Range<?> range = (Range<?>) o;
 
-        return getMin() == range.getMin() && getMax() == range.getMax();
+        return min == range.min && max == range.max;
 
     }
 
     @Override
     public int hashCode() {
-        int result = getMin();
-        result = 31 * result + getMax();
+        int result = min;
+        result = 31 * result + max;
         return result;
     }
 
     @Override
     public String toString() {
-        return String.format("[%d, %d]", this.min, this.max);
+        return String.format("[%d, %d]", min, max);
     }
 }

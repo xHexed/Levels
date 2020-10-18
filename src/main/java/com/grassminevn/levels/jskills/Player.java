@@ -1,5 +1,6 @@
 package com.grassminevn.levels.jskills;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -84,9 +85,9 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
 
         final Player player = (Player) o;
 
-        if (Double.compare(player.getPartialPlayPercentage(), getPartialPlayPercentage()) != 0) return false;
-        if (Double.compare(player.getPartialUpdatePercentage(), getPartialUpdatePercentage()) != 0) return false;
-        return !(getId() != null ? !getId().equals(player.getId()) : player.getId() != null);
+        if (Double.compare(player.partialPlayPercentage, partialPlayPercentage) != 0) return false;
+        if (Double.compare(player.partialUpdatePercentage, partialUpdatePercentage) != 0) return false;
+        return Objects.equals(id, player.id);
 
     }
 
@@ -94,10 +95,10 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
     public int hashCode() {
         int result;
         long temp;
-        result = getId() != null ? getId().hashCode() : 0;
-        temp = Double.doubleToLongBits(getPartialPlayPercentage());
+        result = id != null ? id.hashCode() : 0;
+        temp = Double.doubleToLongBits(partialPlayPercentage);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getPartialUpdatePercentage());
+        temp = Double.doubleToLongBits(partialUpdatePercentage);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }

@@ -118,7 +118,7 @@ public class StatsManager {
                         unsorted.put(offlinePlayer, playerConnect.getLevel());
                         break;
                     case "rating":
-                        unsorted.put(offlinePlayer, playerConnect.getRating().longValue());
+                        unsorted.put(offlinePlayer, (long) playerConnect.getRating().getMean());
                         break;
                     case "lastseen":
                         unsorted.put(offlinePlayer, playerConnect.getTime().getTime());

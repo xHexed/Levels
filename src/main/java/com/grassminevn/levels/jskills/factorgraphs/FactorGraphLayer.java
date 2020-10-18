@@ -11,23 +11,23 @@ public abstract class FactorGraphLayer<TParentFactorGraph extends FactorGraph<TP
     private final List<TFactor> localFactors;
     private final List<List<TOutputVariable>> outputVariablesGroups;
     private List<List<TInputVariable>> inputVariablesGroups;
-    protected TParentFactorGraph parentFactorGraph;
+    protected final TParentFactorGraph parentFactorGraph;
 
     protected FactorGraphLayer(final TParentFactorGraph parentGraph) {
-        this.localFactors = new ArrayList<TFactor>();
-        this.outputVariablesGroups = new ArrayList<List<TOutputVariable>>();
-        this.inputVariablesGroups = new ArrayList<List<TInputVariable>>();
-        this.parentFactorGraph = parentGraph;
+        localFactors = new ArrayList<>();
+        outputVariablesGroups = new ArrayList<>();
+        inputVariablesGroups = new ArrayList<>();
+        parentFactorGraph = parentGraph;
     }
 
     protected List<List<TInputVariable>> getInputVariablesGroups() {
         return inputVariablesGroups;
     }
 
-    protected Schedule<TValue> ScheduleSequence(final Collection<Schedule<TValue>> itemsToSequence,
+    protected Schedule<TValue> ScheduleSequence(final Collection<? extends Schedule<TValue>> itemsToSequence,
                                                 final String nameFormat, final Object... args) {
         final String formattedName = String.format(nameFormat, args);
-        return new ScheduleSequence<TValue>(formattedName, itemsToSequence);
+        return new ScheduleSequence<>(formattedName, itemsToSequence);
     }
 
     protected void AddLayerFactor(final TFactor factor) {
@@ -45,7 +45,7 @@ public abstract class FactorGraphLayer<TParentFactorGraph extends FactorGraph<TP
     }
     
     public void addOutputVariable(final TOutputVariable var) {
-        final List<TOutputVariable> g = new ArrayList<TOutputVariable>(1); g.add(var);
+        final List<TOutputVariable> g = new ArrayList<>(1); g.add(var);
         addOutputVariableGroup(g);
     }
 

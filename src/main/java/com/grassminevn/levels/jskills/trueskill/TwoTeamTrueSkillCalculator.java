@@ -12,7 +12,6 @@ import com.grassminevn.levels.jskills.Rating;
 import com.grassminevn.levels.jskills.SkillCalculator;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * Calculates new ratings for only two teams where each team has 1 or more players. When you only
@@ -26,7 +25,7 @@ public class TwoTeamTrueSkillCalculator extends SkillCalculator {
     }
 
     @Override
-    public Map<IPlayer, Rating> calculateNewRatings(final GameInfo gameInfo, final Collection<ITeam> teams,
+    public Map<IPlayer, Rating> calculateNewRatings(final GameInfo gameInfo, final Collection<? extends ITeam> teams,
                                                     final int... teamRanks) {
 
         Guard.argumentNotNull(gameInfo, "gameInfo");
@@ -57,7 +56,7 @@ public class TwoTeamTrueSkillCalculator extends SkillCalculator {
     }
 
     private static void updatePlayerRatings(final GameInfo gameInfo,
-                                            final Map<IPlayer, Rating> newPlayerRatings,
+                                            final Map<? super IPlayer, ? super Rating> newPlayerRatings,
                                             final ITeam selfTeam,
                                             final ITeam otherTeam,
                                             final PairwiseComparison selfToOtherTeamComparison) {
@@ -119,7 +118,7 @@ public class TwoTeamTrueSkillCalculator extends SkillCalculator {
             rankMultiplier = 1;
         }
 
-        for (final Entry<IPlayer, Rating> teamPlayerRatingPair : selfTeam.entrySet()) {
+        for (final Map.Entry<IPlayer, Rating> teamPlayerRatingPair : selfTeam.entrySet()) {
             final Rating previousPlayerRating = teamPlayerRatingPair.getValue();
 
             final double
@@ -144,12 +143,12 @@ public class TwoTeamTrueSkillCalculator extends SkillCalculator {
     }
 
     @Override
-    public double calculateMatchQuality(final GameInfo gameInfo, final Collection<ITeam> teams) {
+    public double calculateMatchQuality(final GameInfo gameInfo, final Collection<? extends ITeam> teams) {
 
         Guard.argumentNotNull(gameInfo, "gameInfo");
         validateTeamCountAndPlayersCountPerTeam(teams);
 
-        final Iterator<ITeam> teamsIt = teams.iterator();
+        final Iterator<? extends ITeam> teamsIt = teams.iterator();
 
         // We've verified that there's just two teams
         final Collection<Rating> team1 = teamsIt.next().values();

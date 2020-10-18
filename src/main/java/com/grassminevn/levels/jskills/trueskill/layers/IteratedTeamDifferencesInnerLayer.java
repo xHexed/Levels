@@ -68,7 +68,7 @@ public class IteratedTeamDifferencesInnerLayer extends TrueSkillFactorGraphLayer
         // When dealing with differences, there are always (n-1) differences, so add in the 1
         final int totalTeamDifferences = teamPerformancesToTeamPerformanceDifferencesLayer.getLocalFactors().size();
 
-        final Collection<Schedule<GaussianDistribution>> schedules = new ArrayList<Schedule<GaussianDistribution>>();
+        final Collection<Schedule<GaussianDistribution>> schedules = new ArrayList<>();
         schedules.add(loop);
         schedules.add(new ScheduleStep<>(
                 "teamPerformanceToPerformanceDifferenceFactors[0] @ 1",

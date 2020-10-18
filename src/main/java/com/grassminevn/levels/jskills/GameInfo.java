@@ -22,7 +22,7 @@ public class GameInfo {
         this.initialMean = initialMean;
         this.initialStandardDeviation = initialStandardDeviation;
         this.beta = beta;
-        this.dynamicsFactor = dynamicFactor;
+        dynamicsFactor = dynamicFactor;
         this.drawProbability = drawProbability;
     }
 
@@ -70,20 +70,20 @@ public class GameInfo {
 
         final GameInfo gameInfo = (GameInfo) o;
 
-        if (Double.compare(gameInfo.getInitialMean(), getInitialMean()) != 0) {
+        if (Double.compare(gameInfo.initialMean, initialMean) != 0) {
             return false;
         }
-        if (Double.compare(gameInfo.getInitialStandardDeviation(), getInitialStandardDeviation())
+        if (Double.compare(gameInfo.initialStandardDeviation, initialStandardDeviation)
             != 0) {
             return false;
         }
-        if (Double.compare(gameInfo.getBeta(), getBeta()) != 0) {
+        if (Double.compare(gameInfo.beta, beta) != 0) {
             return false;
         }
-        if (Double.compare(gameInfo.getDynamicsFactor(), getDynamicsFactor()) != 0) {
+        if (Double.compare(gameInfo.dynamicsFactor, dynamicsFactor) != 0) {
             return false;
         }
-        return Double.compare(gameInfo.getDrawProbability(), getDrawProbability()) == 0;
+        return Double.compare(gameInfo.drawProbability, drawProbability) == 0;
 
     }
 
@@ -91,15 +91,15 @@ public class GameInfo {
     public int hashCode() {
         int result;
         long temp;
-        temp = Double.doubleToLongBits(getInitialMean());
+        temp = Double.doubleToLongBits(initialMean);
         result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getInitialStandardDeviation());
+        temp = Double.doubleToLongBits(initialStandardDeviation);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getBeta());
+        temp = Double.doubleToLongBits(beta);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getDynamicsFactor());
+        temp = Double.doubleToLongBits(dynamicsFactor);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getDrawProbability());
+        temp = Double.doubleToLongBits(drawProbability);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }

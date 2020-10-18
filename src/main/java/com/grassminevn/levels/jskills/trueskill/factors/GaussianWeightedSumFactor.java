@@ -142,8 +142,8 @@ public class GaussianWeightedSumFactor extends GaussianFactor {
     }
 
     private double updateHelper(final double[] weights, final double[] weightsSquared,
-                                final List<Message<GaussianDistribution>> messages,
-                                final List<Variable<GaussianDistribution>> variables) {
+                                final List<? extends Message<GaussianDistribution>> messages,
+                                final List<? extends Variable<GaussianDistribution>> variables) {
         // Potentially look at http://mathworld.wolfram.com/NormalSumDistribution.html for clues as 
         // to what it's doing
 
@@ -248,7 +248,7 @@ public class GaussianWeightedSumFactor extends GaussianFactor {
                                      final List<? extends Variable<GaussianDistribution>> variablesToSum,
                                      final double[] weights) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(sumVariable.toString());
+        sb.append(sumVariable);
         sb.append(" = ");
         for (int i = 0; i < variablesToSum.size(); i++) {
             final boolean isFirst = (i == 0);

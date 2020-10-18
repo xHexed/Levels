@@ -16,7 +16,7 @@ import com.grassminevn.levels.jskills.trueskill.factors.GaussianPriorFactor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 
 // We intentionally have no Posterior schedule since the only purpose here is to 
 public class PlayerPriorValuesToSkillsLayer extends
@@ -24,9 +24,9 @@ public class PlayerPriorValuesToSkillsLayer extends
                               GaussianPriorFactor,
             KeyedVariable<IPlayer, GaussianDistribution>> {
 
-    private final Collection<ITeam> teams;
+    private final Collection<? extends ITeam> teams;
 
-    public PlayerPriorValuesToSkillsLayer(final TrueSkillFactorGraph parentGraph, final Collection<ITeam> teams) {
+    public PlayerPriorValuesToSkillsLayer(final TrueSkillFactorGraph parentGraph, final Collection<? extends ITeam> teams) {
         super(parentGraph);
         this.teams = teams;
     }
@@ -36,7 +36,7 @@ public class PlayerPriorValuesToSkillsLayer extends
         for(final ITeam currentTeam : teams) {
             final List<KeyedVariable<IPlayer, GaussianDistribution>> currentTeamSkills = new ArrayList<>();
 
-            for(final Entry<IPlayer, Rating> currentTeamPlayer : currentTeam.entrySet()) {
+            for(final Map.Entry<IPlayer, Rating> currentTeamPlayer : currentTeam.entrySet()) {
                 final KeyedVariable<IPlayer, GaussianDistribution> playerSkill =
                     createSkillOutputVariable(currentTeamPlayer.getKey());
                 AddLayerFactor(createPriorFactor(currentTeamPlayer.getKey(), currentTeamPlayer.getValue(), playerSkill));
