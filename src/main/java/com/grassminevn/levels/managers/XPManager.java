@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class XPManager {
-    private final Levels plugin;
+public class XPManager extends Manager {
 
     public XPManager(final Levels plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     public void calculateRatings(final List<? extends ITeam> teams, final int[] teamRanks) {

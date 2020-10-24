@@ -746,10 +746,9 @@ public class LevelsCommand implements CommandExecutor {
                                 if (plugin.isDouble(args[2])) {
                                     if (plugin.isInt(args[3])) {
                                         final PlayerConnect playerConnect = plugin.getPlayerConnect(target.getUniqueId());
-                                        playerConnect.setMultiplier(Double.parseDouble(args[2]));
-                                        playerConnect.setMultiplier_time(Integer.parseInt(args[3]));
-                                        playerConnect.setMultiplier_time_left(Integer.parseInt(args[3]));
-                                        plugin.multipliers.add(target);
+                                        final long time = new Date().getTime();
+                                        playerConnect.setMultiplier(Double.parseDouble(args[2]), time, time + Integer.parseInt(args[3]));
+                                        plugin.multiplierManager.addMultiplier(target.getUniqueId(), Integer.parseInt(args[3]));
                                         if (type.equalsIgnoreCase("player")) {
                                             for (final String message : plugin.language.get.getStringList("multiplier.got")) {
                                                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{player}", sender.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime().getTime()))));

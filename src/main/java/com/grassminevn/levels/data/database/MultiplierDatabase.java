@@ -26,7 +26,7 @@ public class MultiplierDatabase extends SQLDatabase {
 
     public void insert(final UUID uuid) {
         if (set()) {
-            setValuesSync(uuid, new MultiplierInfo(0D, 0L, 0L));
+            setValuesSync(uuid, new MultiplierInfo(uuid, 0D, 0L, 0L));
         }
     }
 
@@ -116,7 +116,7 @@ public class MultiplierDatabase extends SQLDatabase {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM levels_multiplier WHERE uuid= '" + uuid + "';");
             if (resultSet.next()) {
-                return new MultiplierInfo(resultSet.getDouble("multiplier"), resultSet.getLong("multiplier_start_time"), resultSet.getLong("multiplier_end_time"));
+                return new MultiplierInfo(uuid, resultSet.getDouble("multiplier"), resultSet.getLong("multiplier_start_time"), resultSet.getLong("multiplier_end_time"));
             }
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
@@ -134,6 +134,6 @@ public class MultiplierDatabase extends SQLDatabase {
                     plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
                 }
         }
-        return new MultiplierInfo(0D, 0L, 0L);
+        return new MultiplierInfo(uuid, 0D, 0L, 0L);
     }
 }

@@ -45,7 +45,19 @@ public class Database {
         playerDatabase.setPlayerInfo(uuid, info);
     }
 
+    public void deletePlayerInfo(final UUID uuid) {
+        playerDatabase.delete(uuid);
+    }
+
     public MultiplierInfo getMultiplierInfo(final UUID uuid) {
         return multiplierDatabase.getMultiplierInfo(uuid);
+    }
+
+    public void setMultiplierInfo(final UUID uuid, final MultiplierInfo info) {
+        multiplierDatabase.setValue(uuid, info);
+    }
+
+    public void deleteMultiplierInfo(final UUID uuid) {
+        multiplierDatabase.delete(uuid);
     }
 }

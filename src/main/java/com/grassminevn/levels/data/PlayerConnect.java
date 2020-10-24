@@ -39,18 +39,8 @@ public class PlayerConnect extends Player {
         save();
     }
 
-    public void setMultiplier(final double multiplier) {
-        multiplierInfo.setMultiplier(multiplier);
-        save();
-    }
-
-    public void setMultiplier_time(final Integer multiplier_time) {
-        //multiplierInfo.getStartTime(multiplier_time);
-        save();
-    }
-
-    public void setMultiplier_time_left(final Integer multiplier_time_left) {
-        //this.multiplier_time_left = multiplier_time_left;
+    public void setMultiplier(final double multiplier, final long multiplierStartTime, final long multiplierEndTime) {
+        multiplierInfo.setMultiplier(multiplier, multiplierStartTime, multiplierEndTime);
         save();
     }
 
@@ -98,5 +88,9 @@ public class PlayerConnect extends Player {
 
     public void syncSave() {
         Levels.call.database.setPlayerInfo(uuid, playerInfo);
+    }
+
+    public MultiplierInfo getMultiplierInfo() {
+        return multiplierInfo;
     }
 }

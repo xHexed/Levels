@@ -2,6 +2,7 @@ package com.grassminevn.levels.listeners;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
+import com.grassminevn.levels.data.playerinfo.MultiplierInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,11 +24,12 @@ public class PlayerJoin implements Listener {
         final Player player = e.getPlayer();
         final UUID uuid = player.getUniqueId();
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-        if (playerConnect.getMultiplier() != 0) {
+        final MultiplierInfo multiplierInfo = playerConnect.getMultiplierInfo();
+        if (multiplierInfo.isRunning()) {
             for (final String message : plugin.language.get.getStringList("multiplier.join")) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName())));
             }
-            plugin.multipliers.add(player);
+            plugin.multipliers.put(player, multiplierInfo.getEndTime() - multiplierInfo.getStartTime());
         }
     }
 }

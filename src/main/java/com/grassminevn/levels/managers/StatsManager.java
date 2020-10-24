@@ -9,12 +9,9 @@ import org.bukkit.OfflinePlayer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class StatsManager {
-
-    private final Levels plugin;
-
+public class StatsManager extends Manager {
     public StatsManager(final Levels plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     public Long xp_required(final PlayerConnect playerConnect, final boolean next) {

@@ -15,12 +15,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class GUIManager {
-
-    private final Levels plugin;
-
+public class GUIManager extends Manager {
     public GUIManager(final Levels plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     public void setGUIItemStack(final Inventory inventory, final FileConfiguration file, final Player player) {

@@ -28,25 +28,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Levels extends JavaPlugin {
-
     public static Levels call;
 
     public final ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
 
     public Database database;
-
     public TextUtils textUtils;
     public Config config;
     public Language language;
     public com.grassminevn.levels.files.Levels levels;
     public Execute execute;
-
     public GUIFolder guiFolder;
-
     public GUIManager guiManager;
-    public PlaceholderManager placeholderManager;
     public StatsManager statsManager;
     public XPManager xpManager;
+    public MultiplierManager multiplierManager;
 
     private final Map<UUID, PlayerConnect> playerConnect = new HashMap<>();
 
@@ -71,9 +67,9 @@ public class Levels extends JavaPlugin {
         guiFolder = new GUIFolder(this);
 
         guiManager = new GUIManager(this);
-        placeholderManager = new PlaceholderManager(this);
         statsManager = new StatsManager(this);
         xpManager = new XPManager(this);
+        multiplierManager = new MultiplierManager(this);
 
         database = new Database(this);
         if (database.set()) {
@@ -98,26 +94,20 @@ public class Levels extends JavaPlugin {
                 saveSchedule();
             }
 
-            getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-                multipliers.forEach((p, t) -> {
-                    if (p.isOnline()) {
-                        final PlayerConnect playerConnect = getPlayerConnect(p.getUniqueId());
-                        int left = playerConnect.getMultiplier_time_left();
-                        if (left > 0) {
-                            left--;
-                            playerConnect.setMultiplier_time_left(left);
-                            return;
-                        }
-                        for (final String message : language.get.getStringList("multiplier.lost")) {
-                            getServer().dispatchCommand(consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", p.getName()).replace("{multiplier}", String.valueOf(playerConnect.getMultiplier()))));
-                        }
-                        playerConnect.setMultiplier(0D);
-                        playerConnect.setMultiplier_time(0);
-                        playerConnect.setMultiplier_time_left(0);
+            getServer().getScheduler().runTaskTimerAsynchronously(this, () -> multipliers.forEach((p, t) -> {
+                if (p.isOnline()) {
+                    final PlayerConnect playerConnect = getPlayerConnect(p.getUniqueId());
+                    if (t > 0) {
+                        multipliers.put(p, t - 1);
+                        return;
                     }
-                    multipliers.remove(p);
-                });
-            }, 20, 20);
+                    for (final String message : language.get.getStringList("multiplier.lost")) {
+                        getServer().dispatchCommand(consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", p.getName()).replace("{multiplier}", String.valueOf(playerConnect.getMultiplier()))));
+                    }
+                    playerConnect.getMultiplierInfo().stop();
+                }
+                multipliers.remove(p);
+            }), 20, 20);
 
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
