@@ -46,8 +46,8 @@ public class StatsManager extends Manager {
     public String xp_progress_style(final PlayerConnect playerConnect, final String path) {
         final char xp = (char) Integer.parseInt(plugin.config.get.getString(path + ".xp.symbol").substring(2), 16);
         final char none = (char) Integer.parseInt(plugin.config.get.getString(path + ".none.symbol").substring(2), 16);
-        final ChatColor xpColor = getChatColor(plugin.config.get.getString(path + ".xp.color"));
-        final ChatColor noneColor = getChatColor(plugin.config.get.getString(path + ".none.color"));
+        final ChatColor xpColor = ChatColor.getByChar(plugin.config.get.getString(path + ".xp.color").charAt(1));
+        final ChatColor noneColor = ChatColor.getByChar(plugin.config.get.getString(path + ".none.color").charAt(1));
         final int bars = plugin.config.get.getInt(path + ".amount");
         final int progressBars = (bars * xp_progress(playerConnect) / 100);
         try {
@@ -102,25 +102,22 @@ public class StatsManager extends Manager {
 
     public LinkedHashMap<OfflinePlayer, Long> getTopMap(final String type, final boolean reverse) {
         final Map<OfflinePlayer, Long> unsorted = new HashMap<>();
-        final List<String> excluded = plugin.config.get.getStringList("top.excluded");
         for (final OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
             final UUID uuid = offlinePlayer.getUniqueId();
-            if (!excluded.contains(uuid.toString())) {
-                final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-                switch (type) {
-                    case "xp":
-                        unsorted.put(offlinePlayer, playerConnect.getXP());
-                        break;
-                    case "level":
-                        unsorted.put(offlinePlayer, playerConnect.getLevel());
-                        break;
-                    case "rating":
-                        unsorted.put(offlinePlayer, (long) playerConnect.getRating().getMean());
-                        break;
-                    case "lastseen":
-                        unsorted.put(offlinePlayer, playerConnect.getTime().getTime());
-                        break;
-                }
+            final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+            switch (type) {
+                case "xp":
+                    unsorted.put(offlinePlayer, playerConnect.getXP());
+                    break;
+                case "level":
+                    unsorted.put(offlinePlayer, playerConnect.getLevel());
+                    break;
+                case "rating":
+                    unsorted.put(offlinePlayer, (long) playerConnect.getRating().getMean());
+                    break;
+                case "lastseen":
+                    unsorted.put(offlinePlayer, playerConnect.getTime().getTime());
+                    break;
             }
         }
         final LinkedHashMap<OfflinePlayer, Long> sorted = new LinkedHashMap<>();
@@ -130,34 +127,6 @@ public class StatsManager extends Manager {
             unsorted.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.naturalOrder())).forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
         }
         return sorted;
-    }
-
-    private ChatColor getChatColor(final String colorCode){
-        switch (colorCode){
-            case "&0" : return ChatColor.BLACK;
-            case "&1" : return ChatColor.DARK_BLUE;
-            case "&2" : return ChatColor.DARK_GREEN;
-            case "&3" : return ChatColor.DARK_AQUA;
-            case "&4" : return ChatColor.DARK_RED;
-            case "&5" : return ChatColor.DARK_PURPLE;
-            case "&6" : return ChatColor.GOLD;
-            case "&7" : return ChatColor.GRAY;
-            case "&8" : return ChatColor.DARK_GRAY;
-            case "&9" : return ChatColor.BLUE;
-            case "&a" : return ChatColor.GREEN;
-            case "&b" : return ChatColor.AQUA;
-            case "&c" : return ChatColor.RED;
-            case "&d" : return ChatColor.LIGHT_PURPLE;
-            case "&e" : return ChatColor.YELLOW;
-            case "&f" : return ChatColor.WHITE;
-            case "&k" : return ChatColor.MAGIC;
-            case "&l" : return ChatColor.BOLD;
-            case "&m" : return ChatColor.STRIKETHROUGH;
-            case "&n" : return ChatColor.UNDERLINE;
-            case "&o" : return ChatColor.ITALIC;
-            case "&r" : return ChatColor.RESET;
-            default: return ChatColor.WHITE;
-        }
     }
 
     public String time(final String path, final long time) {

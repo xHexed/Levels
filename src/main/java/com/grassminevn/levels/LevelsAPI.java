@@ -34,7 +34,7 @@ public class LevelsAPI {
         Levels.call.getPlayerConnect(uuid).syncSave();
     }
 
-    public static void calculateRatings(final List<ITeam> teams, final int[] teamRanks) {
+    public static void calculateRatings(final List<? extends ITeam> teams, final int[] teamRanks) {
         Levels.call.xpManager.calculateRatings(teams, teamRanks);
     }
 }

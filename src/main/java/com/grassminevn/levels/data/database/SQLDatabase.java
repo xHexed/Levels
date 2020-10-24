@@ -13,6 +13,7 @@ public abstract class SQLDatabase {
 
     public SQLDatabase(final Levels plugin) {
         this.plugin = plugin;
+        set();
     }
 
     private Connection get() {
@@ -40,20 +41,16 @@ public abstract class SQLDatabase {
         }
     }
 
-    private boolean check() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = get();
-            if (connection == null || connection.isClosed()) {
-                return false;
-            }
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels` (`uuid` char(32) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `multiplier` double, `multiplier_start_time` datetime, `multiplier_end_time` datetime, `last_seen` datetime);");
-        }
-        return true;
-    }
-
     public boolean set() {
         try {
-            return check();
+            if (connection == null || connection.isClosed()) {
+                connection = get();
+                if (connection == null || connection.isClosed()) {
+                    return false;
+                }
+                createTable();
+            }
+            return true;
         } catch (final SQLException e) {
             plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
             return false;

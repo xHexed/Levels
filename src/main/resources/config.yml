@@ -68,7 +68,3 @@ time:
 date:
   format: dd.MM.yyyy
   zone: Europe/Copenhagen
-
-# List of players that will not get kills/deaths/xp
-excluded:
-  - uuid

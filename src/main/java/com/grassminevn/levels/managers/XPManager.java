@@ -35,43 +35,41 @@ public class XPManager extends Manager {
         if (entity instanceof Player) {
             final Player killed = (Player) entity;
             final UUID killedUUID = killed.getUniqueId();
-            if (!plugin.config.get.getStringList("excluded").contains(killedUUID.toString())) {
-                final PlayerConnect playerConnect = plugin.getPlayerConnect(killedUUID);
-                check(killed, entity.getCustomName(), getEntityKiller(killed, playerConnect.getGroup()), "", false);
-                if (world(killed, plugin.config.get, "deaths." + playerConnect.getGroup())) {
-                    boolean run = false;
-                    if (plugin.config.get.getBoolean("deaths." + playerConnect.getGroup() + ".only-player")) {
-                        if (killer != null) {
-                            run = true;
-                        }
-                    } else {
+            final PlayerConnect playerConnect = plugin.getPlayerConnect(killedUUID);
+            check(killed, entity.getCustomName(), getEntityKiller(killed, playerConnect.getGroup()), "", false);
+            if (world(killed, plugin.config.get, "deaths." + playerConnect.getGroup())) {
+                boolean run = false;
+                if (plugin.config.get.getBoolean("deaths." + playerConnect.getGroup() + ".only-player")) {
+                    if (killer != null) {
                         run = true;
                     }
-                    if (run) {
-                        boolean isSet = false;
-                        String source = killed.getLastDamageCause().getCause().toString();
-                        if (plugin.language.get.contains("translate.cause." + source)) {
-                            source = plugin.language.get.getString("translate.cause." + source);
-                            isSet = true;
+                } else {
+                    run = true;
+                }
+                if (run) {
+                    boolean isSet = false;
+                    String source = killed.getLastDamageCause().getCause().toString();
+                    if (plugin.language.get.contains("translate.cause." + source)) {
+                        source = plugin.language.get.getString("translate.cause." + source);
+                        isSet = true;
+                    }
+                    if (!isSet) {
+                        final String killerName = getKillerName(killed);
+                        if (!killerName.isEmpty()) {
+                            source = killerName;
                         }
-                        if (!isSet) {
-                            final String killerName = getKillerName(killed);
-                            if (!killerName.isEmpty()) {
-                                source = killerName;
-                            }
+                    }
+                    boolean isPlayer = false;
+                    if (killer != null) {
+                        isPlayer = true;
+                    }
+                    if (isPlayer) {
+                        for (final String command : plugin.config.get.getStringList("deaths." + playerConnect.getGroup() + ".player")) {
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.replacePlaceholders(killed, command.replace("{source}", source)));
                         }
-                        boolean isPlayer = false;
-                        if (killer != null) {
-                            isPlayer = true;
-                        }
-                        if (isPlayer) {
-                            for (final String command : plugin.config.get.getStringList("deaths." + playerConnect.getGroup() + ".player")) {
-                                plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.replacePlaceholders(killed, command.replace("{source}", source)));
-                            }
-                        } else {
-                            for (final String command : plugin.config.get.getStringList("deaths." + playerConnect.getGroup() + ".other")) {
-                                plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.replacePlaceholders(killed, command.replace("{source}", source)));
-                            }
+                    } else {
+                        for (final String command : plugin.config.get.getStringList("deaths." + playerConnect.getGroup() + ".other")) {
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.replacePlaceholders(killed, command.replace("{source}", source)));
                         }
                     }
                 }
@@ -79,8 +77,7 @@ public class XPManager extends Manager {
         }
         if (killer != null) {
             final String killerUUID = killer.getUniqueId().toString();
-            if (!plugin.config.get.getStringList("excluded").contains(killerUUID)
-                    && !entity.getUniqueId().toString().equalsIgnoreCase(killerUUID)) {
+            if (!entity.getUniqueId().toString().equalsIgnoreCase(killerUUID)) {
                 check(killer, entity.getCustomName(), entity.getType().toString().toLowerCase(), entity.getName(), true);
             }
         }
@@ -113,7 +110,7 @@ public class XPManager extends Manager {
                 if (item_boost != 0) {
                     getPath = "item";
                 }
-                Double multiplier = playerConnect.getMultiplier();
+                double multiplier = playerConnect.getMultiplier();
                 if (multiplier != 0D) {
                     if (getPath.equalsIgnoreCase("item")) {
                         getPath = "both";
@@ -168,7 +165,7 @@ public class XPManager extends Manager {
     }
 
     public boolean getLevel(final Player player, final PlayerConnect playerConnect) {
-        final Long nextLevel = playerConnect.getLevel() + 1;
+        final long nextLevel = playerConnect.getLevel() + 1;
         if (playerConnect.getXP() >= plugin.levels.get.getLong(playerConnect.getGroup() + "." + nextLevel + ".xp")) {
             sendCommands(player, plugin.levels.get.getString(playerConnect.getGroup() + "." + playerConnect.getLevel() + ".execute") + ".level.up", plugin.execute.get, "", 0, 0, 0, 0);
             playerConnect.setLevel(nextLevel);

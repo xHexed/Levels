@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Levels extends JavaPlugin {
@@ -45,12 +44,8 @@ public class Levels extends JavaPlugin {
     public MultiplierManager multiplierManager;
 
     private final Map<UUID, PlayerConnect> playerConnect = new HashMap<>();
-
     private final HashMap<Player, Menu> playerMenu = new HashMap<>();
-
     public final HashMap<String, FileConfiguration> guiFiles = new HashMap<>();
-
-    public final Map<OfflinePlayer, Long> multipliers = new ConcurrentHashMap<>();
 
     public void onEnable() {
         call = this;
@@ -93,22 +88,6 @@ public class Levels extends JavaPlugin {
             if (config.get.getBoolean("save.use")) {
                 saveSchedule();
             }
-
-            getServer().getScheduler().runTaskTimerAsynchronously(this, () -> multipliers.forEach((p, t) -> {
-                if (p.isOnline()) {
-                    final PlayerConnect playerConnect = getPlayerConnect(p.getUniqueId());
-                    if (t > 0) {
-                        multipliers.put(p, t - 1);
-                        return;
-                    }
-                    for (final String message : language.get.getStringList("multiplier.lost")) {
-                        getServer().dispatchCommand(consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", p.getName()).replace("{multiplier}", String.valueOf(playerConnect.getMultiplier()))));
-                    }
-                    playerConnect.getMultiplierInfo().stop();
-                }
-                multipliers.remove(p);
-            }), 20, 20);
-
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);

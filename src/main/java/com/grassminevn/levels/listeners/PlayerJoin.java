@@ -29,7 +29,7 @@ public class PlayerJoin implements Listener {
             for (final String message : plugin.language.get.getStringList("multiplier.join")) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName())));
             }
-            plugin.multipliers.put(player, multiplierInfo.getEndTime() - multiplierInfo.getStartTime());
+            plugin.multiplierManager.addMultiplier(player.getUniqueId(), multiplierInfo.getEndTime() - multiplierInfo.getStartTime());
         }
     }
 }
