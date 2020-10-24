@@ -32,11 +32,11 @@ public class StatsManager {
     }
 
     public Long xp_need(final PlayerConnect playerConnect) {
-        return plugin.levels.get.getLong(playerConnect.getGroup() + "." + (playerConnect.getLevel() + 1) + ".xp") - playerConnect.getXp();
+        return plugin.levels.get.getLong(playerConnect.getGroup() + "." + (playerConnect.getLevel() + 1) + ".xp") - playerConnect.getXP();
     }
 
     public int xp_progress(final PlayerConnect playerConnect) {
-        final long xp_cur = playerConnect.getXp();
+        final long xp_cur = playerConnect.getXP();
         final long xp_req_cur = plugin.levels.get.getLong(playerConnect.getGroup() + "." + playerConnect.getLevel() + ".xp");
         final long xp_req_next = plugin.levels.get.getLong(playerConnect.getGroup() + "." + (playerConnect.getLevel() + 1) + ".xp");
         final double set = (double) (xp_cur - xp_req_cur) / (xp_req_next - xp_req_cur);
@@ -112,7 +112,7 @@ public class StatsManager {
                 final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
                 switch (type) {
                     case "xp":
-                        unsorted.put(offlinePlayer, playerConnect.getXp());
+                        unsorted.put(offlinePlayer, playerConnect.getXP());
                         break;
                     case "level":
                         unsorted.put(offlinePlayer, playerConnect.getLevel());

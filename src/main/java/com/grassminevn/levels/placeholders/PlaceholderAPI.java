@@ -50,7 +50,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         final UUID uuid = player.getUniqueId();
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         if(identifier.equals("xp")){
-            return String.valueOf(playerConnect.getXp());
+            return String.valueOf(playerConnect.getXP());
         }
         if(identifier.equals("level")){
             return String.valueOf(playerConnect.getLevel());
@@ -114,126 +114,6 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             } else {
                 return String.valueOf(0);
             }
-        }
-        if(identifier.equals("top_1_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 0, true, true);
-        }
-        if(identifier.equals("top_1_kills")){
-            return plugin.statsManager.getTopValue("kills", 0, false, true);
-        }
-        if(identifier.equals("top_2_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 1, true, true);
-        }
-        if(identifier.equals("top_2_kills")){
-            return plugin.statsManager.getTopValue("kills", 1, false, true);
-        }
-        if(identifier.equals("top_3_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 2, true, true);
-        }
-        if(identifier.equals("top_3_kills")){
-            return plugin.statsManager.getTopValue("kills", 2, false, true);
-        }
-        if(identifier.equals("top_4_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 3, true, true);
-        }
-        if(identifier.equals("top_4_kills")){
-            return plugin.statsManager.getTopValue("kills", 3, false, true);
-        }
-        if(identifier.equals("top_5_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 4, true, true);
-        }
-        if(identifier.equals("top_5_kills")){
-            return plugin.statsManager.getTopValue("kills", 4, false, true);
-        }
-        if(identifier.equals("top_6_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 5, true, true);
-        }
-        if(identifier.equals("top_6_kills")){
-            return plugin.statsManager.getTopValue("kills", 5, false, true);
-        }
-        if(identifier.equals("top_7_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 6, true, true);
-        }
-        if(identifier.equals("top_7_kills")){
-            return plugin.statsManager.getTopValue("kills", 6, false, true);
-        }
-        if(identifier.equals("top_8_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 7, true, true);
-        }
-        if(identifier.equals("top_8_kills")){
-            return plugin.statsManager.getTopValue("kills", 7, false, true);
-        }
-        if(identifier.equals("top_9_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 8, true, true);
-        }
-        if(identifier.equals("top_9_kills")){
-            return plugin.statsManager.getTopValue("kills", 8, false, true);
-        }
-        if(identifier.equals("top_10_kills_name")){
-            return plugin.statsManager.getTopValue("kills", 9, true, true);
-        }
-        if(identifier.equals("top_10_kills")){
-            return plugin.statsManager.getTopValue("kills", 9, false, true);
-        }
-        if(identifier.equals("top_1_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 0, true, true);
-        }
-        if(identifier.equals("top_1_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 0, false, true);
-        }
-        if(identifier.equals("top_2_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 1, true, true);
-        }
-        if(identifier.equals("top_2_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 1, false, true);
-        }
-        if(identifier.equals("top_3_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 2, true, true);
-        }
-        if(identifier.equals("top_3_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 2, false, true);
-        }
-        if(identifier.equals("top_4_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 3, true, true);
-        }
-        if(identifier.equals("top_4_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 3, false, true);
-        }
-        if(identifier.equals("top_5_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 4, true, true);
-        }
-        if(identifier.equals("top_5_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 4, false, true);
-        }
-        if(identifier.equals("top_6_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 5, true, true);
-        }
-        if(identifier.equals("top_6_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 5, false, true);
-        }
-        if(identifier.equals("top_7_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 6, true, true);
-        }
-        if(identifier.equals("top_7_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 6, false, true);
-        }
-        if(identifier.equals("top_8_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 7, true, true);
-        }
-        if(identifier.equals("top_8_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 7, false, true);
-        }
-        if(identifier.equals("top_9_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 8, true, true);
-        }
-        if(identifier.equals("top_9_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 8, false, true);
-        }
-        if(identifier.equals("top_10_deaths_name")){
-            return plugin.statsManager.getTopValue("deaths", 9, true, true);
-        }
-        if(identifier.equals("top_10_deaths")){
-            return plugin.statsManager.getTopValue("deaths", 9, false, true);
         }
         if(identifier.equals("top_1_xp_name")){
             return plugin.statsManager.getTopValue("xp", 0, true, true);

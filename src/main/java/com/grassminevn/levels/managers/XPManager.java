@@ -26,9 +26,9 @@ public class XPManager {
         this.plugin = plugin;
     }
 
-    public void calculateRatings(final List<ITeam> teams, final int[] teamRanks) {
+    public void calculateRatings(final List<? extends ITeam> teams, final int[] teamRanks) {
         TrueSkillCalculator.calculateNewRatings(GameInfo.getDefaultGameInfo(), teams, teamRanks).forEach((p, r) -> {
-            Levels.call.getPlayerConnect(p.getId()).setRating(r);
+            Levels.call.getPlayerConnect(p.getUuid()).setRating(r);
         });
     }
 
@@ -133,8 +133,8 @@ public class XPManager {
     }
 
     public void getXP(final Player player, final PlayerConnect playerConnect, final int add, final String entityType, final String path, final int item_boost, final double multiplier) {
-        final long xp = playerConnect.getXp() + add;
-        playerConnect.setXp(xp);
+        final long xp = playerConnect.getXP() + add;
+        playerConnect.setXP(xp);
         if (!getLevel(player, playerConnect)) {
             sendCommands(player, plugin.levels.get.getString(playerConnect.getGroup() + ".execute") + ".xp." + path, plugin.execute.get, entityType, add, 0, item_boost, multiplier);
         }
@@ -143,12 +143,12 @@ public class XPManager {
     public void loseXP(final Player player, final PlayerConnect playerConnect, final String path, final String entityType) {
         if (plugin.config.get.contains(path + ".xp-lose")) {
             final int lose = plugin.random(plugin.config.get.getInt(path + ".xp-lose.min"), plugin.config.get.getInt(path + ".xp-lose.max"));
-            final long xp = playerConnect.getXp() - lose;
+            final long xp = playerConnect.getXP() - lose;
             boolean message = true;
             if (xp >= plugin.levels.get.getLong(playerConnect.getGroup() + "." + plugin.config.get.getLong("start-level") + ".xp")) {
                 if (xp >= 0) {
-                    playerConnect.setXp(xp);
-                    if (playerConnect.getXp() < plugin.levels.get.getLong(playerConnect.getGroup() + "." + playerConnect.getLevel() + ".xp")) {
+                    playerConnect.setXP(xp);
+                    if (playerConnect.getXP() < plugin.levels.get.getLong(playerConnect.getGroup() + "." + playerConnect.getLevel() + ".xp")) {
                         message = loseLevel(playerConnect, player, entityType);
                     }
                 }
@@ -170,7 +170,7 @@ public class XPManager {
 
     public boolean getLevel(final Player player, final PlayerConnect playerConnect) {
         final Long nextLevel = playerConnect.getLevel() + 1;
-        if (playerConnect.getXp() >= plugin.levels.get.getLong(playerConnect.getGroup() + "." + nextLevel + ".xp")) {
+        if (playerConnect.getXP() >= plugin.levels.get.getLong(playerConnect.getGroup() + "." + nextLevel + ".xp")) {
             sendCommands(player, plugin.levels.get.getString(playerConnect.getGroup() + "." + playerConnect.getLevel() + ".execute") + ".level.up", plugin.execute.get, "", 0, 0, 0, 0);
             playerConnect.setLevel(nextLevel);
             return true;
@@ -243,15 +243,8 @@ public class XPManager {
             return 0;
         }
         final PlayerInventory inventory = player.getInventory();
-        ItemStack hand;
-        ItemStack offHand;
-        try {
-            hand = inventory.getItemInMainHand();
-            offHand = inventory.getItemInOffHand();
-        } catch (final NoSuchMethodError error) {
-            hand = inventory.getItemInHand();
-            offHand = hand.clone();
-        }
+        final ItemStack hand = inventory.getItemInMainHand();
+        final ItemStack offHand = inventory.getItemInOffHand();
         if (hand != null) {
             final String itemStackName = hand.getType().name();
             for (final String next : plugin.config.get.getConfigurationSection(path + ".items").getKeys(false)) {

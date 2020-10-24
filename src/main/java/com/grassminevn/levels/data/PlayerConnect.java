@@ -1,6 +1,8 @@
 package com.grassminevn.levels.data;
 
 import com.grassminevn.levels.Levels;
+import com.grassminevn.levels.data.playerinfo.MultiplierInfo;
+import com.grassminevn.levels.data.playerinfo.PlayerInfo;
 import com.grassminevn.levels.jskills.Player;
 import com.grassminevn.levels.jskills.Rating;
 
@@ -8,107 +10,93 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class PlayerConnect extends Player {
-    private final UUID uuid;
-    private Rating rating;
-    private String group;
-    private Long xp;
-    private Long level;
-    private Double multiplier;
-    private Integer multiplier_time;
-    private Integer multiplier_time_left;
-    private Timestamp time;
+    private final PlayerInfo playerInfo;
+    private final MultiplierInfo multiplierInfo;
 
     public PlayerConnect(final UUID uuid) {
         super(uuid);
-        this.uuid = uuid;
-        final String[] data = Levels.call.database.getValues(uuid);
-        group = data[0];
-        xp = Long.parseLong(data[1]);
-        level = Long.parseLong(data[2]);
-        rating = new Rating(Double.parseDouble(data[3]), Double.parseDouble(data[4]));
-        final String[] split = data[5].split(" ");
-        if (split.length == 3) {
-            multiplier = Double.parseDouble(split[0]);
-            multiplier_time = Integer.parseInt(split[1]);
-            multiplier_time_left = Integer.parseInt(split[2]);
-        } else {
-            multiplier = Double.parseDouble(split[0]);
-            multiplier_time = Integer.parseInt(split[1]);
-            multiplier_time_left = 0;
-            save();
-        }
-        time = Timestamp.valueOf(data[6]);
+        playerInfo = Levels.call.database.getPlayerInfo(uuid);
+        multiplierInfo = Levels.call.database.getMultiplierInfo(uuid);
     }
 
     public void setGroup(final String group) {
-        this.group = group;
+        playerInfo.setGroup(group);
+        save();
     }
 
-    public void setXp(final Long xp) {
-        this.xp = xp;
+    public void setXP(final long xp) {
+        playerInfo.setXP(xp);
+        save();
     }
 
-    public void setLevel(final Long level) {
-        this.level = level;
+    public void setLevel(final long level) {
+        playerInfo.setLevel(level);
+        save();
     }
 
     public void setRating(final Rating rating) {
-        this.rating = rating;
+        playerInfo.setRating(rating);
+        save();
     }
 
-    public void setMultiplier(final Double multiplier) {
-        this.multiplier = multiplier;
+    public void setMultiplier(final double multiplier) {
+        multiplierInfo.setMultiplier(multiplier);
+        save();
     }
 
     public void setMultiplier_time(final Integer multiplier_time) {
-        this.multiplier_time = multiplier_time;
+        //multiplierInfo.getStartTime(multiplier_time);
+        save();
     }
 
     public void setMultiplier_time_left(final Integer multiplier_time_left) {
-        this.multiplier_time_left = multiplier_time_left;
+        //this.multiplier_time_left = multiplier_time_left;
+        save();
     }
 
     public void setTime() {
-        time = new Timestamp(new Date().getTime());
+        playerInfo.setTime();
     }
 
     public String getGroup() {
-        return group;
+        return playerInfo.getGroup();
     }
 
-    public Long getXp() {
-        return xp;
+    public Long getXP() {
+        return playerInfo.getXP();
     }
 
     public Long getLevel() {
-        return level;
+        return playerInfo.getLevel();
     }
 
     public Rating getRating() {
-        return rating;
+        return playerInfo.getRating();
     }
 
-    public Double getMultiplier() {
-        return multiplier;
+    public double getMultiplier() {
+        return multiplierInfo.getMultiplier();
     }
 
     public Integer getMultiplier_time() {
-        return multiplier_time;
+        //return multiplierInfo.getStartTime();
+        return 0;
     }
 
     public Integer getMultiplier_time_left() {
-        return multiplier_time_left;
+        //return multiplierInfo.getEndTime();
+        return 0;
     }
 
     public Timestamp getTime() {
-        return time;
+        return playerInfo.getTime();
     }
 
     public void save() {
-        Levels.call.database.setValues(uuid, group, xp, level, rating.getMean(), rating.getStandardDeviation(),(multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
+        Levels.call.database.setPlayerInfo(uuid, playerInfo);
     }
 
     public void syncSave() {
-        Levels.call.database.setValuesSync(uuid, group, xp, level, rating.getMean(), rating.getStandardDeviation(), (multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
+        Levels.call.database.setPlayerInfo(uuid, playerInfo);
     }
 }

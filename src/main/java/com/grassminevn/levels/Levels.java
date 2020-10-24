@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Levels extends JavaPlugin {
@@ -53,7 +54,7 @@ public class Levels extends JavaPlugin {
 
     public final HashMap<String, FileConfiguration> guiFiles = new HashMap<>();
 
-    public final HashSet<OfflinePlayer> multipliers = new HashSet<>();
+    public final Map<OfflinePlayer, Long> multipliers = new ConcurrentHashMap<>();
 
     public void onEnable() {
         call = this;
@@ -97,10 +98,10 @@ public class Levels extends JavaPlugin {
                 saveSchedule();
             }
 
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-                for (final OfflinePlayer offlinePlayer : multipliers) {
-                    if (offlinePlayer.isOnline()) {
-                        final PlayerConnect playerConnect = getPlayerConnect(offlinePlayer.getUniqueId());
+            getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+                multipliers.forEach((p, t) -> {
+                    if (p.isOnline()) {
+                        final PlayerConnect playerConnect = getPlayerConnect(p.getUniqueId());
                         int left = playerConnect.getMultiplier_time_left();
                         if (left > 0) {
                             left--;
@@ -108,14 +109,14 @@ public class Levels extends JavaPlugin {
                             return;
                         }
                         for (final String message : language.get.getStringList("multiplier.lost")) {
-                            getServer().dispatchCommand(consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", offlinePlayer.getName()).replace("{multiplier}", String.valueOf(playerConnect.getMultiplier()))));
+                            getServer().dispatchCommand(consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", p.getName()).replace("{multiplier}", String.valueOf(playerConnect.getMultiplier()))));
                         }
                         playerConnect.setMultiplier(0D);
                         playerConnect.setMultiplier_time(0);
                         playerConnect.setMultiplier_time_left(0);
                     }
-                    multipliers.remove(offlinePlayer);
-                }
+                    multipliers.remove(p);
+                });
             }, 20, 20);
 
         } else {
@@ -193,7 +194,7 @@ public class Levels extends JavaPlugin {
 
     public String internalReplace(final PlayerConnect playerConnect, final String message) {
         return message
-                .replace("{xp}", String.valueOf(playerConnect.getXp()))
+                .replace("{xp}", String.valueOf(playerConnect.getXP()))
                 .replace("{level}", String.valueOf(playerConnect.getLevel()))
                 .replace("{level_next}", String.valueOf(playerConnect.getLevel() + 1))
                 .replace("{xp_required}", String.valueOf(statsManager.xp_required(playerConnect, false)))

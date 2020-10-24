@@ -20,7 +20,6 @@ mysql:
 
   # Automatically remove inactive players from the database (remove section to disable)
   purge:
-
     # How often to check the activity of players? Seconds.
     interval: 7200
 
@@ -33,11 +32,6 @@ mysql:
     # Additional commands that will be executed along with the purge. It may
     # be useful for deleting player data from a databases of other plugins.
     commands: []
-
-# Save every x amount of minutes
-save:
-  use: true
-  interval: 60
 
 top:
   name: '&cNone'
@@ -74,9 +68,6 @@ time:
 date:
   format: dd.MM.yyyy
   zone: Europe/Copenhagen
-
-# Start level of new players
-start-level: 0
 
 # List of players that will not get kills/deaths/xp
 excluded:

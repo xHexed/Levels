@@ -15,7 +15,7 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
     private static final double DefaultPartialUpdatePercentage = 1.0;
 
     // The identifier for the player, such as a name.
-    private final UUID id;
+    protected final UUID uuid;
 
     /**
      * Indicates the percent of the time the player should be weighted where 0.0
@@ -33,41 +33,41 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
     /**
      * Constructs a player.
      * 
-     * @param id The identifier for the player, such as a name.
+     * @param uuid The identifier for the player, such as a name.
      */
-    public Player(final UUID id) {
-        this(id, DefaultPartialPlayPercentage, DefaultPartialUpdatePercentage);
+    public Player(final UUID uuid) {
+        this(uuid, DefaultPartialPlayPercentage, DefaultPartialUpdatePercentage);
     }
 
     /**
      * Constructs a player.
      * 
-     * @param id The identifier for the player, such as a name.
+     * @param uuid The identifier for the player, such as a name.
      * @param partialPlayPercentage The weight percentage to give this player when calculating a new rank.
      */
-    public Player(final UUID id, final double partialPlayPercentage) {
-        this(id, partialPlayPercentage, DefaultPartialUpdatePercentage);
+    public Player(final UUID uuid, final double partialPlayPercentage) {
+        this(uuid, partialPlayPercentage, DefaultPartialUpdatePercentage);
     }
 
     /**
      * Constructs a player.
      * 
-     * @param id The identifier for the player, such as a name.
+     * @param uuid The identifier for the player, such as a name.
      * @param partialPlayPercentage The weight percentage to give this player when calculating a new rank.
      * @param partialUpdatePercentage Indicates how much of a skill update a player should receive
      *                                where 0 represents no update and 1.0 represents 100% of the update.
      */
-    public Player(final UUID id, final double partialPlayPercentage, final double partialUpdatePercentage) {
+    public Player(final UUID uuid, final double partialPlayPercentage, final double partialUpdatePercentage) {
         // If they don't want to give a player an id, that's ok...
         Guard.argumentInRangeInclusive(partialPlayPercentage, 0, 1.0, "partialPlayPercentage");
         Guard.argumentInRangeInclusive(partialUpdatePercentage, 0, 1.0, "partialUpdatePercentage");
-        this.id = id;
-        this.partialPlayPercentage = partialPlayPercentage;
+        this.uuid                    = uuid;
+        this.partialPlayPercentage   = partialPlayPercentage;
         this.partialUpdatePercentage = partialUpdatePercentage;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getUuid() {
+        return uuid;
     }
 
     public double getPartialPlayPercentage() {
@@ -87,7 +87,7 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
 
         if (Double.compare(player.partialPlayPercentage, partialPlayPercentage) != 0) return false;
         if (Double.compare(player.partialUpdatePercentage, partialUpdatePercentage) != 0) return false;
-        return Objects.equals(id, player.id);
+        return Objects.equals(uuid, player.uuid);
 
     }
 
@@ -95,7 +95,7 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
     public int hashCode() {
         int result;
         long temp;
-        result = id != null ? id.hashCode() : 0;
+        result = uuid != null ? uuid.hashCode() : 0;
         temp = Double.doubleToLongBits(partialPlayPercentage);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(partialUpdatePercentage);
@@ -104,6 +104,6 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
     }
 
     @Override public String toString() {
-        return id != null ? id.toString() : super.toString();
+        return uuid != null ? uuid.toString() : super.toString();
     }
 }

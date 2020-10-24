@@ -499,12 +499,12 @@ public class LevelsCommand implements CommandExecutor {
                                 if (args[1].equalsIgnoreCase("level")) {
                                     final PlayerConnect playerConnect = plugin.getPlayerConnect(target.getUniqueId());
                                     playerConnect.setLevel(plugin.config.get.getLong("start-level"));
-                                    playerConnect.setXp(0L);
+                                    playerConnect.setXP(0L);
                                     triggerReset(type, sender, target, "level");
                                 } else if (args[1].equalsIgnoreCase("stats")) {
                                     if (args.length == 4) {
                                         final PlayerConnect playerConnect = plugin.getPlayerConnect(target.getUniqueId());
-                                        playerConnect.setXp(0L);
+                                        playerConnect.setXP(0L);
                                         playerConnect.setLevel(plugin.config.get.getLong("start-level"));
                                         playerConnect.setRating(new Rating(25, 25D / 3));
                                         if (Boolean.parseBoolean(args[2])) {
@@ -573,9 +573,9 @@ public class LevelsCommand implements CommandExecutor {
                                     long set = Long.parseLong(args[2]);
                                     boolean plus = true;
                                     if (args[2].contains("+")) {
-                                        set = playerConnect.getXp() + Long.parseLong(args[2].replace("+", ""));
+                                        set = playerConnect.getXP() + Long.parseLong(args[2].replace("+", ""));
                                     } else if (args[2].contains("-")) {
-                                        set = playerConnect.getXp() - Long.parseLong(args[2].replace("-", ""));
+                                        set = playerConnect.getXP() - Long.parseLong(args[2].replace("-", ""));
                                         plus = false;
                                     }
                                     long number = plugin.config.get.getLong("start-level");
@@ -589,9 +589,9 @@ public class LevelsCommand implements CommandExecutor {
                                         stringList.remove("execute");
                                         final Set<Integer> list = stringList.stream().map(Integer::parseInt).collect(Collectors.toSet());
                                         final long maxXP = plugin.levels.get.getLong(playerConnect.getGroup() + "." + Collections.max(list) + ".xp");
-                                        playerConnect.setXp(Math.min(set, maxXP));
+                                        playerConnect.setXP(Math.min(set, maxXP));
                                     } else {
-                                        playerConnect.setXp(0L);
+                                        playerConnect.setXP(0L);
                                     }
                                     if (playerConnect.getLevel() != number) {
                                         if (plus) {
@@ -673,7 +673,7 @@ public class LevelsCommand implements CommandExecutor {
                                         playerConnect.setLevel(set - 1);
                                         plugin.xpManager.sendCommands(target, plugin.levels.get.getString(playerConnect.getGroup() + "." + set + ".execute") + ".level.up", plugin.execute.get, "", 0, 0, 0, 0);
                                         playerConnect.setLevel(set);
-                                        playerConnect.setXp(plugin.levels.get.getLong(playerConnect.getGroup() + "." + set + ".xp"));
+                                        playerConnect.setXP(plugin.levels.get.getLong(playerConnect.getGroup() + "." + set + ".xp"));
                                         if (type.equalsIgnoreCase("player")) {
                                             for (final String message : plugin.language.get.getStringList("level.set")) {
                                                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{level}", String.valueOf(set)).replace("{player}", sender.getName())));
