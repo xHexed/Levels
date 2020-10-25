@@ -84,10 +84,6 @@ public class Levels extends JavaPlugin {
             if (isLevelsValid()) {
                 textUtils.info("Validator ( passed )");
             }
-
-            if (config.get.getBoolean("save.use")) {
-                saveSchedule();
-            }
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
@@ -132,16 +128,6 @@ public class Levels extends JavaPlugin {
         } else {
             return this.playerMenu.get(player);
         }
-    }
-
-    private void saveSchedule() {
-        final int interval = config.get.getInt("save.interval");
-        textUtils.info("Saving to the database every ( " + interval + " ) minutes");
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-            for (final UUID uuid : listPlayerConnect()) {
-                getPlayerConnect(uuid).save();
-            }
-        }, interval * 1200, interval * 1200);
     }
 
     public String replacePlaceholders(final OfflinePlayer player, String message) {
