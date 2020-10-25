@@ -61,13 +61,18 @@ public class MultiplierDatabase extends SQLDatabase {
                 resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_multiplier WHERE uuid= '" + uuid + "';");
                 if (resultSet.next()) {
                     preparedStatement = connection.prepareStatement("UPDATE levels_multiplier SET multiplier = ?, multiplier_start_time = ?, multiplier_end_time = ? WHERE uuid = ?");
+                    preparedStatement.setDouble(1, info.getMultiplier());
+                    preparedStatement.setLong(2, info.getStartTime());
+                    preparedStatement.setLong(3, info.getEndTime());
+                    preparedStatement.setString(4, uuid.toString());
                 }
                 else {
-                    preparedStatement = connection.prepareStatement("INSERT INTO levels_multiplier (multiplier, multiplier_start_time, multiplier_end_time) VALUES(?, ?, ?);");
+                    preparedStatement = connection.prepareStatement("INSERT INTO levels_multiplier (uuid, multiplier, multiplier_start_time, multiplier_end_time) VALUES(?, ?, ?, ?);");
+                    preparedStatement.setString(1, uuid.toString());
+                    preparedStatement.setDouble(2, info.getMultiplier());
+                    preparedStatement.setLong(3, info.getStartTime());
+                    preparedStatement.setLong(4, info.getEndTime());
                 }
-                preparedStatement.setDouble(1, info.getMultiplier());
-                preparedStatement.setLong(2, info.getStartTime());
-                preparedStatement.setLong(3, info.getEndTime());
                 preparedStatement.executeUpdate();
             } catch (final SQLException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
