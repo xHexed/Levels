@@ -4,7 +4,6 @@ import com.grassminevn.levels.Levels;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 
 public class GUIFolder {
 
@@ -21,21 +20,11 @@ public class GUIFolder {
         }
         admin = new File(folder, "admin.yml");
         if (!admin.exists()) {
-            try {
-                admin.createNewFile();
-                plugin.copy("gui/admin.yml", admin);
-            } catch (final IOException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-            }
+            plugin.copy("gui/admin.yml", admin);
         }
         profiles = new File(folder, "profiles.yml");
         if (!profiles.exists()) {
-            try {
-                profiles.createNewFile();
-                plugin.copy("gui/profiles.yml", profiles);
-            } catch (final IOException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-            }
+            plugin.copy("gui/profiles.yml", profiles);
         }
         load();
     }
