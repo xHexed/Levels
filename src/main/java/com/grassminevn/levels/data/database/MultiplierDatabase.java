@@ -24,10 +24,6 @@ public class MultiplierDatabase extends SQLDatabase {
         }
     }
 
-    public void insert(final UUID uuid) {
-        setValue(uuid, new MultiplierInfo(uuid));
-    }
-
     public void delete(final UUID uuid) {
         if (set()) {
             final BukkitRunnable r = new BukkitRunnable() {
@@ -62,16 +58,16 @@ public class MultiplierDatabase extends SQLDatabase {
                 if (resultSet.next()) {
                     preparedStatement = connection.prepareStatement("UPDATE levels_multiplier SET multiplier = ?, multiplier_start_time = ?, multiplier_end_time = ? WHERE uuid = ?");
                     preparedStatement.setDouble(1, info.getMultiplier());
-                    preparedStatement.setLong(2, info.getStartTime());
-                    preparedStatement.setLong(3, info.getEndTime());
+                    preparedStatement.setTimestamp(2, new Timestamp(info.getStartTime()));
+                    preparedStatement.setTimestamp(3, new Timestamp(info.getEndTime()));
                     preparedStatement.setString(4, uuid.toString());
                 }
                 else {
                     preparedStatement = connection.prepareStatement("INSERT INTO levels_multiplier (uuid, multiplier, multiplier_start_time, multiplier_end_time) VALUES(?, ?, ?, ?);");
                     preparedStatement.setString(1, uuid.toString());
                     preparedStatement.setDouble(2, info.getMultiplier());
-                    preparedStatement.setLong(3, info.getStartTime());
-                    preparedStatement.setLong(4, info.getEndTime());
+                    preparedStatement.setTimestamp(3, new Timestamp(info.getStartTime()));
+                    preparedStatement.setTimestamp(4, new Timestamp(info.getEndTime()));
                 }
                 preparedStatement.executeUpdate();
             } catch (final SQLException exception) {
@@ -97,7 +93,7 @@ public class MultiplierDatabase extends SQLDatabase {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM levels_multiplier WHERE uuid= '" + uuid + "';");
             if (resultSet.next()) {
-                return new MultiplierInfo(uuid, resultSet.getDouble("multiplier"), resultSet.getLong("multiplier_start_time"), resultSet.getLong("multiplier_end_time"));
+                return new MultiplierInfo(uuid, resultSet.getDouble("multiplier"), resultSet.getTimestamp("multiplier_start_time").getTime(), resultSet.getTimestamp("multiplier_end_time").getTime());
             }
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());

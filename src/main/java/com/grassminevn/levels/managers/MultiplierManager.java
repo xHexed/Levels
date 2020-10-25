@@ -16,7 +16,7 @@ public class MultiplierManager extends Manager {
     }
 
     public void addMultiplier(final UUID uuid, final long time) {
-        Schedulers.async().runLater(() -> {
+        Schedulers.sync().runLater(() -> {
             final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
             final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
             for (final String message : plugin.language.get.getStringList("multiplier.lost")) {

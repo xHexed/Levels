@@ -28,7 +28,6 @@ public class Database {
     }
 
     public void insert(final UUID uuid) {
-        multiplierDatabase.insert(uuid);
         playerDatabase.insert(uuid);
     }
 

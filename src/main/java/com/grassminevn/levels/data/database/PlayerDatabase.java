@@ -18,7 +18,7 @@ public class PlayerDatabase extends SQLDatabase {
     protected void createTable() {
         if (set()) {
             try {
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `last_seen` datetime);");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `lastseen` datetime);");
             }
             catch (final SQLException e) {
                 plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
@@ -62,7 +62,7 @@ public class PlayerDatabase extends SQLDatabase {
             try {
                 resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';");
                 if (resultSet.next()) {
-                    preparedStatement = connection.prepareStatement("UPDATE levels_players SET group = ?, xp = ?, level = ?, rating = ?, deviation =  ?, lastseen = ? WHERE uuid = ?");
+                    preparedStatement = connection.prepareStatement("UPDATE levels_players SET `group` = ?, xp = ?, level = ?, rating = ?, deviation =  ?, lastseen = ? WHERE uuid = ?");
                     preparedStatement.setString(1, group);
                     preparedStatement.setLong(2, xp);
                     preparedStatement.setLong(3, level);
@@ -72,7 +72,7 @@ public class PlayerDatabase extends SQLDatabase {
                     preparedStatement.setString(7, uuid.toString());
                 }
                 else {
-                    preparedStatement = connection.prepareStatement("INSERT INTO levels_players (uuid, group, xp, level, rating, deviation, lastseen) VALUES(?, ?, ?, ?, ?, ?, ?);");
+                    preparedStatement = connection.prepareStatement("INSERT INTO levels_players (uuid, `group`, xp, level, rating, deviation, lastseen) VALUES(?, ?, ?, ?, ?, ?, ?);");
                     preparedStatement.setString(1, uuid.toString());
                     preparedStatement.setString(2, group);
                     preparedStatement.setLong(3, xp);
@@ -119,8 +119,8 @@ public class PlayerDatabase extends SQLDatabase {
                                       resultSet.getString("group"),
                                       resultSet.getLong("xp"),
                                       resultSet.getLong("level"),
-                                      new Rating(resultSet.getLong("rating"), resultSet.getLong("deviation")),
-                                      resultSet.getTimestamp("time"));
+                                      new Rating(resultSet.getDouble("rating"), resultSet.getDouble("deviation")),
+                                      resultSet.getTimestamp("lastseen"));
             }
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
