@@ -11,40 +11,40 @@ settings:
       - '&eXP Progress: &7> &6{xp_progress}%'
       - '&6{xp_progress_style}'
       - '&eGroup &7> &6{group}'
-    MATERIAL: PLAYER_HEAD
+    MATERIAL: '397:0'
     AMOUNT: 1
 45:
   NAME: '&bGo Back'
   LORES: []
-  MATERIAL: STICK
+  MATERIAL: '280:0'
   AMOUNT: 1
   OPTIONS:
     - BACK
 53:
   NAME: '&bNext Page'
   LORES: []
-  MATERIAL: STICK
+  MATERIAL: '280:0'
   AMOUNT: 1
   OPTIONS:
     - NEXT
 2:
   NAME: '&f&lSort &7&l- &b&lXP'
   LORES: []
-  MATERIAL: EXPERIENCE_BOTTLE
+  MATERIAL: '384:0'
   AMOUNT: 1
   OPTIONS:
     - SORT_XP
 3:
   NAME: '&f&lSort &7&l- &b&lLevel'
   LORES: []
-  MATERIAL: DRAGON_EGG
+  MATERIAL: '122:0'
   AMOUNT: 1
   OPTIONS:
     - SORT_LEVEL
 8:
   NAME: '&f&lSort &7&l- &b&lReverse order'
   LORES: []
-  MATERIAL: BOOK
+  MATERIAL: '340:0'
   AMOUNT: 1
   OPTIONS:
     - SORT_REVERSE
@@ -57,7 +57,7 @@ settings:
     - '&eXP Progress: &7> &6{xp_progress}%'
     - '&6{xp_progress_style}'
     - '&eGroup &7> &6{group}'
-  MATERIAL: PLAYER_HEAD
+  MATERIAL: '397:0'
   AMOUNT: 1
   OPTIONS:
     - PLAYER_HEAD

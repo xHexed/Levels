@@ -23,11 +23,7 @@ public class GUIFolder {
         if (!admin.exists()) {
             try {
                 admin.createNewFile();
-                if (!plugin.versionID()) {
-                    plugin.copy("gui/admin.yml", admin);
-                } else {
-                    plugin.copy("old/gui/admin.yml", admin);
-                }
+                plugin.copy("gui/admin.yml", admin);
             } catch (final IOException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
@@ -36,11 +32,7 @@ public class GUIFolder {
         if (!profiles.exists()) {
             try {
                 profiles.createNewFile();
-                if (!plugin.versionID()) {
-                    plugin.copy("gui/profiles.yml", profiles);
-                } else {
-                    plugin.copy("old/gui/profiles.yml", profiles);
-                }
+                plugin.copy("gui/profiles.yml", profiles);
             } catch (final IOException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }

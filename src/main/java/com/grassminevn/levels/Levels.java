@@ -1,18 +1,28 @@
 package com.grassminevn.levels;
 
-import com.google.common.io.ByteStreams;
 import com.grassminevn.levels.commands.LevelsCommand;
 import com.grassminevn.levels.commands.LevelsTabComplete;
 import com.grassminevn.levels.data.Database;
 import com.grassminevn.levels.data.PlayerConnect;
 import com.grassminevn.levels.data.Purge;
-import com.grassminevn.levels.files.*;
+import com.grassminevn.levels.files.Config;
+import com.grassminevn.levels.files.Execute;
+import com.grassminevn.levels.files.GUIFolder;
+import com.grassminevn.levels.files.Language;
 import com.grassminevn.levels.gui.Menu;
-import com.grassminevn.levels.listeners.*;
-import com.grassminevn.levels.managers.*;
+import com.grassminevn.levels.listeners.InventoryClick;
+import com.grassminevn.levels.listeners.PlayerJoin;
+import com.grassminevn.levels.listeners.PlayerLogin;
+import com.grassminevn.levels.listeners.PlayerQuit;
+import com.grassminevn.levels.managers.GUIManager;
+import com.grassminevn.levels.managers.MultiplierManager;
+import com.grassminevn.levels.managers.StatsManager;
+import com.grassminevn.levels.managers.XPManager;
 import com.grassminevn.levels.placeholders.PlaceholderAPI;
 import com.grassminevn.levels.utils.TextUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -20,10 +30,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Levels extends JavaPlugin {
@@ -163,14 +176,6 @@ public class Levels extends JavaPlugin {
                 ;
     }
 
-    public boolean versionID() {
-        if (getServer().getVersion().contains("1.8")) { return true; }
-        if (getServer().getVersion().contains("1.9")) { return true; }
-        if (getServer().getVersion().contains("1.10")) { return true; }
-        if (getServer().getVersion().contains("1.11")) { return true; }
-        return getServer().getVersion().contains("1.12");
-    }
-
     public boolean isInt(final String s) {
         try {
             Integer.parseInt(s);
@@ -202,25 +207,18 @@ public class Levels extends JavaPlugin {
         return text.matches("^[a-zA-Z]*$");
     }
 
+    @SuppressWarnings("deprecation")
     public ItemStack getID(final String bb, final int amount) {
-        if (versionID()) {
-            try {
-                final String[] parts = bb.split(":");
-                final int matId = Integer.parseInt(parts[0]);
-                if (parts.length == 2) {
-                    final short data = Short.parseShort(parts[1]);
-                    return new ItemStack(Material.getMaterial(matId), amount, data);
-                }
-                return new ItemStack(Material.getMaterial(matId));
-            } catch (final NumberFormatException e) {
-                return null;
+        try {
+            final String[] parts = bb.split(":");
+            final int matId = Integer.parseInt(parts[0]);
+            if (parts.length == 2) {
+                final short data = Short.parseShort(parts[1]);
+                return new ItemStack(Material.getMaterial(matId), amount, data);
             }
-        } else {
-            try {
-                return new ItemStack(Material.getMaterial(bb), amount);
-            } catch (final RuntimeException e) {
-                return null;
-            }
+            return new ItemStack(Material.getMaterial(matId));
+        } catch (final NumberFormatException e) {
+            return null;
         }
     }
 
@@ -230,7 +228,7 @@ public class Levels extends JavaPlugin {
 
     public void copy(final String filename, final File file) {
         try {
-            ByteStreams.copy(getResource(filename), new FileOutputStream(file));
+            Files.copy(getResource(filename), file.toPath());
         } catch (final IOException exception) {
             textUtils.exception(exception.getStackTrace(), exception.getMessage());
         }
