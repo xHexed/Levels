@@ -25,9 +25,7 @@ public class MultiplierDatabase extends SQLDatabase {
     }
 
     public void insert(final UUID uuid) {
-        if (set()) {
-            setValuesSync(uuid, new MultiplierInfo(uuid));
-        }
+        setValue(uuid, new MultiplierInfo(uuid));
     }
 
     public void delete(final UUID uuid) {
@@ -63,11 +61,14 @@ public class MultiplierDatabase extends SQLDatabase {
                 resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_multiplier WHERE uuid= '" + uuid + "';");
                 if (resultSet.next()) {
                     preparedStatement = connection.prepareStatement("UPDATE levels_multiplier SET multiplier = ?, multiplier_start_time = ?, multiplier_end_time = ? WHERE uuid = ?");
-                    preparedStatement.setDouble(1, info.getMultiplier());
-                    preparedStatement.setLong(2, info.getStartTime());
-                    preparedStatement.setLong(3, info.getEndTime());
-                    preparedStatement.executeUpdate();
                 }
+                else {
+                    preparedStatement = connection.prepareStatement("INSERT INTO levels_multiplier (multiplier, multiplier_start_time, multiplier_end_time) VALUES(?, ?, ?);");
+                }
+                preparedStatement.setDouble(1, info.getMultiplier());
+                preparedStatement.setLong(2, info.getStartTime());
+                preparedStatement.setLong(3, info.getEndTime());
+                preparedStatement.executeUpdate();
             } catch (final SQLException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             } finally {
@@ -77,14 +78,11 @@ public class MultiplierDatabase extends SQLDatabase {
     }
 
     public void setValue(final UUID uuid, final MultiplierInfo multiplierInfo) {
-        if (set()) {
-            final BukkitRunnable r = new BukkitRunnable() {
-                public void run() {
-                    setValuesSync(uuid, multiplierInfo);
-                }
-            };
-            r.runTaskAsynchronously(plugin);
-        }
+        new BukkitRunnable() {
+            public void run() {
+                setValuesSync(uuid, multiplierInfo);
+            }
+        }.runTaskAsynchronously(plugin);
     }
 
     public MultiplierInfo getMultiplierInfo(final UUID uuid) {

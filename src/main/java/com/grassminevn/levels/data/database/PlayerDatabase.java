@@ -27,9 +27,7 @@ public class PlayerDatabase extends SQLDatabase {
     }
 
     public void insert(final UUID uuid) {
-        if (set()) {
-            setValues(uuid, "default", 0L, 0L, 25D, 25D / 3, new Timestamp(new Date().getTime()));
-        }
+        setValues(uuid, "default", 0L, 0L, 25D, 25D / 3, new Timestamp(new Date().getTime()));
     }
 
     public void delete(final UUID uuid) {
@@ -57,7 +55,7 @@ public class PlayerDatabase extends SQLDatabase {
         }
     }
 
-    public void setValues(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final Timestamp timestamp) {
+    public void setValuesSync(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final Timestamp timestamp) {
         if (set()) {
             PreparedStatement preparedStatement = null;
             ResultSet resultSet = null;
@@ -65,15 +63,18 @@ public class PlayerDatabase extends SQLDatabase {
                 resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';");
                 if (resultSet.next()) {
                     preparedStatement = connection.prepareStatement("UPDATE levels_players SET group = ?, xp = ?, level = ?, rating = ?, deviation =  ?, lastseen = ? WHERE uuid = ?");
-                    preparedStatement.setString(1, group);
-                    preparedStatement.setLong(2, xp);
-                    preparedStatement.setLong(3, level);
-                    preparedStatement.setDouble(4, rating);
-                    preparedStatement.setDouble(5, deviation);
-                    preparedStatement.setTimestamp(6, timestamp);
-                    preparedStatement.setString(7, uuid.toString());
-                    preparedStatement.executeUpdate();
                 }
+                else {
+                    preparedStatement = connection.prepareStatement("INSERT INTO levels_players (group, xp, level, rating, deviation, lastseen) VALUES(?, ?, ?, ?, ?, ?);");
+                }
+                preparedStatement.setString(1, group);
+                preparedStatement.setLong(2, xp);
+                preparedStatement.setLong(3, level);
+                preparedStatement.setDouble(4, rating);
+                preparedStatement.setDouble(5, deviation);
+                preparedStatement.setTimestamp(6, timestamp);
+                preparedStatement.setString(7, uuid.toString());
+                preparedStatement.executeUpdate();
             } catch (final SQLException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             } finally {
@@ -82,14 +83,22 @@ public class PlayerDatabase extends SQLDatabase {
         }
     }
 
+    public void setValues(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final Timestamp timestamp) {
+        new BukkitRunnable() {
+            public void run() {
+                setValuesSync(uuid, group, xp, level, rating, deviation, timestamp);
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
     public void setPlayerInfo(final UUID uuid, final PlayerInfo info) {
-        setValues(uuid,
-                  info.getGroup(),
-                  info.getXP(),
-                  info.getLevel(),
-                  info.getRating().getMean(),
-                  info.getRating().getStandardDeviation(),
-                  info.getTime());
+        setValuesSync(uuid,
+                      info.getGroup(),
+                      info.getXP(),
+                      info.getLevel(),
+                      info.getRating().getMean(),
+                      info.getRating().getStandardDeviation(),
+                      info.getTime());
     }
 
     public PlayerInfo getPlayerInfo(final UUID uuid) {
