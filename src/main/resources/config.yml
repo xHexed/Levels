@@ -6,9 +6,6 @@
 #           contact me on spigot          #
 #                                         #
 
-# Check for updates on startup?
-update-check: true
-
 # Database settings
 mysql:
   use: false
@@ -59,12 +56,12 @@ xp-progress-style-2:
 
 multiplier:
   format: HH' hours 'mm' minutes 'ss' seconds'
-  zone: Europe/Copenhagen
+  zone: Asia/Ho_Chi_Minh
 
 time:
   format: HH.mm.ss
-  zone: Europe/Copenhagen
+  zone: Asia/Ho_Chi_Minh
 
 date:
   format: dd.MM.yyyy
-  zone: Europe/Copenhagen
+  zone: Asia/Ho_Chi_Minh

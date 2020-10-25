@@ -26,7 +26,7 @@ public class MultiplierDatabase extends SQLDatabase {
 
     public void insert(final UUID uuid) {
         if (set()) {
-            setValuesSync(uuid, new MultiplierInfo(uuid, 0D, 0L, 0L));
+            setValuesSync(uuid, new MultiplierInfo(uuid));
         }
     }
 
@@ -47,18 +47,7 @@ public class MultiplierDatabase extends SQLDatabase {
                     } catch (final SQLException exception) {
                         plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
                     } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (final SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (final SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                            }
+                        closeQuery(resultSet, preparedStatement);
                     }
                 }
             };
@@ -82,18 +71,7 @@ public class MultiplierDatabase extends SQLDatabase {
             } catch (final SQLException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             } finally {
-                if (resultSet != null)
-                    try {
-                        resultSet.close();
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    }
-                if (preparedStatement != null)
-                    try {
-                        preparedStatement.close();
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    }
+                closeQuery(resultSet, preparedStatement);
             }
         }
     }
@@ -121,19 +99,8 @@ public class MultiplierDatabase extends SQLDatabase {
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
         } finally {
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                } catch (final SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                }
-            if (statement != null)
-                try {
-                    statement.close();
-                } catch (final SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                }
+            closeQuery(resultSet, statement);
         }
-        return new MultiplierInfo(uuid, 0D, 0L, 0L);
+        return new MultiplierInfo(uuid);
     }
 }

@@ -2,6 +2,7 @@ package com.grassminevn.levels.data.playerinfo;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.jskills.Rating;
+import me.lucko.helper.Schedulers;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -70,10 +71,10 @@ public class PlayerInfo {
     }
 
     public void save() {
-        //Levels.call.database.setValues(uuid, group, xp, level, rating.getMean(), rating.getStandardDeviation(), time);
+        Schedulers.async().run(this::syncSave);
     }
 
     public void syncSave() {
-        //Levels.call.database.setValues(uuid, group, xp, level, rating.getMean(), rating.getStandardDeviation(), (multiplier + " " + multiplier_time + " " + multiplier_time_left), time);
+        Levels.call.database.setPlayerInfo(uuid, this);
     }
 }

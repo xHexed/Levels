@@ -3,9 +3,7 @@ package com.grassminevn.levels.data.database;
 import com.grassminevn.levels.Levels;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public abstract class SQLDatabase {
     protected final Levels plugin;
@@ -55,6 +53,35 @@ public abstract class SQLDatabase {
             plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
             return false;
         }
+    }
+
+    public void closeResultSet(final ResultSet resultSet) {
+        if (resultSet != null)
+            try {
+                resultSet.close();
+            } catch (final SQLException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+    }
+
+    public void closeQuery(final ResultSet resultSet, final PreparedStatement preparedStatement) {
+        closeResultSet(resultSet);
+        if (preparedStatement != null)
+            try {
+                preparedStatement.close();
+            } catch (final SQLException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+    }
+
+    public void closeQuery(final ResultSet resultSet, final Statement statement) {
+        closeResultSet(resultSet);
+        if (statement != null)
+            try {
+                statement.close();
+            } catch (final SQLException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
     }
 
     protected abstract void createTable();

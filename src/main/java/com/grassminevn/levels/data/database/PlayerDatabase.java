@@ -49,18 +49,7 @@ public class PlayerDatabase extends SQLDatabase {
                     } catch (final SQLException exception) {
                         plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
                     } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (final SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (final SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                            }
+                        closeQuery(resultSet, preparedStatement);
                     }
                 }
             };
@@ -88,18 +77,7 @@ public class PlayerDatabase extends SQLDatabase {
             } catch (final SQLException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             } finally {
-                if (resultSet != null)
-                    try {
-                        resultSet.close();
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    }
-                if (preparedStatement != null)
-                    try {
-                        preparedStatement.close();
-                    } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                    }
+                closeQuery(resultSet, preparedStatement);
             }
         }
     }
@@ -131,18 +109,7 @@ public class PlayerDatabase extends SQLDatabase {
         } catch (final SQLException exception) {
             plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
         } finally {
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                } catch (final SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                }
-            if (statement != null)
-                try {
-                    statement.close();
-                } catch (final SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
-                }
+            closeQuery(resultSet, statement);
         }
         return new PlayerInfo(uuid,
                               "default",
