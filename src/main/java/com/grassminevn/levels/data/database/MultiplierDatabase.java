@@ -16,7 +16,7 @@ public class MultiplierDatabase extends SQLDatabase {
     protected void createTable() {
         if (set()) {
             try {
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_multiplier` (`uuid` char(32) PRIMARY KEY, `multiplier` double, `multiplier_start_time` datetime, `multiplier_end_time` datetime);");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_multiplier` (`uuid` char(36) PRIMARY KEY, `multiplier` double, `multiplier_start_time` datetime, `multiplier_end_time` datetime);");
             }
             catch (final SQLException e) {
                 plugin.textUtils.exception(e.getStackTrace(), e.getMessage());

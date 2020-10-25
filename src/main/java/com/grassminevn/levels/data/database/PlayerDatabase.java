@@ -18,7 +18,7 @@ public class PlayerDatabase extends SQLDatabase {
     protected void createTable() {
         if (set()) {
             try {
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(32) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `last_seen` datetime);");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `last_seen` datetime);");
             }
             catch (final SQLException e) {
                 plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
