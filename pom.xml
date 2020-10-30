@@ -81,10 +81,6 @@
                                     <pattern>org.ejml</pattern>
                                     <shadedPattern>com.grassminevn.levels.ejml</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>me.lucko.helper</pattern>
-                                    <shadedPattern>com.grassminevn.levels.utils</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
