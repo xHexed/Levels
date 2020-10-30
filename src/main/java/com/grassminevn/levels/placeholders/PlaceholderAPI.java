@@ -2,6 +2,7 @@ package com.grassminevn.levels.placeholders;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
+import com.grassminevn.levels.utils.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
@@ -55,8 +56,11 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         if(identifier.equals("level")){
             return String.valueOf(playerConnect.getLevel());
         }
+        if(identifier.equals("rating")) {
+            return String.valueOf(playerConnect.getRating().getMean());
+        }
         if(identifier.equals("level_next")){
-            return String.valueOf(playerConnect.getLevel() + 1);
+            return Utils.DOUBLE_FORMAT.format(playerConnect.getLevel() + 1);
         }
         if (identifier.equals("xp_need")) {
             return String.valueOf(plugin.statsManager.xp_need(playerConnect));

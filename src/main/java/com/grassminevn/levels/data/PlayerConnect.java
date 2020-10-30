@@ -5,7 +5,6 @@ import com.grassminevn.levels.data.playerinfo.MultiplierInfo;
 import com.grassminevn.levels.data.playerinfo.PlayerInfo;
 import com.grassminevn.levels.jskills.Player;
 import com.grassminevn.levels.jskills.Rating;
-import me.lucko.helper.Schedulers;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -84,7 +83,7 @@ public class PlayerConnect extends Player {
     }
 
     public void save() {
-        Schedulers.async().run(() -> Levels.call.database.setPlayerInfo(uuid, playerInfo));
+        Levels.call.asyncExecutorManager.execute(() -> Levels.call.database.setPlayerInfo(uuid, playerInfo));
     }
 
     public void syncSave() {

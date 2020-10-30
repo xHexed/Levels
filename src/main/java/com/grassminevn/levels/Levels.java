@@ -14,10 +14,7 @@ import com.grassminevn.levels.listeners.InventoryClick;
 import com.grassminevn.levels.listeners.PlayerJoin;
 import com.grassminevn.levels.listeners.PlayerLogin;
 import com.grassminevn.levels.listeners.PlayerQuit;
-import com.grassminevn.levels.managers.GUIManager;
-import com.grassminevn.levels.managers.MultiplierManager;
-import com.grassminevn.levels.managers.StatsManager;
-import com.grassminevn.levels.managers.XPManager;
+import com.grassminevn.levels.managers.*;
 import com.grassminevn.levels.placeholders.PlaceholderAPI;
 import com.grassminevn.levels.utils.TextUtils;
 import org.bukkit.Bukkit;
@@ -43,7 +40,6 @@ public class Levels extends JavaPlugin {
     public static Levels call;
 
     public final ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
-
     public Database database;
     public TextUtils textUtils;
     public Config config;
@@ -55,6 +51,7 @@ public class Levels extends JavaPlugin {
     public StatsManager statsManager;
     public XPManager xpManager;
     public MultiplierManager multiplierManager;
+    public AsyncExecutorManager asyncExecutorManager;
 
     private final Map<UUID, PlayerConnect> playerConnect = new HashMap<>();
     private final HashMap<Player, Menu> playerMenu = new HashMap<>();
@@ -74,6 +71,7 @@ public class Levels extends JavaPlugin {
 
         guiFolder = new GUIFolder(this);
 
+        asyncExecutorManager = new AsyncExecutorManager(this);
         guiManager = new GUIManager(this);
         statsManager = new StatsManager(this);
         xpManager = new XPManager(this);

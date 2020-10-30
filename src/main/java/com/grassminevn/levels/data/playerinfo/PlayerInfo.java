@@ -2,7 +2,6 @@ package com.grassminevn.levels.data.playerinfo;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.jskills.Rating;
-import me.lucko.helper.Schedulers;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -71,7 +70,7 @@ public class PlayerInfo {
     }
 
     public void save() {
-        Schedulers.async().run(this::syncSave);
+        Levels.call.asyncExecutorManager.execute(this::syncSave);
     }
 
     public void syncSave() {
