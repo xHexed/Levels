@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class MultiplierDatabase extends SQLDatabase {
     public MultiplierDatabase(final Levels plugin) {
-        super(plugin);
+        super(plugin, "Multiplier database");
     }
 
     @Override

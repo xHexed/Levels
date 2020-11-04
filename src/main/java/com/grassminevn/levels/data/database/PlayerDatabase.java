@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class PlayerDatabase extends SQLDatabase {
     public PlayerDatabase(final Levels plugin) {
-        super(plugin);
+        super(plugin, "Player database");
     }
 
     @Override

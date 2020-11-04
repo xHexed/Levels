@@ -7,27 +7,27 @@ import java.sql.*;
 
 public abstract class SQLDatabase {
     protected final Levels plugin;
+    protected final String databaseName;
     protected Connection connection;
 
-    public SQLDatabase(final Levels plugin) {
+    public SQLDatabase(final Levels plugin, final String databaseName) {
         this.plugin = plugin;
+        this.databaseName = databaseName;
         set();
     }
 
     private Connection get() {
         try {
             if (plugin.config.get.getBoolean("mysql.use")) {
-                Class.forName("com.mysql.jdbc.Driver");
-                final Connection mysqlConnection = DriverManager.getConnection("jdbc:mysql://" + plugin.config.get.getString("mysql.host") + ":" + plugin.config.get.getString("mysql.port") + "/" + plugin.config.get.getString("mysql.database"), plugin.config.get.getString("mysql.username"), plugin.config.get.getString("mysql.password"));
-                plugin.textUtils.info("MySQL Database Connected");
+                final Connection mysqlConnection = DriverManager.getConnection("jdbc:mysql://" + plugin.config.get.getString("mysql.host") + ":" + plugin.config.get.getString("mysql.port") + "/" + plugin.config.get.getString("mysql.database") + plugin.config.get.getString("mysql.parameters"), plugin.config.get.getString("mysql.username"), plugin.config.get.getString("mysql.password"));
+                plugin.textUtils.info(databaseName + "has connected with MySQL");
                 return mysqlConnection;
             } else {
-                Class.forName("org.sqlite.JDBC");
                 final Connection sqliteConnection = DriverManager.getConnection("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
-                plugin.textUtils.info("SQLite Database Connected");
+                plugin.textUtils.info(databaseName + "has connected with SQLite");
                 return sqliteConnection;
             }
-        } catch (final ClassNotFoundException | SQLException e) {
+        } catch (final SQLException e) {
             plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
             return null;
         }

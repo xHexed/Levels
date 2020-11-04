@@ -6,6 +6,7 @@ mysql:
   database: database
   username: username
   password: password
+  parameters: ?autoReconnect=true&useConfigs=maxPerformance
 
   # Automatically remove inactive players from the database (remove section to disable)
   purge:
