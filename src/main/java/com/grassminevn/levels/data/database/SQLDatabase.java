@@ -20,11 +20,11 @@ public abstract class SQLDatabase {
         try {
             if (plugin.config.get.getBoolean("mysql.use")) {
                 final Connection mysqlConnection = DriverManager.getConnection("jdbc:mysql://" + plugin.config.get.getString("mysql.host") + ":" + plugin.config.get.getString("mysql.port") + "/" + plugin.config.get.getString("mysql.database") + plugin.config.get.getString("mysql.parameters"), plugin.config.get.getString("mysql.username"), plugin.config.get.getString("mysql.password"));
-                plugin.textUtils.info(databaseName + "has connected with MySQL");
+                plugin.textUtils.info(databaseName + " has connected with MySQL");
                 return mysqlConnection;
             } else {
                 final Connection sqliteConnection = DriverManager.getConnection("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
-                plugin.textUtils.info(databaseName + "has connected with SQLite");
+                plugin.textUtils.info(databaseName + " has connected with SQLite");
                 return sqliteConnection;
             }
         } catch (final SQLException e) {
