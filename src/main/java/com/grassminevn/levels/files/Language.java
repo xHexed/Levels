@@ -21,12 +21,12 @@ public class Language {
             try {
                 file.createNewFile();
                 plugin.copy("language.yml", file);
-                plugin.textUtils.info("language.yml ( A change was made )");
+                plugin.getLogger().info("language.yml ( A change was made )");
             } catch (final IOException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             }
         } else {
-            plugin.textUtils.info("language.yml ( Loaded )");
+            plugin.getLogger().info("language.yml ( Loaded )");
         }
         load();
     }

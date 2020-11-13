@@ -39,6 +39,17 @@
             <artifactId>simple</artifactId>
             <version>0.30</version>
         </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.4.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -79,7 +90,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.ejml</pattern>
-                                    <shadedPattern>com.grassminevn.levels.ejml</shadedPattern>
+                                    <shadedPattern>com.grassminevn.levels.util.ejml</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.zaxxer</pattern>
+                                    <shadedPattern>com.grassminevn.levels.util</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

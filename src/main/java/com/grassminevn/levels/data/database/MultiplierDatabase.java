@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class MultiplierDatabase extends SQLDatabase {
     public MultiplierDatabase(final Levels plugin) {
-        super(plugin, "Multiplier database");
+        super(plugin);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class MultiplierDatabase extends SQLDatabase {
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_multiplier` (`uuid` char(36) PRIMARY KEY, `multiplier` double, `multiplier_start_time` datetime, `multiplier_end_time` datetime);");
             }
             catch (final SQLException e) {
-                plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -39,7 +39,7 @@ public class MultiplierDatabase extends SQLDatabase {
                             plugin.unloadPlayerConnect(uuid);
                         }
                     } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                        exception.printStackTrace();
                     } finally {
                         closeQuery(resultSet, preparedStatement);
                     }
@@ -71,7 +71,7 @@ public class MultiplierDatabase extends SQLDatabase {
                 }
                 preparedStatement.executeUpdate();
             } catch (final SQLException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             } finally {
                 closeQuery(resultSet, preparedStatement);
             }
@@ -96,7 +96,7 @@ public class MultiplierDatabase extends SQLDatabase {
                 return new MultiplierInfo(uuid, resultSet.getDouble("multiplier"), resultSet.getTimestamp("multiplier_start_time").getTime(), resultSet.getTimestamp("multiplier_end_time").getTime());
             }
         } catch (final SQLException exception) {
-            plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            exception.printStackTrace();
         } finally {
             closeQuery(resultSet, statement);
         }

@@ -2,7 +2,7 @@ package com.grassminevn.levels.placeholders;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
-import com.grassminevn.levels.utils.Utils;
+import com.grassminevn.levels.util.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 

@@ -1,4 +1,4 @@
-package com.grassminevn.levels.utils;
+package com.grassminevn.levels.util;
 
 import java.text.DecimalFormat;
 

@@ -1,34 +1,27 @@
 package com.grassminevn.levels.data.database;
 
 import com.grassminevn.levels.Levels;
+import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.sql.*;
 
 public abstract class SQLDatabase {
+    private static final HikariDataSource dataSource = new HikariDataSource();
     protected final Levels plugin;
-    protected final String databaseName;
     protected Connection connection;
 
-    public SQLDatabase(final Levels plugin, final String databaseName) {
+    public SQLDatabase(final Levels plugin) {
         this.plugin = plugin;
-        this.databaseName = databaseName;
         set();
     }
 
     private Connection get() {
         try {
-            if (plugin.config.get.getBoolean("mysql.use")) {
-                final Connection mysqlConnection = DriverManager.getConnection("jdbc:mysql://" + plugin.config.get.getString("mysql.host") + ":" + plugin.config.get.getString("mysql.port") + "/" + plugin.config.get.getString("mysql.database") + plugin.config.get.getString("mysql.parameters"), plugin.config.get.getString("mysql.username"), plugin.config.get.getString("mysql.password"));
-                plugin.textUtils.info(databaseName + " has connected with MySQL");
-                return mysqlConnection;
-            } else {
-                final Connection sqliteConnection = DriverManager.getConnection("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
-                plugin.textUtils.info(databaseName + " has connected with SQLite");
-                return sqliteConnection;
-            }
+            return dataSource.getConnection();
         } catch (final SQLException e) {
-            plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
@@ -50,7 +43,7 @@ public abstract class SQLDatabase {
             }
             return true;
         } catch (final SQLException e) {
-            plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -60,7 +53,7 @@ public abstract class SQLDatabase {
             try {
                 resultSet.close();
             } catch (final SQLException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             }
     }
 
@@ -70,7 +63,7 @@ public abstract class SQLDatabase {
             try {
                 preparedStatement.close();
             } catch (final SQLException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             }
     }
 
@@ -80,9 +73,20 @@ public abstract class SQLDatabase {
             try {
                 statement.close();
             } catch (final SQLException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             }
     }
 
     protected abstract void createTable();
+
+    public static void init(final Levels plugin) {
+        final ConfigurationSection section = plugin.config.get.getConfigurationSection("mysql");
+        dataSource.setJdbcUrl("jdbc:mysql://" + section.getString("host") + ":" + section.getString("port") + "/" + section.getString("database") + section.getString("parameters"));
+        if (!section.getBoolean("use")) {
+            dataSource.setJdbcUrl("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
+        }
+        dataSource.setPoolName("levels-connection-pool");
+        dataSource.setUsername(section.getString("username"));
+        dataSource.setPassword(section.getString("password"));
+    }
 }

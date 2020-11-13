@@ -3,6 +3,7 @@ package com.grassminevn.levels.data;
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.database.MultiplierDatabase;
 import com.grassminevn.levels.data.database.PlayerDatabase;
+import com.grassminevn.levels.data.database.SQLDatabase;
 import com.grassminevn.levels.data.playerinfo.MultiplierInfo;
 import com.grassminevn.levels.data.playerinfo.PlayerInfo;
 
@@ -14,6 +15,7 @@ public class Database {
     private final PlayerDatabase playerDatabase;
 
     public Database(final Levels plugin) {
+        SQLDatabase.init(plugin);
         multiplierDatabase = new MultiplierDatabase(plugin);
         playerDatabase     = new PlayerDatabase(plugin);
     }

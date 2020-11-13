@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class PlayerDatabase extends SQLDatabase {
     public PlayerDatabase(final Levels plugin) {
-        super(plugin, "Player database");
+        super(plugin);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class PlayerDatabase extends SQLDatabase {
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `lastseen` datetime);");
             }
             catch (final SQLException e) {
-                plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -45,7 +45,7 @@ public class PlayerDatabase extends SQLDatabase {
                             plugin.unloadPlayerConnect(uuid);
                         }
                     } catch (final SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                        exception.printStackTrace();
                     } finally {
                         closeQuery(resultSet, preparedStatement);
                     }
@@ -83,7 +83,7 @@ public class PlayerDatabase extends SQLDatabase {
                 }
                 preparedStatement.executeUpdate();
             } catch (final SQLException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             } finally {
                 closeQuery(resultSet, preparedStatement);
             }
@@ -123,7 +123,7 @@ public class PlayerDatabase extends SQLDatabase {
                                       resultSet.getTimestamp("lastseen"));
             }
         } catch (final SQLException exception) {
-            plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            exception.printStackTrace();
         } finally {
             closeQuery(resultSet, statement);
         }

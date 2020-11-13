@@ -18,12 +18,12 @@ public class Execute {
             try {
                 file.createNewFile();
                 plugin.copy("execute.yml", file);
-                plugin.textUtils.info("execute.yml ( A change was made )");
+                plugin.getLogger().info("execute.yml ( A change was made )");
             } catch (final IOException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             }
         } else {
-            plugin.textUtils.info("execute.yml ( Loaded )");
+            plugin.getLogger().info("execute.yml ( Loaded )");
         }
         load();
     }

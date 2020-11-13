@@ -16,7 +16,6 @@ import com.grassminevn.levels.listeners.PlayerLogin;
 import com.grassminevn.levels.listeners.PlayerQuit;
 import com.grassminevn.levels.managers.*;
 import com.grassminevn.levels.placeholders.PlaceholderAPI;
-import com.grassminevn.levels.utils.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -41,7 +40,6 @@ public class Levels extends JavaPlugin {
 
     public final ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
     public Database database;
-    public TextUtils textUtils;
     public Config config;
     public Language language;
     public com.grassminevn.levels.files.Levels levels;
@@ -63,7 +61,6 @@ public class Levels extends JavaPlugin {
             getDataFolder().mkdir();
         }
 
-        textUtils = new TextUtils(this);
         config = new Config(this);
         language = new Language(this);
         levels = new com.grassminevn.levels.files.Levels(this);
@@ -87,25 +84,27 @@ public class Levels extends JavaPlugin {
             getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
             if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 new PlaceholderAPI(this).register();
-                textUtils.info("PlaceholderAPI (found)");
+                getLogger().info("PlaceholderAPI (found)");
             }
             if (config.get.contains("mysql.purge")) {
                 new Purge(this);
             }
             if (isLevelsValid()) {
-                textUtils.info("Validator ( passed )");
+                getLogger().info("Validator ( passed )");
             }
         } else {
-            textUtils.error("Disabling plugin cannot connect to database");
+            getLogger().severe("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
         }
     }
 
     public void onDisable() {
         try {
-            database.close();
+            if (database != null) {
+                database.close();
+            }
         } catch (final SQLException exception) {
-            textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            exception.printStackTrace();
         }
         call = null;
     }
@@ -228,7 +227,7 @@ public class Levels extends JavaPlugin {
         try {
             Files.copy(getResource(filename), file.toPath());
         } catch (final IOException exception) {
-            textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            exception.printStackTrace();
         }
     }
 
@@ -236,45 +235,45 @@ public class Levels extends JavaPlugin {
         boolean valid = true;
         for (final String group : levels.get.getConfigurationSection("").getKeys(false)) {
             if (!levels.get.contains(group + "." + config.get.getLong("start-level"))) {
-                textUtils.error("Validator ( not passed ) (group ( " + group + " ) (level ( " + config.get.getLong("start-level") + " ) is not found )");
+                getLogger().severe("Validator ( not passed ) (group ( " + group + " ) (level ( " + config.get.getLong("start-level") + " ) is not found )");
                 valid = false;
             }
             if (levels.get.getLong(group + "." + config.get.getLong("start-level") + ".xp") != 0) {
-                textUtils.error("Validator ( not passed ) (group ( " + group + " ) (level ( " + config.get.getLong("start-level") + " ) xp is not 0 )");
+                getLogger().severe("Validator ( not passed ) (group ( " + group + " ) (level ( " + config.get.getLong("start-level") + " ) xp is not 0 )");
                 valid = false;
             }
             if (!levels.get.contains(group + ".execute")) {
-                textUtils.error("Validator ( not passed ) (group ( " + group + " ) is missing execute )");
+                getLogger().severe("Validator ( not passed ) (group ( " + group + " ) is missing execute )");
                 valid = false;
             }
             for (final String level : levels.get.getConfigurationSection(group).getKeys(false)) {
                 if (!level.equalsIgnoreCase("execute")) {
                     if (!isLong(level)) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) not a number )");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) not a number )");
                         valid = false;
                     }
                     if (!levels.get.contains(group + "." + level + ".prefix")) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing prefix )");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing prefix )");
                         valid = false;
                     }
                     if (!levels.get.contains(group + "." + level + ".suffix")) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing suffix )");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing suffix )");
                         valid = false;
                     }
                     if (!levels.get.contains(group + "." + level + ".group")) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing group )");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing group )");
                         valid = false;
                     }
                     if (!levels.get.contains(group + "." + level + ".execute")) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing execute )");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing execute )");
                         valid = false;
                     }
                     if (!execute.get.contains(levels.get.getString(group + "." + level + ".execute"))) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (execute group ( " + levels.get.getString(group + "." + level + ".execute") + " ) is not found in execute.yml)");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (execute group ( " + levels.get.getString(group + "." + level + ".execute") + " ) is not found in execute.yml)");
                         valid = false;
                     }
                     if (!levels.get.contains(group + "." + level + ".xp")) {
-                        textUtils.error("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing xp )");
+                        getLogger().severe("Validator ( not passed ) ( " + group + " ) (level ( " + level + " ) is missing xp )");
                         valid = false;
                     }
                 }

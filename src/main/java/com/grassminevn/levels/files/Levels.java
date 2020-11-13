@@ -20,12 +20,12 @@ public class Levels {
             try {
                 file.createNewFile();
                 plugin.copy("levels.yml", file);
-                plugin.textUtils.info("levels.yml ( A change was made )");
+                plugin.getLogger().info("levels.yml ( A change was made )");
             } catch (final IOException exception) {
-                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                exception.printStackTrace();
             }
         } else {
-            plugin.textUtils.info("levels.yml ( Loaded )");
+            plugin.getLogger().info("levels.yml ( Loaded )");
         }
         load();
     }
@@ -38,7 +38,7 @@ public class Levels {
         try {
             get.save(file);
         } catch (final IOException exception) {
-            plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            exception.printStackTrace();
         }
     }
 }
