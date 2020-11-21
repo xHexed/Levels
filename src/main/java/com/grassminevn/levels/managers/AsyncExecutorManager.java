@@ -4,8 +4,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class AsyncExecutorManager extends AbstractExecutorService implements ScheduledExecutorService {
     private final ExecutorService taskService;
     private final ScheduledExecutorService timerExecutionService;
-    private final Set<ScheduledFuture<?>> tasks = Collections.newSetFromMap(new WeakHashMap<>());
 
     public AsyncExecutorManager(final Plugin plugin) {
         taskService           = Executors.newCachedThreadPool(r -> {
@@ -30,26 +27,12 @@ public final class AsyncExecutorManager extends AbstractExecutorService implemen
         });
     }
 
-    private ScheduledFuture<?> consumeTask(final ScheduledFuture<?> future) {
-        synchronized (tasks) {
-            tasks.add(future);
-        }
-        return future;
-    }
-
-    public void cancelRepeatingTasks() {
-        synchronized (tasks) {
-            for (final ScheduledFuture<?> task : tasks)
-                task.cancel(false);
-        }
-    }
-
     public void execute(final Runnable runnable) {
         taskService.execute(runnable);
     }
 
     public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
-        return consumeTask(timerExecutionService.schedule(() -> taskService.execute(command), delay, unit));
+        return timerExecutionService.schedule(() -> taskService.execute(command), delay, unit);
     }
 
     public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
@@ -57,7 +40,7 @@ public final class AsyncExecutorManager extends AbstractExecutorService implemen
     }
 
     public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
-        return consumeTask(timerExecutionService.scheduleAtFixedRate(new FixedRateWorker(command), initialDelay, period, unit));
+        return timerExecutionService.scheduleAtFixedRate(new FixedRateWorker(command), initialDelay, period, unit);
     }
 
     public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
