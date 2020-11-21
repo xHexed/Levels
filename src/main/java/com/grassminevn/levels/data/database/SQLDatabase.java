@@ -10,14 +10,13 @@ import java.sql.*;
 public abstract class SQLDatabase {
     private static final HikariDataSource dataSource = new HikariDataSource();
     protected final Levels plugin;
-    protected Connection connection;
 
     public SQLDatabase(final Levels plugin) {
         this.plugin = plugin;
-        set();
+        createTable();
     }
 
-    private Connection get() {
+    public Connection getConnection() {
         try {
             return dataSource.getConnection();
         } catch (final SQLException e) {
@@ -26,26 +25,8 @@ public abstract class SQLDatabase {
         }
     }
 
-    public void close() throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-    }
-
-    public boolean set() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = get();
-                if (connection == null || connection.isClosed()) {
-                    return false;
-                }
-                createTable();
-            }
-            return true;
-        } catch (final SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void close() {
+        dataSource.close();
     }
 
     public void closeResultSet(final ResultSet resultSet) {

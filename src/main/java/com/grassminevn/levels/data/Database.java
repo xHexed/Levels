@@ -7,7 +7,6 @@ import com.grassminevn.levels.data.database.SQLDatabase;
 import com.grassminevn.levels.data.playerinfo.MultiplierInfo;
 import com.grassminevn.levels.data.playerinfo.PlayerInfo;
 
-import java.sql.*;
 import java.util.UUID;
 
 public class Database {
@@ -20,13 +19,9 @@ public class Database {
         playerDatabase     = new PlayerDatabase(plugin);
     }
 
-    public void close() throws SQLException {
+    public void close() {
         playerDatabase.close();
         multiplierDatabase.close();
-    }
-
-    public boolean set() {
-        return playerDatabase.set() && multiplierDatabase.set();
     }
 
     public void insert(final UUID uuid) {

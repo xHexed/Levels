@@ -28,7 +28,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -75,36 +74,27 @@ public class Levels extends JavaPlugin {
         multiplierManager = new MultiplierManager(this);
 
         database = new Database(this);
-        if (database.set()) {
-            getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
-            getServer().getPluginManager().registerEvents(new InventoryClick(), this);
-            getCommand("levels").setExecutor(new LevelsCommand(this));
-            getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
-            if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                new PlaceholderAPI(this).register();
-                getLogger().info("PlaceholderAPI (found)");
-            }
-            if (config.get.contains("mysql.purge")) {
-                new Purge(this);
-            }
-            if (isLevelsValid()) {
-                getLogger().info("Validator ( passed )");
-            }
-        } else {
-            getLogger().severe("Disabling plugin cannot connect to database");
-            getServer().getPluginManager().disablePlugin(this);
+        getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+        getCommand("levels").setExecutor(new LevelsCommand(this));
+        getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPI(this).register();
+            getLogger().info("PlaceholderAPI (found)");
+        }
+        if (config.get.contains("mysql.purge")) {
+            new Purge(this);
+        }
+        if (isLevelsValid()) {
+            getLogger().info("Validator ( passed )");
         }
     }
 
     public void onDisable() {
-        try {
-            if (database != null) {
-                database.close();
-            }
-        } catch (final SQLException exception) {
-            exception.printStackTrace();
+        if (database != null) {
+            database.close();
         }
         call = null;
     }
