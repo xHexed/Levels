@@ -16,8 +16,8 @@ public class PlayerDatabase extends SQLDatabase {
     @Override
     protected void createTable() {
         plugin.asyncExecutorManager.execute(() -> {
-            try {
-                getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `lastseen` datetime);");
+            try (final Connection connection = getConnection()) {
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `levels_players` (`uuid` char(36) PRIMARY KEY, `group` text(255), `xp` bigint, `level` bigint, `rating` double, `deviation` double, `lastseen` datetime);");
             }
             catch (final SQLException e) {
                 e.printStackTrace();
@@ -31,31 +31,24 @@ public class PlayerDatabase extends SQLDatabase {
 
     public void delete(final UUID uuid) {
         plugin.asyncExecutorManager.execute(() -> {
-            PreparedStatement preparedStatement = null;
-            ResultSet resultSet = null;
-            final Connection connection = getConnection();
-            try {
-                resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';");
+            try (final Connection connection = getConnection();
+                final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';");
+                final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM levels_players WHERE uuid = ?")) {
                 if (resultSet.next()) {
-                    preparedStatement = connection.prepareStatement("DELETE FROM levels_players WHERE uuid = ?");
                     preparedStatement.setString(1, uuid.toString());
                     preparedStatement.executeUpdate();
                     plugin.unloadPlayerConnect(uuid);
                 }
             } catch (final SQLException exception) {
                 exception.printStackTrace();
-            } finally {
-                closeQuery(resultSet, preparedStatement);
             }
         });
     }
 
     public void setValuesSync(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final Timestamp timestamp) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        final Connection connection = getConnection();
-        try {
-            resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';");
+        try (final Connection connection = getConnection();
+            final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';")) {
+            final PreparedStatement preparedStatement;
             if (resultSet.next()) {
                 preparedStatement = connection.prepareStatement("UPDATE levels_players SET `group` = ?, xp = ?, level = ?, rating = ?, deviation =  ?, lastseen = ? WHERE uuid = ?");
                 preparedStatement.setString(1, group);
@@ -77,10 +70,9 @@ public class PlayerDatabase extends SQLDatabase {
                 preparedStatement.setTimestamp(7, timestamp);
             }
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (final SQLException exception) {
             exception.printStackTrace();
-        } finally {
-            closeQuery(resultSet, preparedStatement);
         }
     }
 
@@ -99,11 +91,8 @@ public class PlayerDatabase extends SQLDatabase {
     }
 
     public PlayerInfo getPlayerInfo(final UUID uuid) {
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            statement = getConnection().createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';");
+        try (final Connection connection = getConnection();
+            final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';")){
             if (resultSet.next()) {
                 return new PlayerInfo(uuid,
                                       resultSet.getString("group"),
@@ -114,8 +103,6 @@ public class PlayerDatabase extends SQLDatabase {
             }
         } catch (final SQLException exception) {
             exception.printStackTrace();
-        } finally {
-            closeQuery(resultSet, statement);
         }
         return new PlayerInfo(uuid,
                               "default",
