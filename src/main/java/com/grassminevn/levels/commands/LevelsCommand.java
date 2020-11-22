@@ -202,8 +202,8 @@ public class LevelsCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("save")) {
                     unknown = false;
                     if (sender.hasPermission("levels.admin.save")) {
-                        for (final UUID uuid : plugin.listPlayerConnect()) {
-                            plugin.getPlayerConnect(uuid).save();
+                        for (final PlayerConnect playerConnect : plugin.listPlayerConnect()) {
+                            playerConnect.save();
                         }
                         if (type.equalsIgnoreCase("player")) {
                             for (final String message : plugin.language.get.getStringList("save.message")) {

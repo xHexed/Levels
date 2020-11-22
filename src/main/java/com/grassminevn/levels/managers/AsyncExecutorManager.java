@@ -36,7 +36,7 @@ public final class AsyncExecutorManager extends AbstractExecutorService implemen
     }
 
     public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
-        throw new UnsupportedOperationException();
+        return timerExecutionService.schedule(callable, delay, unit);
     }
 
     public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {

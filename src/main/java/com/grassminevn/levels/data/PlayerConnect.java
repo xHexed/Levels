@@ -10,13 +10,18 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class PlayerConnect extends Player {
-    private final PlayerInfo playerInfo;
-    private final MultiplierInfo multiplierInfo;
+    private PlayerInfo playerInfo;
+    private MultiplierInfo multiplierInfo;
 
     public PlayerConnect(final UUID uuid) {
         super(uuid);
-        playerInfo = Levels.call.database.getPlayerInfo(uuid);
-        multiplierInfo = Levels.call.database.getMultiplierInfo(uuid);
+        playerInfo = new PlayerInfo(uuid);
+        multiplierInfo = new MultiplierInfo(uuid);
+
+        Levels.call.asyncExecutorManager.execute(() -> {
+            playerInfo = Levels.call.database.getPlayerInfo(uuid);
+            multiplierInfo = Levels.call.database.getMultiplierInfo(uuid);
+        });
     }
 
     public void setGroup(final String group) {

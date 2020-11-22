@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 public class Purge {
 
@@ -20,12 +19,12 @@ public class Purge {
             startInterval = 1;
         }
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (final UUID uuid : plugin.listPlayerConnect()) {
-                if (isOld(plugin.getPlayerConnect(uuid).getTime())) {
-                    plugin.database.delete(uuid);
+            for (final PlayerConnect playerConnect : plugin.listPlayerConnect()) {
+                if (isOld(playerConnect.getTime())) {
+                    plugin.database.delete(playerConnect.getUuid());
                     if (plugin.config.get.contains("mysql.purge.commands")) {
                         for (final String command : plugin.config.get.getStringList("mysql.purge.commands")) {
-                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{uuid}", uuid.toString()));
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{uuid}", playerConnect.getUuid().toString()));
                         }
                     }
                 }

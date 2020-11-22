@@ -2,8 +2,9 @@ package com.grassminevn.levels.listeners;
 
 import com.grassminevn.levels.Levels;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 public class PlayerLogin implements Listener {
     private final Levels plugin;
@@ -12,11 +13,12 @@ public class PlayerLogin implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onLogin(final PlayerLoginEvent e) {
-        if (e.getResult() != PlayerLoginEvent.Result.ALLOWED) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onLogin(final AsyncPlayerPreLoginEvent e) {
+        if (e.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             return;
         }
-        plugin.database.insert(e.getPlayer().getUniqueId());
+        plugin.database.insert(e.getUniqueId());
+        plugin.getPlayerConnect(e.getUniqueId());
     }
 }

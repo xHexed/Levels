@@ -28,10 +28,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Levels extends JavaPlugin {
@@ -115,8 +112,8 @@ public class Levels extends JavaPlugin {
         return playerConnect;
     }
 
-    public Set<UUID> listPlayerConnect() {
-        return playerConnect.keySet();
+    public Collection<PlayerConnect> listPlayerConnect() {
+        return playerConnect.values();
     }
 
     public Menu getPlayerMenu(final Player player) {

@@ -15,6 +15,10 @@ public class PlayerInfo {
     private Rating rating;
     private Timestamp time;
 
+    public PlayerInfo(final UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public PlayerInfo(final UUID uuid, final String group, final long xp, final long level, final Rating rating, final Timestamp time) {
         this.uuid = uuid;
         this.group = group;

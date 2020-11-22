@@ -5,8 +5,8 @@ import com.grassminevn.levels.managers.StatsManager;
 import com.grassminevn.levels.managers.XPManager;
 import com.grassminevn.levels.jskills.ITeam;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class LevelsAPI {
@@ -14,7 +14,7 @@ public class LevelsAPI {
         return Levels.call.getPlayerConnect(uuid);
     }
 
-    public static Set<UUID> listPlayerConnect() {
+    public static Collection<PlayerConnect> listPlayerConnect() {
         return Levels.call.listPlayerConnect();
     }
 
