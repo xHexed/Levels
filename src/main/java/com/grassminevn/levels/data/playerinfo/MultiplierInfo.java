@@ -9,6 +9,7 @@ public class MultiplierInfo {
     private double multiplier;
     private long startTime;
     private long endTime;
+    private long time;
     private boolean running;
 
     public MultiplierInfo(final UUID uuid) {
@@ -36,10 +37,15 @@ public class MultiplierInfo {
         return endTime;
     }
 
+    public long getTime() {
+        return time;
+    }
+
     public void setMultiplier(final double multiplier, final long startTime, final long endTime) {
         this.multiplier = multiplier;
         this.startTime = startTime;
         this.endTime = endTime;
+        time = endTime - startTime;
         running = true;
         Levels.call.database.setMultiplierInfo(uuid, this);
         Levels.call.multiplierManager.addMultiplier(uuid, endTime - startTime);
@@ -50,6 +56,7 @@ public class MultiplierInfo {
     }
 
     public void stop() {
+        time = 0;
         running = false;
         Levels.call.database.deleteMultiplierInfo(uuid);
     }

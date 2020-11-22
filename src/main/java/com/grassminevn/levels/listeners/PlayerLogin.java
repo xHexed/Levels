@@ -19,6 +19,6 @@ public class PlayerLogin implements Listener {
             return;
         }
         plugin.database.insert(e.getUniqueId());
-        plugin.getPlayerConnect(e.getUniqueId());
+        plugin.loadPlayerConnect(e.getUniqueId());
     }
 }

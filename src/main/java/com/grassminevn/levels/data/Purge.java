@@ -21,10 +21,10 @@ public class Purge {
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (final PlayerConnect playerConnect : plugin.listPlayerConnect()) {
                 if (isOld(playerConnect.getTime())) {
-                    plugin.database.delete(playerConnect.getUuid());
+                    plugin.database.delete(playerConnect.getUUID());
                     if (plugin.config.get.contains("mysql.purge.commands")) {
                         for (final String command : plugin.config.get.getStringList("mysql.purge.commands")) {
-                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{uuid}", playerConnect.getUuid().toString()));
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{uuid}", playerConnect.getUUID().toString()));
                         }
                     }
                 }

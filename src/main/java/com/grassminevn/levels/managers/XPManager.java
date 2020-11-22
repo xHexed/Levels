@@ -26,9 +26,8 @@ public class XPManager extends Manager {
     }
 
     public void calculateRatings(final List<? extends ITeam> teams, final int[] teamRanks) {
-        TrueSkillCalculator.calculateNewRatings(GameInfo.getDefaultGameInfo(), teams, teamRanks).forEach((p, r) -> {
-            Levels.call.getPlayerConnect(p.getUuid()).setRating(r);
-        });
+        TrueSkillCalculator.calculateNewRatings(GameInfo.getDefaultGameInfo(), teams, teamRanks).forEach(
+                (p, r) -> Levels.call.getPlayerConnect(p.getUUID()).setRating(r));
     }
 
     public void entityCheck(final Entity entity, final Player killer) {

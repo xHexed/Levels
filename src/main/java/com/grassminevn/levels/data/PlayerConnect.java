@@ -10,18 +10,13 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class PlayerConnect extends Player {
-    private PlayerInfo playerInfo;
-    private MultiplierInfo multiplierInfo;
+    private final PlayerInfo playerInfo;
+    private final MultiplierInfo multiplierInfo;
 
     public PlayerConnect(final UUID uuid) {
         super(uuid);
-        playerInfo = new PlayerInfo(uuid);
-        multiplierInfo = new MultiplierInfo(uuid);
-
-        Levels.call.asyncExecutorManager.execute(() -> {
-            playerInfo = Levels.call.database.getPlayerInfo(uuid);
-            multiplierInfo = Levels.call.database.getMultiplierInfo(uuid);
-        });
+        playerInfo = Levels.call.database.getPlayerInfo(uuid);
+        multiplierInfo = Levels.call.database.getMultiplierInfo(uuid);
     }
 
     public void setGroup(final String group) {
@@ -73,14 +68,12 @@ public class PlayerConnect extends Player {
         return multiplierInfo.getMultiplier();
     }
 
-    public Integer getMultiplier_time() {
-        //return multiplierInfo.getStartTime();
-        return 0;
+    public int getMultiplierTime() {
+        return (int) multiplierInfo.getTime();
     }
 
-    public Integer getMultiplier_time_left() {
-        //return multiplierInfo.getEndTime();
-        return 0;
+    public int getMultiplierTimeLeft() {
+        return (int) (multiplierInfo.getEndTime() - new Date().getTime());
     }
 
     public Timestamp getTime() {

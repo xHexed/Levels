@@ -66,7 +66,7 @@ public class Player implements IPlayer, SupportPartialPlay, SupportPartialUpdate
         this.partialUpdatePercentage = partialUpdatePercentage;
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 

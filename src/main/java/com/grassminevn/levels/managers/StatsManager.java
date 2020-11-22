@@ -129,9 +129,9 @@ public class StatsManager extends Manager {
         return sorted;
     }
 
-    public String time(final String path, final long time) {
+    public String time(final String path, final Date time) {
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(plugin.config.get.getString(path + ".format"));
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone(plugin.config.get.getString(path + ".zone")));
-        return simpleDateFormat.format(new Date(time));
+        return simpleDateFormat.format(time);
     }
 }

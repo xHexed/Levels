@@ -96,6 +96,10 @@ public class Levels extends JavaPlugin {
         call = null;
     }
 
+    public void loadPlayerConnect(final UUID uuid) {
+        playerConnect.put(uuid, new PlayerConnect(uuid));
+    }
+
     public void unloadPlayerConnect(final UUID uuid) {
         final PlayerConnect data = playerConnect.remove(uuid);
         if (data != null) {
@@ -104,12 +108,7 @@ public class Levels extends JavaPlugin {
     }
 
     public PlayerConnect getPlayerConnect(final UUID uuid) {
-        if (playerConnect.containsKey(uuid)) {
-            return playerConnect.get(uuid);
-        }
-        final PlayerConnect playerConnect = new PlayerConnect(uuid);
-        this.playerConnect.put(uuid, playerConnect);
-        return playerConnect;
+        return playerConnect.get(uuid);
     }
 
     public Collection<PlayerConnect> listPlayerConnect() {
@@ -154,8 +153,8 @@ public class Levels extends JavaPlugin {
                 .replace("{xp_progress}", String.valueOf(statsManager.xp_progress(playerConnect)))
                 .replace("{xp_progress_style}", String.valueOf(statsManager.xp_progress_style(playerConnect, "xp-progress-style")))
                 .replace("{xp_progress_style_2}", String.valueOf(statsManager.xp_progress_style(playerConnect, "xp-progress-style-2")))
-                .replace("{date}", statsManager.time("date", playerConnect.getTime().getTime()))
-                .replace("{time}", statsManager.time("time", playerConnect.getTime().getTime()))
+                .replace("{date}", statsManager.time("date", playerConnect.getTime()))
+                .replace("{time}", statsManager.time("time", playerConnect.getTime()))
                 .replace("{group}", playerConnect.getGroup())
                 ;
     }

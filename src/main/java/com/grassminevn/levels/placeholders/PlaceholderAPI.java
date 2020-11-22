@@ -81,10 +81,10 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             return String.valueOf(plugin.statsManager.xp_progress_style(playerConnect, "xp-progress-style-2"));
         }
         if(identifier.equals("time")){
-            return String.valueOf(plugin.statsManager.time("time", playerConnect.getTime().getTime()));
+            return String.valueOf(plugin.statsManager.time("time", playerConnect.getTime()));
         }
         if(identifier.equals("date")){
-            return String.valueOf(plugin.statsManager.time("date", playerConnect.getTime().getTime()));
+            return String.valueOf(plugin.statsManager.time("date", playerConnect.getTime()));
         }
         if(identifier.equals("group")) {
             return playerConnect.getGroup();
@@ -106,15 +106,15 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             }
         }
         if(identifier.equals("multiplier_time")) {
-            if (playerConnect.getMultiplier_time() != 0D) {
-                return plugin.statsManager.time("multiplier", (new GregorianCalendar(0, Calendar.JANUARY,0,0,0, playerConnect.getMultiplier_time()).getTime().getTime()));
+            if (playerConnect.getMultiplierTime() != 0D) {
+                return plugin.statsManager.time("multiplier", (new GregorianCalendar(0, Calendar.JANUARY,0,0,0, playerConnect.getMultiplierTime()).getTime()));
             } else {
                 return String.valueOf(0);
             }
         }
         if(identifier.equals("multiplier_time_left")) {
-            if (playerConnect.getMultiplier_time() != 0D) {
-                return plugin.statsManager.time("multiplier", (new GregorianCalendar(0, Calendar.JANUARY,0,0,0, playerConnect.getMultiplier_time_left()).getTime().getTime()));
+            if (playerConnect.getMultiplierTime() != 0D) {
+                return plugin.statsManager.time("multiplier", (new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, playerConnect.getMultiplierTimeLeft()).getTime()));
             } else {
                 return String.valueOf(0);
             }

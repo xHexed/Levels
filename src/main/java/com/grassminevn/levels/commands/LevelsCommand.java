@@ -750,15 +750,15 @@ public class LevelsCommand implements CommandExecutor {
                                         playerConnect.setMultiplier(Double.parseDouble(args[2]), time, time + Integer.parseInt(args[3]));
                                         if (type.equalsIgnoreCase("player")) {
                                             for (final String message : plugin.language.get.getStringList("multiplier.got")) {
-                                                plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{player}", sender.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime().getTime()))));
+                                                plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{player}", sender.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime()))));
                                             }
                                         } else {
                                             for (final String message : plugin.language.get.getStringList("console.multiplier.got")) {
-                                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime().getTime()))));
+                                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime()))));
                                             }
                                         }
                                         for (final String message : plugin.language.get.getStringList("multiplier.target")) {
-                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime().getTime()))));
+                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName()).replace("{multiplier}", args[2]).replace("{time}", plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, Integer.parseInt(args[3])).getTime()))));
                                         }
                                     } else {
                                         if (type.equalsIgnoreCase("player")) {
