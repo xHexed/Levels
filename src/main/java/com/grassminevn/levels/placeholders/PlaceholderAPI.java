@@ -11,7 +11,6 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class PlaceholderAPI extends PlaceholderExpansion {
-
     private final Levels plugin;
 
     public PlaceholderAPI(final Levels plugin){
@@ -57,10 +56,10 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             return String.valueOf(playerConnect.getLevel());
         }
         if(identifier.equals("rating")) {
-            return String.valueOf(playerConnect.getRating().getMean());
+            return Utils.DOUBLE_FORMAT.format(playerConnect.getRating().getMean());
         }
         if(identifier.equals("level_next")){
-            return Utils.DOUBLE_FORMAT.format(playerConnect.getLevel() + 1);
+            return String.valueOf(playerConnect.getLevel() + 1);
         }
         if (identifier.equals("xp_need")) {
             return String.valueOf(plugin.statsManager.xp_need(playerConnect));
