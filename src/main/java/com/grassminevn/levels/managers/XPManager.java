@@ -2,9 +2,7 @@ package com.grassminevn.levels.managers;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
-import com.grassminevn.levels.jskills.GameInfo;
-import com.grassminevn.levels.jskills.ITeam;
-import com.grassminevn.levels.jskills.TrueSkillCalculator;
+import com.grassminevn.levels.jskills.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -15,9 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class XPManager extends Manager {
 
@@ -25,9 +21,10 @@ public class XPManager extends Manager {
         super(plugin);
     }
 
-    public void calculateRatings(final List<? extends ITeam> teams, final int[] teamRanks) {
-        TrueSkillCalculator.calculateNewRatings(GameInfo.getDefaultGameInfo(), teams, teamRanks).forEach(
-                (p, r) -> Levels.call.getPlayerConnect(p.getUUID()).setRating(r));
+    public Map<IPlayer, Rating> calculateRatings(final List<? extends ITeam> teams, final int[] teamRanks) {
+        final Map<IPlayer, Rating> results = TrueSkillCalculator.calculateNewRatings(GameInfo.getDefaultGameInfo(), teams, teamRanks);
+        results.forEach((p, r) -> Levels.call.getPlayerConnect(p.getUUID()).setRating(r));
+        return results;
     }
 
     public void entityCheck(final Entity entity, final Player killer) {
