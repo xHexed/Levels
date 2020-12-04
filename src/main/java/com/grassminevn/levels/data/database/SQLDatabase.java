@@ -1,18 +1,18 @@
 package com.grassminevn.levels.data.database;
 
 import com.grassminevn.levels.Levels;
+import com.grassminevn.levels.managers.Manager;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.sql.*;
 
-public abstract class SQLDatabase {
+public abstract class SQLDatabase extends Manager {
     private static final HikariDataSource dataSource = new HikariDataSource();
-    protected final Levels plugin;
 
     public SQLDatabase(final Levels plugin) {
-        this.plugin = plugin;
+        super(plugin);
         createTable();
     }
 
@@ -27,35 +27,6 @@ public abstract class SQLDatabase {
 
     public void close() {
         dataSource.close();
-    }
-
-    public void closeResultSet(final ResultSet resultSet) {
-        if (resultSet != null)
-            try {
-                resultSet.close();
-            } catch (final SQLException exception) {
-                exception.printStackTrace();
-            }
-    }
-
-    public void closeQuery(final ResultSet resultSet, final PreparedStatement preparedStatement) {
-        closeResultSet(resultSet);
-        if (preparedStatement != null)
-            try {
-                preparedStatement.close();
-            } catch (final SQLException exception) {
-                exception.printStackTrace();
-            }
-    }
-
-    public void closeQuery(final ResultSet resultSet, final Statement statement) {
-        closeResultSet(resultSet);
-        if (statement != null)
-            try {
-                statement.close();
-            } catch (final SQLException exception) {
-                exception.printStackTrace();
-            }
     }
 
     protected abstract void createTable();
