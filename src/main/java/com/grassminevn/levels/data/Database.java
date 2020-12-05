@@ -52,4 +52,8 @@ public class Database {
     public void deleteMultiplierInfo(final UUID uuid) {
         multiplierDatabase.delete(uuid);
     }
+
+    public MultiplierDatabase getMultiplierDatabase() {
+        return multiplierDatabase;
+    }
 }

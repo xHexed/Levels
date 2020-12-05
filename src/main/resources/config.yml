@@ -24,6 +24,10 @@ mysql:
     commands: []
 
 top:
+  #In miliseconds
+  update-interval: 30000
+  update-on-player-join: true
+
   name: '&cNone'
   value: '&cNone'
   excluded:

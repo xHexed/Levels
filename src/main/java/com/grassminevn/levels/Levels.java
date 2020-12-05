@@ -4,7 +4,7 @@ import com.grassminevn.levels.commands.LevelsCommand;
 import com.grassminevn.levels.commands.LevelsTabComplete;
 import com.grassminevn.levels.data.Database;
 import com.grassminevn.levels.data.PlayerConnect;
-import com.grassminevn.levels.data.Purge;
+import com.grassminevn.levels.data.Purger;
 import com.grassminevn.levels.files.Config;
 import com.grassminevn.levels.files.Execute;
 import com.grassminevn.levels.files.GUIFolder;
@@ -46,6 +46,8 @@ public class Levels extends JavaPlugin {
     public XPManager xpManager;
     public MultiplierManager multiplierManager;
     public AsyncExecutorManager asyncExecutorManager;
+    public Purger purger;
+    public PlaceholderAPI.Updater placeholderUpdater;
 
     private final Map<UUID, PlayerConnect> playerConnect = new HashMap<>();
     private final HashMap<Player, Menu> playerMenu = new HashMap<>();
@@ -79,10 +81,13 @@ public class Levels extends JavaPlugin {
         getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI(this).register();
+            placeholderUpdater = new PlaceholderAPI.Updater(this);
+            placeholderUpdater.startUpdating();
             getLogger().info("PlaceholderAPI (found)");
         }
         if (config.get.contains("mysql.purge")) {
-            new Purge(this);
+            purger = new Purger(this);
+            purger.startPurging();
         }
         if (isLevelsValid()) {
             getLogger().info("Validator ( passed )");
@@ -92,6 +97,12 @@ public class Levels extends JavaPlugin {
     public void onDisable() {
         if (database != null) {
             database.close();
+        }
+        if (purger != null) {
+            purger.stopPurging();
+        }
+        if (placeholderUpdater != null) {
+            placeholderUpdater.stopUpdating();
         }
         call = null;
     }
