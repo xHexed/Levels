@@ -47,7 +47,7 @@ public class PlayerDatabase extends SQLDatabase {
 
     public void setValuesSync(final UUID uuid, final String group, final Long xp, final Long level, final Double rating, final Double deviation, final Timestamp timestamp) {
         try (final Connection connection = getConnection();
-            final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';")) {
+            final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "'")) {
             final PreparedStatement preparedStatement;
             if (resultSet.next()) {
                 preparedStatement = connection.prepareStatement("UPDATE levels_players SET `group` = ?, xp = ?, level = ?, rating = ?, deviation =  ?, lastseen = ? WHERE uuid = ?");
@@ -60,7 +60,7 @@ public class PlayerDatabase extends SQLDatabase {
                 preparedStatement.setString(7, uuid.toString());
             }
             else {
-                preparedStatement = connection.prepareStatement("INSERT INTO levels_players (uuid, `group`, xp, level, rating, deviation, lastseen) VALUES(?, ?, ?, ?, ?, ?, ?);");
+                preparedStatement = connection.prepareStatement("INSERT INTO levels_players (uuid, `group`, xp, level, rating, deviation, lastseen) VALUES(?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setString(1, uuid.toString());
                 preparedStatement.setString(2, group);
                 preparedStatement.setLong(3, xp);
@@ -92,7 +92,7 @@ public class PlayerDatabase extends SQLDatabase {
 
     public PlayerInfo getPlayerInfo(final UUID uuid) {
         try (final Connection connection = getConnection();
-            final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "';")){
+            final ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM levels_players WHERE uuid= '" + uuid + "'")){
             if (resultSet.next()) {
                 return new PlayerInfo(uuid,
                                       resultSet.getString("group"),
@@ -110,5 +110,30 @@ public class PlayerDatabase extends SQLDatabase {
                               0L,
                               new Rating(25D, 25D / 3),
                               new Timestamp(new Date().getTime()));
+    }
+
+    public TopRating getTopRating() {
+        return new TopRating(plugin);
+    }
+
+    public static class TopRating {
+        private ResultSet resultSet;
+
+        public TopRating(final Levels plugin) {
+            try (final Connection connection = plugin.database.getPlayerDatabase().getConnection()) {
+                resultSet = connection.createStatement().executeQuery("SELECT * FROM `levels_players` ORDER BY `levels_players`.`rating` DESC");
+            } catch (final SQLException exception) {
+                exception.printStackTrace();
+            }
+        }
+
+        public Double getTop(final int index) {
+            try {
+                resultSet.getDouble(index);
+            }
+            catch (final SQLException exception) {
+                return 25D;
+            }
+        }
     }
 }

@@ -80,9 +80,9 @@ public class Levels extends JavaPlugin {
         getCommand("levels").setExecutor(new LevelsCommand(this));
         getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPI(this).register();
             placeholderUpdater = new PlaceholderAPI.Updater(this);
             placeholderUpdater.startUpdating();
+            new PlaceholderAPI(this).register();
             getLogger().info("PlaceholderAPI (found)");
         }
         if (config.get.contains("mysql.purge")) {

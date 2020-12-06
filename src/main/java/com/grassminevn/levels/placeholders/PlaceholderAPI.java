@@ -2,16 +2,14 @@ package com.grassminevn.levels.placeholders;
 
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
+import com.grassminevn.levels.data.database.PlayerDatabase;
 import com.grassminevn.levels.managers.Manager;
 import com.grassminevn.levels.util.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -75,13 +73,13 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onRequest(final OfflinePlayer player, final @NotNull String identifier) {
-        if (player == null || identifier.isEmpty()) {
+        if (identifier.isEmpty()) {
             return "";
         }
 
         final UUID uuid = player.getUniqueId();
 
-        if (player.isOnline()) {
+        if (player != null && player.isOnline()) {
             final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
             if (identifier.equals("xp")) {
                 return String.valueOf(playerConnect.getXP());
@@ -152,6 +150,8 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                     return "0";
                 }
             }
+        } else {
+            Updater.playerLookups.add(uuid);
         }
 
         final String[] params = identifier.split("_");
@@ -343,27 +343,39 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         }
     }
 
-    public static HashMap<String, IdentifierHandler> getIdentifierHandlers() {
-        return identifierHandlers;
-    }
-
     public static class Updater extends Manager implements Runnable {
+        public static Map<Integer, Double> topValues;
+        public static Map<UUID, PlayerConnect> players;
+        public static Set<Integer> topLookups;
+        public static Set<UUID> playerLookups;
+
         private ScheduledFuture<?> task;
+
         public Updater(final Levels plugin) {
             super(plugin);
         }
 
         public void startUpdating() {
             task = plugin.asyncExecutorManager.scheduleAtFixedRate(this, 0, plugin.config.get.getLong("top.update-interval"), TimeUnit.MILLISECONDS);
+            topLookups = new HashSet<>();
+            topValues = new HashMap<>();
         }
 
         public void stopUpdating() {
             task.cancel(false);
+            topLookups = null;
+            topValues = null;
         }
 
         @Override
         public void run() {
-
+            final PlayerDatabase.TopRating topRating = plugin.database.getPlayerDatabase().getTopRating();
+            for (final Integer i : topLookups) {
+                topValues.put(i, topRating.getTop(i));
+            }
+            for (final UUID uuid : playerLookups) {
+                players.put(uuid, new PlayerConnect(uuid));
+            }
         }
     }
 

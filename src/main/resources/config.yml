@@ -23,6 +23,10 @@ mysql:
     # be useful for deleting player data from a databases of other plugins.
     commands: []
 
+updater:
+  update-interval: 30000
+  update-on-player-join: true
+
 top:
   #In miliseconds
   update-interval: 30000

@@ -53,7 +53,7 @@ public class Database {
         multiplierDatabase.delete(uuid);
     }
 
-    public MultiplierDatabase getMultiplierDatabase() {
-        return multiplierDatabase;
+    public PlayerDatabase getPlayerDatabase() {
+        return playerDatabase;
     }
 }
