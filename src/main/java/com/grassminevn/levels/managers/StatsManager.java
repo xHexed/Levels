@@ -81,22 +81,23 @@ public class StatsManager extends Manager {
         return ChatColor.translateAlternateColorCodes('&', plugin.internalReplace(playerConnect, plugin.levels.get.getString(playerConnect.getGroup() + "." + level + ".group")));
     }
 
-    public String getTopValue(final String type, final int number, final boolean key, final boolean reverse) {
+    public String getTopKey(final String type, final int number, final boolean reverse) {
         final LinkedHashMap<OfflinePlayer, Long> linkedHashMap = getTopMap(type, reverse);
-        if (key) {
-            final ArrayList<OfflinePlayer> map = new ArrayList<>(linkedHashMap.keySet());
-            if (map.size() > number) {
-                return map.get(number).getName();
-            } else {
-                return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("top.name"));
-            }
+        final ArrayList<OfflinePlayer> map = new ArrayList<>(linkedHashMap.keySet());
+        if (map.size() > number) {
+            return map.get(number).getName();
         } else {
-            final ArrayList<Long> map = new ArrayList<>(linkedHashMap.values());
-            if (map.size() > number) {
-                return String.valueOf(map.get(number));
-            } else {
-                return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("top.value"));
-            }
+            return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("top.name"));
+        }
+    }
+
+    public String getTopValue(final String type, final int number, final boolean reverse) {
+        final LinkedHashMap<OfflinePlayer, Long> linkedHashMap = getTopMap(type, reverse);
+        final ArrayList<Long> map = new ArrayList<>(linkedHashMap.values());
+        if (map.size() > number) {
+            return String.valueOf(map.get(number));
+        } else {
+            return ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("top.value"));
         }
     }
 

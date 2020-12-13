@@ -47,6 +47,7 @@ public class Levels extends JavaPlugin {
     public MultiplierManager multiplierManager;
     public AsyncExecutorManager asyncExecutorManager;
     public Purger purger;
+    public PlaceholderAPI placeholderAPI;
     public PlaceholderAPI.Updater placeholderUpdater;
 
     private final Map<UUID, PlayerConnect> playerConnect = new HashMap<>();
@@ -80,8 +81,8 @@ public class Levels extends JavaPlugin {
         getCommand("levels").setExecutor(new LevelsCommand(this));
         getCommand("levels").setTabCompleter(new LevelsTabComplete(this));
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            placeholderUpdater = new PlaceholderAPI.Updater(this);
-            placeholderUpdater.startUpdating();
+            placeholderAPI = new PlaceholderAPI(this);
+            placeholderAPI.getUpdater().startUpdating();
             new PlaceholderAPI(this).register();
             getLogger().info("PlaceholderAPI (found)");
         }

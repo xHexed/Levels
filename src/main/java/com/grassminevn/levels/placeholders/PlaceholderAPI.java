@@ -6,6 +6,7 @@ import com.grassminevn.levels.data.database.PlayerDatabase;
 import com.grassminevn.levels.managers.Manager;
 import com.grassminevn.levels.util.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,60 +15,103 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class PlaceholderAPI extends PlaceholderExpansion {
-    private static final HashMap<String, IdentifierHandler> identifierHandlers = new HashMap<>();
-
-    static {
-        final IdentifierHandler loadingIdentifier = (player, params) -> "Loading...";
-        identifierHandlers.put("xp", loadingIdentifier);
-        identifierHandlers.put("level", loadingIdentifier);
-        identifierHandlers.put("rating", loadingIdentifier);
-        identifierHandlers.put("level_next", loadingIdentifier);
-        identifierHandlers.put("xp_need", loadingIdentifier);
-        identifierHandlers.put("xp_required", loadingIdentifier);
-        identifierHandlers.put("xp_required_next", loadingIdentifier);
-        identifierHandlers.put("xp_progress", loadingIdentifier);
-        identifierHandlers.put("xp_progress_style", loadingIdentifier);
-        identifierHandlers.put("xp_progress_style_2", loadingIdentifier);
-        identifierHandlers.put("time", loadingIdentifier);
-        identifierHandlers.put("date", loadingIdentifier);
-        identifierHandlers.put("group", loadingIdentifier);
-        identifierHandlers.put("level_group", loadingIdentifier);
-        identifierHandlers.put("level_prefix", loadingIdentifier);
-        identifierHandlers.put("level_suffix", loadingIdentifier);
-        identifierHandlers.put("multiplier", loadingIdentifier);
-        identifierHandlers.put("multiplier_time", loadingIdentifier);
-        identifierHandlers.put("multiplier_time_left", loadingIdentifier);
-        identifierHandlers.put("top", loadingIdentifier);
-    }
+    private final HashMap<String, PlayerIdentifierHandler> playerIdentifiers = new HashMap<>();
+    private final HashMap<String, IdentifierHandler> identifiers = new HashMap<>();
+    private final HashMap<String, IdentifierHandler> topIdentifiers = new HashMap<>();
 
     private final Levels plugin;
+    private final Updater updater;
 
-    public PlaceholderAPI(final Levels plugin){
+    public PlaceholderAPI(final Levels plugin) {
         this.plugin = plugin;
+        updater = new Updater();
+
+        playerIdentifiers.put("xp", (player, params) -> String.valueOf(player.getXP()));
+        playerIdentifiers.put("level", (player, params) -> String.valueOf(player.getLevel()));
+        playerIdentifiers.put("rating", (player, params) -> Utils.DOUBLE_FORMAT.format(player.getRating().getMean()));
+        playerIdentifiers.put("level_next", (player, params) -> String.valueOf(player.getLevel() + 1));
+        playerIdentifiers.put("xp_need", (player, params) -> String.valueOf(plugin.statsManager.xp_need(player)));
+        playerIdentifiers.put("xp_required", (player, params) -> String.valueOf(plugin.statsManager.xp_required(player, false)));
+        playerIdentifiers.put("xp_required_next", (player, params) -> String.valueOf(plugin.statsManager.xp_required(player, true)));
+        playerIdentifiers.put("xp_progress", (player, params) -> String.valueOf(plugin.statsManager.xp_progress(player)));
+        playerIdentifiers.put("xp_progress_style", (player, params) -> String.valueOf(plugin.statsManager.xp_progress_style(player, "xp-progress-style")));
+        playerIdentifiers.put("xp_progress_style_2", (player, params) -> String.valueOf(plugin.statsManager.xp_progress_style(player, "xp-progress-style-2")));
+        playerIdentifiers.put("time", (player, params) -> String.valueOf(plugin.statsManager.time("time", player.getTime())));
+        playerIdentifiers.put("date", (player, params) -> String.valueOf(plugin.statsManager.time("date", player.getTime())));
+        playerIdentifiers.put("group", (player, params) -> player.getGroup());
+        playerIdentifiers.put("level_group", (player, params) -> plugin.statsManager.group(player));
+        playerIdentifiers.put("level_prefix", (player, params) -> plugin.statsManager.prefix(player));
+        playerIdentifiers.put("level_suffix", (player, params) -> plugin.statsManager.suffix(player));
+        playerIdentifiers.put("multiplier", (player, params) -> player.getMultiplier() != 0D ? String.valueOf(player.getMultiplier()) : "1");
+        playerIdentifiers.put("multiplier_time", (player, params) -> player.getMultiplierTime() != 0D ? plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, player.getMultiplierTime()).getTime()) : "0");
+        playerIdentifiers.put("multiplier_time_left", (player, params) -> player.getMultiplierTime() != 0D ? plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, player.getMultiplierTimeLeft()).getTime()) : "0");
+
+        topIdentifiers.put("level", (params -> {
+            final int pos = Integer.parseInt(params[1]);
+            if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
+                if (params.length > 4) {
+                    if (params[3].equals("name")) {
+                        return Bukkit.getOfflinePlayer(updater.topLevelStorage.topUUIDPlayers.get(pos)).getName();
+                    }
+                }
+                return String.valueOf(updater.topLevelStorage.topPlayers.get(pos));
+            }
+            else {
+                updater.topLevelStorage.topPlayerPosUUIDLookups.add(pos);
+                return "0";
+            }
+        }));
+        topIdentifiers.put("rating", (params -> {
+            final int pos = Integer.parseInt(params[1]);
+            if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
+                if (params.length > 4) {
+                    if (params[3].equals("name")) {
+                        return Bukkit.getOfflinePlayer(updater.topRatingStorage.topUUIDPlayers.get(pos)).getName();
+                    }
+                }
+                return String.valueOf(updater.topRatingStorage.topPlayers.get(pos));
+            }
+            else {
+                updater.topRatingStorage.topPlayerPosUUIDLookups.add(pos);
+                return "25";
+            }
+        }));
+
+        identifiers.put("top", (params -> {
+            if (topIdentifiers.containsKey(params[2])) {
+                return topIdentifiers.get(params[2]).handle(params);
+            }
+            if (params.length > 4) {
+                if (params[3].equals("name")) {
+                    return plugin.statsManager.getTopKey(params[2], Integer.parseInt(params[2]), true);
+                }
+            }
+            return plugin.statsManager.getTopValue(params[2], Integer.parseInt(params[2]), true);
+        }));
     }
 
     @Override
-    public boolean persist(){
+    public boolean persist() {
         return true;
     }
 
     @Override
-    public boolean canRegister(){
+    public boolean canRegister() {
         return true;
     }
 
     @Override
-    public @NotNull String getAuthor(){
+    public @NotNull String getAuthor() {
         return plugin.getDescription().getAuthors().toString();
     }
 
     @Override
-    public @NotNull String getIdentifier(){
+    public @NotNull String getIdentifier() {
         return "levels";
     }
 
     @Override
-    public @NotNull String getVersion(){
+    public @NotNull String getVersion() {
         return plugin.getDescription().getVersion();
     }
 
@@ -77,309 +121,73 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             return "";
         }
 
-        final UUID uuid = player.getUniqueId();
-
-        if (player != null && player.isOnline()) {
-            final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-            if (identifier.equals("xp")) {
-                return String.valueOf(playerConnect.getXP());
-            }
-            if (identifier.equals("level")) {
-                return String.valueOf(playerConnect.getLevel());
-            }
-            if (identifier.equals("rating")) {
-                return Utils.DOUBLE_FORMAT.format(playerConnect.getRating().getMean());
-            }
-            if (identifier.equals("level_next")) {
-                return String.valueOf(playerConnect.getLevel() + 1);
-            }
-            if (identifier.equals("xp_need")) {
-                return String.valueOf(plugin.statsManager.xp_need(playerConnect));
-            }
-            if (identifier.equals("xp_required")) {
-                return String.valueOf(plugin.statsManager.xp_required(playerConnect, false));
-            }
-            if (identifier.equals("xp_required_next")) {
-                return String.valueOf(plugin.statsManager.xp_required(playerConnect, true));
-            }
-            if (identifier.equals("xp_progress")) {
-                return String.valueOf(plugin.statsManager.xp_progress(playerConnect));
-            }
-            if (identifier.equals("xp_progress_style")) {
-                return String.valueOf(plugin.statsManager.xp_progress_style(playerConnect, "xp-progress-style"));
-            }
-            if (identifier.equals("xp_progress_style_2")) {
-                return String.valueOf(plugin.statsManager.xp_progress_style(playerConnect, "xp-progress-style-2"));
-            }
-            if (identifier.equals("time")) {
-                return String.valueOf(plugin.statsManager.time("time", playerConnect.getTime()));
-            }
-            if (identifier.equals("date")) {
-                return String.valueOf(plugin.statsManager.time("date", playerConnect.getTime()));
-            }
-            if (identifier.equals("group")) {
-                return playerConnect.getGroup();
-            }
-            if (identifier.equals("level_group")) {
-                return plugin.statsManager.group(playerConnect);
-            }
-            if (identifier.equals("level_prefix")) {
-                return plugin.statsManager.prefix(playerConnect);
-            }
-            if (identifier.equals("level_suffix")) {
-                return plugin.statsManager.suffix(playerConnect);
-            }
-            if (identifier.equals("multiplier")) {
-                if (playerConnect.getMultiplier() != 0D) {
-                    return String.valueOf(playerConnect.getMultiplier());
-                } else {
-                    return "1";
-                }
-            }
-            if (identifier.equals("multiplier_time")) {
-                if (playerConnect.getMultiplierTime() != 0D) {
-                    return plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY,0,0,0, playerConnect.getMultiplierTime()).getTime());
-                } else {
-                    return "0";
-                }
-            }
-            if (identifier.equals("multiplier_time_left")) {
-                if (playerConnect.getMultiplierTime() != 0D) {
-                    return plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, playerConnect.getMultiplierTimeLeft()).getTime());
-                } else {
-                    return "0";
-                }
-            }
-        } else {
-            Updater.playerLookups.add(uuid);
-        }
-
         final String[] params = identifier.split("_");
-        if (identifierHandlers.containsKey(params[0].toLowerCase())) {
-            return identifierHandlers.get(params[0]).handle(player, params);
+        if (identifiers.containsKey(params[0].toLowerCase())) {
+            return identifiers.get(params[0]).handle(params);
         }
-        else {
-            if(identifier.equals("top_1_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 0, true, true);
-            }
-            if(identifier.equals("top_1_xp")){
-                return plugin.statsManager.getTopValue("xp", 0, false, true);
-            }
-            if(identifier.equals("top_2_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 1, true, true);
-            }
-            if(identifier.equals("top_2_xp")){
-                return plugin.statsManager.getTopValue("xp", 1, false, true);
-            }
-            if(identifier.equals("top_3_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 2, true, true);
-            }
-            if(identifier.equals("top_3_xp")){
-                return plugin.statsManager.getTopValue("xp", 2, false, true);
-            }
-            if(identifier.equals("top_4_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 3, true, true);
-            }
-            if(identifier.equals("top_4_xp")){
-                return plugin.statsManager.getTopValue("xp", 3, false, true);
-            }
-            if(identifier.equals("top_5_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 4, true, true);
-            }
-            if(identifier.equals("top_5_xp")){
-                return plugin.statsManager.getTopValue("xp", 4, false, true);
-            }
-            if(identifier.equals("top_6_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 5, true, true);
-            }
-            if(identifier.equals("top_6_xp")){
-                return plugin.statsManager.getTopValue("xp", 5, false, true);
-            }
-            if(identifier.equals("top_7_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 6, true, true);
-            }
-            if(identifier.equals("top_7_xp")){
-                return plugin.statsManager.getTopValue("xp", 6, false, true);
-            }
-            if(identifier.equals("top_8_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 7, true, true);
-            }
-            if(identifier.equals("top_8_xp")){
-                return plugin.statsManager.getTopValue("xp", 7, false, true);
-            }
-            if(identifier.equals("top_9_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 8, true, true);
-            }
-            if(identifier.equals("top_9_xp")){
-                return plugin.statsManager.getTopValue("xp", 8, false, true);
-            }
-            if(identifier.equals("top_10_xp_name")){
-                return plugin.statsManager.getTopValue("xp", 9, true, true);
-            }
-            if(identifier.equals("top_10_xp")){
-                return plugin.statsManager.getTopValue("xp", 9, false, true);
-            }
-            if(identifier.equals("top_1_level_name")){
-                return plugin.statsManager.getTopValue("level", 0, true, true);
-            }
-            if(identifier.equals("top_1_level")){
-                return plugin.statsManager.getTopValue("level", 0, false, true);
-            }
-            if(identifier.equals("top_2_level_name")){
-                return plugin.statsManager.getTopValue("level", 1, true, true);
-            }
-            if(identifier.equals("top_2_level")){
-                return plugin.statsManager.getTopValue("level", 1, false, true);
-            }
-            if(identifier.equals("top_3_level_name")){
-                return plugin.statsManager.getTopValue("level", 2, true, true);
-            }
-            if(identifier.equals("top_3_level")){
-                return plugin.statsManager.getTopValue("level", 2, false, true);
-            }
-            if(identifier.equals("top_4_level_name")){
-                return plugin.statsManager.getTopValue("level", 3, true, true);
-            }
-            if(identifier.equals("top_4_level")){
-                return plugin.statsManager.getTopValue("level", 3, false, true);
-            }
-            if(identifier.equals("top_5_level_name")){
-                return plugin.statsManager.getTopValue("level", 4, true, true);
-            }
-            if(identifier.equals("top_5_level")){
-                return plugin.statsManager.getTopValue("level", 4, false, true);
-            }
-            if(identifier.equals("top_6_level_name")){
-                return plugin.statsManager.getTopValue("level", 5, true, true);
-            }
-            if(identifier.equals("top_6_level")){
-                return plugin.statsManager.getTopValue("level", 5, false, true);
-            }
-            if(identifier.equals("top_7_level_name")){
-                return plugin.statsManager.getTopValue("level", 6, true, true);
-            }
-            if(identifier.equals("top_7_level")){
-                return plugin.statsManager.getTopValue("level", 6, false, true);
-            }
-            if(identifier.equals("top_8_level_name")){
-                return plugin.statsManager.getTopValue("level", 7, true, true);
-            }
-            if(identifier.equals("top_8_level")){
-                return plugin.statsManager.getTopValue("level", 7, false, true);
-            }
-            if(identifier.equals("top_9_level_name")){
-                return plugin.statsManager.getTopValue("level", 8, true, true);
-            }
-            if(identifier.equals("top_9_level")){
-                return plugin.statsManager.getTopValue("level", 8, false, true);
-            }
-            if(identifier.equals("top_10_level_name")){
-                return plugin.statsManager.getTopValue("level", 9, true, true);
-            }
-            if(identifier.equals("top_10_level")){
-                return plugin.statsManager.getTopValue("level", 9, false, true);
-            }
-            if(identifier.equals("top_1_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 0, true, true);
-            }
-            if(identifier.equals("top_1_rating")){
-                return plugin.statsManager.getTopValue("rating", 0, false, true);
-            }
-            if(identifier.equals("top_2_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 1, true, true);
-            }
-            if(identifier.equals("top_2_rating")){
-                return plugin.statsManager.getTopValue("rating", 1, false, true);
-            }
-            if(identifier.equals("top_3_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 2, true, true);
-            }
-            if(identifier.equals("top_3_rating")){
-                return plugin.statsManager.getTopValue("rating", 2, false, true);
-            }
-            if(identifier.equals("top_4_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 3, true, true);
-            }
-            if(identifier.equals("top_4_rating")){
-                return plugin.statsManager.getTopValue("rating", 3, false, true);
-            }
-            if(identifier.equals("top_5_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 4, true, true);
-            }
-            if(identifier.equals("top_5_rating")){
-                return plugin.statsManager.getTopValue("rating", 4, false, true);
-            }
-            if(identifier.equals("top_6_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 5, true, true);
-            }
-            if(identifier.equals("top_6_rating")){
-                return plugin.statsManager.getTopValue("rating", 5, false, true);
-            }
-            if(identifier.equals("top_7_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 6, true, true);
-            }
-            if(identifier.equals("top_7_rating")){
-                return plugin.statsManager.getTopValue("rating", 6, false, true);
-            }
-            if(identifier.equals("top_8_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 7, true, true);
-            }
-            if(identifier.equals("top_8_rating")){
-                return plugin.statsManager.getTopValue("rating", 7, false, true);
-            }
-            if(identifier.equals("top_9_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 8, true, true);
-            }
-            if(identifier.equals("top_9_rating")){
-                return plugin.statsManager.getTopValue("rating", 8, false, true);
-            }
-            if(identifier.equals("top_10_rating_name")){
-                return plugin.statsManager.getTopValue("rating", 9, true, true);
-            }
-            if(identifier.equals("top_10_rating")){
-                return plugin.statsManager.getTopValue("rating", 9, false, true);
-            }
-            return null;
+
+        if (player == null) {
+            return "";
         }
+        return playerIdentifiers.get(params[0]).handle(plugin.getPlayerConnect(player.getUniqueId()), params);
     }
 
-    public static class Updater extends Manager implements Runnable {
-        public static Map<Integer, Double> topValues;
-        public static Map<UUID, PlayerConnect> players;
-        public static Set<Integer> topLookups;
-        public static Set<UUID> playerLookups;
+    public Updater getUpdater() {
+        return updater;
+    }
+
+    public class Updater extends Manager implements Runnable {
+        public TopStorage<Double> topRatingStorage;
+        public TopStorage<Integer> topLevelStorage;
 
         private ScheduledFuture<?> task;
 
-        public Updater(final Levels plugin) {
-            super(plugin);
+        public Updater() {
+            super(PlaceholderAPI.this.plugin);
         }
 
         public void startUpdating() {
-            task = plugin.asyncExecutorManager.scheduleAtFixedRate(this, 0, plugin.config.get.getLong("top.update-interval"), TimeUnit.MILLISECONDS);
-            topLookups = new HashSet<>();
-            topValues = new HashMap<>();
+            task                           = plugin.asyncExecutorManager.scheduleAtFixedRate(this, 0, plugin.config.get.getLong("top.update-interval"), TimeUnit.MILLISECONDS);
+
+            topLevelStorage = new TopStorage<>();
+            topRatingStorage = new TopStorage<>();
         }
 
         public void stopUpdating() {
             task.cancel(false);
-            topLookups = null;
-            topValues = null;
         }
 
         @Override
         public void run() {
-            final PlayerDatabase.TopRating topRating = plugin.database.getPlayerDatabase().getTopRating();
-            for (final Integer i : topLookups) {
-                topValues.put(i, topRating.getTop(i));
+            final PlayerDatabase.TopResult<Double> topRatingResult = plugin.database.getPlayerDatabase().getTopRatingResult();
+            topRatingStorage.lookup(topRatingResult);
+
+            final PlayerDatabase.TopResult<Integer> topLevelResult = plugin.database.getPlayerDatabase().getTopLevelResult();
+            topLevelStorage.lookup(topLevelResult);
+        }
+    }
+
+    public static class TopStorage<V> {
+        public Map<Integer, V> topPlayers = new HashMap<>();
+        public Set<Integer> topPlayerPosLookups = new HashSet<>();
+        public Map<Integer, UUID> topUUIDPlayers = new HashMap<>();
+        public Set<Integer> topPlayerPosUUIDLookups = new HashSet<>();
+
+        public void lookup(final PlayerDatabase.TopResult<? extends V> topResult) {
+            for (final Integer i : topPlayerPosLookups) {
+                topPlayers.put(i, topResult.getTop(i));
             }
-            for (final UUID uuid : playerLookups) {
-                players.put(uuid, new PlayerConnect(uuid));
+            for (final Integer i : topPlayerPosUUIDLookups) {
+                topUUIDPlayers.put(i, topResult.getTopUUID(i));
             }
         }
     }
 
+    public interface PlayerIdentifierHandler {
+        String handle(@NotNull final PlayerConnect player, final String[] params);
+    }
+
     public interface IdentifierHandler {
-        String handle(final OfflinePlayer player, final String[] params);
+        String handle(final String[] params);
     }
 }

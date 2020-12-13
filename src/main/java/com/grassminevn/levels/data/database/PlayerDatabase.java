@@ -112,27 +112,69 @@ public class PlayerDatabase extends SQLDatabase {
                               new Timestamp(new Date().getTime()));
     }
 
-    public TopRating getTopRating() {
-        return new TopRating(plugin);
+    public TopResult<Double> getTopRatingResult() {
+        return new TopRatingResult(this);
     }
 
-    public static class TopRating {
-        private ResultSet resultSet;
+    public TopResult<Integer> getTopLevelResult() {
+        return new TopLevelResult(this);
+    }
 
-        public TopRating(final Levels plugin) {
-            try (final Connection connection = plugin.database.getPlayerDatabase().getConnection()) {
-                resultSet = connection.createStatement().executeQuery("SELECT * FROM `levels_players` ORDER BY `levels_players`.`rating` DESC");
+    public static class TopRatingResult extends TopResult<Double> {
+        public TopRatingResult(final PlayerDatabase database) {
+            super(database, "rating");
+        }
+
+        @Override
+        public Double getTop(final int index) {
+            try {
+                resultSet.absolute(index);
+                return resultSet.getDouble(5);
+            }
+            catch (final SQLException exception) {
+                return 25D;
+            }
+        }
+    }
+
+    public static class TopLevelResult extends TopResult<Integer> {
+
+        public TopLevelResult(final PlayerDatabase database) {
+            super(database, "level");
+        }
+
+        @Override
+        public Integer getTop(final int index) {
+            try {
+                resultSet.absolute(index);
+                return resultSet.getInt(4);
+            }
+            catch (final SQLException exception) {
+                return 0;
+            }
+        }
+    }
+
+    public abstract static class TopResult<V> {
+        protected ResultSet resultSet;
+
+        public TopResult(final PlayerDatabase database, final String column) {
+            try (final Connection connection = database.getConnection()) {
+                resultSet = connection.createStatement().executeQuery("SELECT * FROM `levels_players` ORDER BY `levels_players`.`" + column +"` DESC");
             } catch (final SQLException exception) {
                 exception.printStackTrace();
             }
         }
 
-        public Double getTop(final int index) {
+        public abstract V getTop(final int index);
+
+        public UUID getTopUUID(final int index) {
             try {
-                resultSet.getDouble(index);
+                resultSet.absolute(index);
+                return UUID.fromString(resultSet.getString(1));
             }
             catch (final SQLException exception) {
-                return 25D;
+                return null;
             }
         }
     }
