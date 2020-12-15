@@ -49,7 +49,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         topIdentifiers.put("level", (params -> {
             final int pos = Integer.parseInt(params[1]);
             if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
-                if (params.length > 4) {
+                if (params.length > 3) {
                     if (params[3].equals("name")) {
                         return Bukkit.getOfflinePlayer(updater.topLevelStorage.topUUIDPlayers.get(pos)).getName();
                     }
@@ -64,7 +64,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         topIdentifiers.put("rating", (params -> {
             final int pos = Integer.parseInt(params[1]);
             if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
-                if (params.length > 4) {
+                if (params.length > 3) {
                     if (params[3].equals("name")) {
                         return Bukkit.getOfflinePlayer(updater.topRatingStorage.topUUIDPlayers.get(pos)).getName();
                     }
@@ -81,7 +81,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             if (topIdentifiers.containsKey(params[2])) {
                 return topIdentifiers.get(params[2]).handle(params);
             }
-            if (params.length > 4) {
+            if (params.length > 3) {
                 if (params[3].equals("name")) {
                     return plugin.statsManager.getTopKey(params[2], Integer.parseInt(params[2]), true);
                 }
