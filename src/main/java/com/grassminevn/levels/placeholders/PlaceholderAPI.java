@@ -77,7 +77,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             }
             else {
                 if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
-                    return String.valueOf(updater.topRatingStorage.topPlayers.get(pos));
+                    return Utils.DOUBLE_FORMAT.format(updater.topRatingStorage.topPlayers.get(pos));
                 } else {
                     updater.topRatingStorage.topPlayerPosLookups.add(pos);
                 }
