@@ -132,6 +132,7 @@ public class PlayerDatabase extends SQLDatabase {
                 return resultSet.getDouble(5);
             }
             catch (final SQLException exception) {
+                exception.printStackTrace();
                 return 25D;
             }
         }
@@ -150,6 +151,7 @@ public class PlayerDatabase extends SQLDatabase {
                 return resultSet.getInt(4);
             }
             catch (final SQLException exception) {
+                exception.printStackTrace();
                 return 0;
             }
         }
@@ -157,9 +159,11 @@ public class PlayerDatabase extends SQLDatabase {
 
     public abstract static class TopResult<V> {
         protected ResultSet resultSet;
+        protected Connection connection;
 
         public TopResult(final PlayerDatabase database, final String column) {
-            try (final Connection connection = database.getConnection()) {
+            try {
+                connection = database.getConnection();
                 resultSet = connection.createStatement().executeQuery("SELECT * FROM `levels_players` ORDER BY `levels_players`.`" + column +"` DESC");
             } catch (final SQLException exception) {
                 exception.printStackTrace();
@@ -175,6 +179,14 @@ public class PlayerDatabase extends SQLDatabase {
             }
             catch (final SQLException exception) {
                 return null;
+            }
+        }
+
+        public void closeResult() {
+            try {
+                connection.close();
+            } catch (final SQLException e) {
+                e.printStackTrace();
             }
         }
     }

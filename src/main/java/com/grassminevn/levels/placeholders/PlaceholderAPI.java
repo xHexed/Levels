@@ -46,36 +46,44 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         playerIdentifiers.put("multiplier_time", (player, params) -> player.getMultiplierTime() != 0D ? plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, player.getMultiplierTime()).getTime()) : "0");
         playerIdentifiers.put("multiplier_time_left", (player, params) -> player.getMultiplierTime() != 0D ? plugin.statsManager.time("multiplier", new GregorianCalendar(0, Calendar.JANUARY, 0, 0, 0, player.getMultiplierTimeLeft()).getTime()) : "0");
 
-        topIdentifiers.put("level", (params -> {
+        topIdentifiers.put("level", params -> {
             final int pos = Integer.parseInt(params[1]);
-            if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
-                if (params.length > 3) {
-                    if (params[3].equals("name")) {
-                        return Bukkit.getOfflinePlayer(updater.topLevelStorage.topUUIDPlayers.get(pos)).getName();
-                    }
+            if (params.length > 3 && params[3].equals("name")) {
+                if (updater.topLevelStorage.topUUIDPlayers.containsKey(pos)) {
+                    return Bukkit.getOfflinePlayer(updater.topLevelStorage.topUUIDPlayers.get(pos)).getName();
                 }
-                return String.valueOf(updater.topLevelStorage.topPlayers.get(pos));
+                else {
+                    updater.topLevelStorage.topPlayerPosUUIDLookups.add(pos);
+                }
             }
             else {
-                updater.topLevelStorage.topPlayerPosUUIDLookups.add(pos);
-                return "0";
-            }
-        }));
-        topIdentifiers.put("rating", (params -> {
-            final int pos = Integer.parseInt(params[1]);
-            if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
-                if (params.length > 3) {
-                    if (params[3].equals("name")) {
-                        return Bukkit.getOfflinePlayer(updater.topRatingStorage.topUUIDPlayers.get(pos)).getName();
-                    }
+                if (updater.topLevelStorage.topPlayers.containsKey(pos)) {
+                    return String.valueOf(updater.topLevelStorage.topPlayers.get(pos));
+                } else {
+                    updater.topLevelStorage.topPlayerPosLookups.add(pos);
                 }
-                return String.valueOf(updater.topRatingStorage.topPlayers.get(pos));
+            }
+            return "???";
+        });
+        topIdentifiers.put("rating", params -> {
+            final int pos = Integer.parseInt(params[1]);
+            if (params.length > 3 && params[3].equals("name")) {
+                if (updater.topRatingStorage.topUUIDPlayers.containsKey(pos)) {
+                    return Bukkit.getOfflinePlayer(updater.topRatingStorage.topUUIDPlayers.get(pos)).getName();
+                }
+                else {
+                    updater.topRatingStorage.topPlayerPosUUIDLookups.add(pos);
+                }
             }
             else {
-                updater.topRatingStorage.topPlayerPosUUIDLookups.add(pos);
-                return "25";
+                if (updater.topRatingStorage.topPlayers.containsKey(pos)) {
+                    return String.valueOf(updater.topRatingStorage.topPlayers.get(pos));
+                } else {
+                    updater.topRatingStorage.topPlayerPosLookups.add(pos);
+                }
             }
-        }));
+            return "???";
+        });
 
         identifiers.put("top", (params -> {
             if (topIdentifiers.containsKey(params[2])) {
@@ -183,9 +191,11 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         public void run() {
             final PlayerDatabase.TopResult<Double> topRatingResult = plugin.database.getPlayerDatabase().getTopRatingResult();
             topRatingStorage.lookup(topRatingResult);
+            topRatingResult.closeResult();
 
             final PlayerDatabase.TopResult<Integer> topLevelResult = plugin.database.getPlayerDatabase().getTopLevelResult();
             topLevelStorage.lookup(topLevelResult);
+            topLevelResult.closeResult();
         }
     }
 
