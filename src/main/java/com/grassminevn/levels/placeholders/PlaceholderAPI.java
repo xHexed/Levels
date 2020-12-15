@@ -129,7 +129,17 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         if (player == null) {
             return "";
         }
-        return playerIdentifiers.get(params[0]).handle(plugin.getPlayerConnect(player.getUniqueId()), params);
+        final UUID uuid = player.getUniqueId();
+        if (player.isOnline()) {
+            return playerIdentifiers.get(params[0]).handle(plugin.getPlayerConnect(uuid), params);
+        }
+        else if (updater.players.containsKey(uuid)) {
+            return playerIdentifiers.get(params[0]).handle(updater.players.get(uuid), params);
+        }
+        else {
+            updater.playerLookups.add(uuid);
+            return "Loading...";
+        }
     }
 
     public Updater getUpdater() {
@@ -139,6 +149,9 @@ public class PlaceholderAPI extends PlaceholderExpansion {
     public class Updater extends Manager implements Runnable {
         public TopStorage<Double> topRatingStorage;
         public TopStorage<Integer> topLevelStorage;
+
+        public Map<UUID, PlayerConnect> players;
+        public Set<UUID> playerLookups;
 
         private ScheduledFuture<?> task;
 
@@ -151,6 +164,9 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
             topLevelStorage = new TopStorage<>();
             topRatingStorage = new TopStorage<>();
+
+            players = new HashMap<>();
+            playerLookups = new HashSet<>();
         }
 
         public void stopUpdating() {
@@ -158,6 +174,9 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
             topLevelStorage = null;
             topRatingStorage = null;
+
+            players = null;
+            playerLookups = null;
         }
 
         @Override
