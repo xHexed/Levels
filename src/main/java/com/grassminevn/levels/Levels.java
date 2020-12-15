@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Levels extends JavaPlugin {
@@ -45,7 +47,7 @@ public class Levels extends JavaPlugin {
     public StatsManager statsManager;
     public XPManager xpManager;
     public MultiplierManager multiplierManager;
-    public AsyncExecutorManager asyncExecutorManager;
+    public ScheduledExecutorService asyncExecutorManager;
     public Purger purger;
     public PlaceholderAPI placeholderAPI;
     public PlaceholderAPI.Updater placeholderUpdater;
@@ -67,7 +69,12 @@ public class Levels extends JavaPlugin {
 
         guiFolder = new GUIFolder(this);
 
-        asyncExecutorManager = new AsyncExecutorManager(this);
+        asyncExecutorManager = Executors.newSingleThreadScheduledExecutor(r -> {
+            final Thread thread = Executors.defaultThreadFactory().newThread(r);
+            thread.setName(getName() + "-timer-scheduler");
+            thread.setDaemon(true);
+            return thread;
+        });
         guiManager = new GUIManager(this);
         statsManager = new StatsManager(this);
         xpManager = new XPManager(this);
@@ -104,6 +111,9 @@ public class Levels extends JavaPlugin {
         }
         if (placeholderUpdater != null) {
             placeholderUpdater.stopUpdating();
+        }
+        if (asyncExecutorManager != null) {
+            asyncExecutorManager.shutdown();
         }
         call = null;
     }
