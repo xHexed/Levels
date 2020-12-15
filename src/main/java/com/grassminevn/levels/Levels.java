@@ -83,7 +83,7 @@ public class Levels extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             placeholderAPI = new PlaceholderAPI(this);
             placeholderAPI.getUpdater().startUpdating();
-            new PlaceholderAPI(this).register();
+            placeholderAPI.register();
             getLogger().info("PlaceholderAPI (found)");
         }
         if (config.get.contains("mysql.purge")) {

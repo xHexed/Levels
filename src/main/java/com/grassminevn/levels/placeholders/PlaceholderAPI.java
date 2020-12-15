@@ -155,6 +155,9 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
         public void stopUpdating() {
             task.cancel(false);
+
+            topLevelStorage = null;
+            topRatingStorage = null;
         }
 
         @Override
