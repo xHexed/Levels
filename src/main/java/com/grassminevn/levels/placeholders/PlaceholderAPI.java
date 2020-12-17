@@ -196,6 +196,10 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             final PlayerDatabase.TopResult<Integer> topLevelResult = plugin.database.getPlayerDatabase().getTopLevelResult();
             topLevelStorage.lookup(topLevelResult);
             topLevelResult.closeResult();
+
+            for (final UUID uuid : playerLookups) {
+                players.put(uuid, new PlayerConnect(uuid));
+            }
         }
     }
 
