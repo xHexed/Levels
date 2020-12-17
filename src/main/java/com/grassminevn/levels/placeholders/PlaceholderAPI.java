@@ -3,11 +3,14 @@ package com.grassminevn.levels.placeholders;
 import com.grassminevn.levels.Levels;
 import com.grassminevn.levels.data.PlayerConnect;
 import com.grassminevn.levels.data.database.PlayerDatabase;
-import com.grassminevn.levels.managers.Manager;
 import com.grassminevn.levels.util.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -94,7 +97,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                     return plugin.statsManager.getTopKey(params[2], Integer.parseInt(params[2]), true);
                 }
             }
-            return plugin.statsManager.getTopValue(params[2], Integer.parseInt(params[2]), true);
+            return "???";
         }));
     }
 
@@ -154,7 +157,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         return updater;
     }
 
-    public class Updater extends Manager implements Runnable {
+    public class Updater implements Runnable {
         public TopStorage<Double> topRatingStorage;
         public TopStorage<Integer> topLevelStorage;
 
@@ -163,18 +166,23 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
         private ScheduledFuture<?> task;
 
-        public Updater() {
-            super(PlaceholderAPI.this.plugin);
-        }
+        public Listener listener;
 
         public void startUpdating() {
-            task                           = plugin.asyncExecutorManager.scheduleAtFixedRate(this, 0, plugin.config.get.getLong("top.update-interval"), TimeUnit.MILLISECONDS);
+            final long delay = plugin.config.get.getLong("top.update-interval");
+            task                           = plugin.asyncExecutorManager.scheduleAtFixedRate(this, delay, delay, TimeUnit.MILLISECONDS);
 
             topLevelStorage = new TopStorage<>();
             topRatingStorage = new TopStorage<>();
 
             players = new HashMap<>();
             playerLookups = new HashSet<>();
+
+            if (plugin.config.get.getBoolean("top.update-on-player-join")) {
+                listener = new Listener() {};
+                Bukkit.getPluginManager().registerEvent(PlayerJoinEvent.class, listener, EventPriority.NORMAL,
+                        (li, e) -> plugin.asyncExecutorManager.execute(this), plugin);
+            }
         }
 
         public void stopUpdating() {
@@ -185,6 +193,10 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
             players = null;
             playerLookups = null;
+
+            if (listener != null) {
+                HandlerList.unregisterAll(listener);
+            }
         }
 
         @Override
